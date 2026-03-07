@@ -113,6 +113,38 @@
       margin-top: 10px;
     }
     .highlight strong { color: var(--ok); }
+    .linkbox {
+      border: 1px solid #cddff0;
+      background: #f3f8fd;
+      border-radius: 10px;
+      padding: 12px;
+      word-break: break-word;
+    }
+    .linkbox a { color: #0f5f94; font-weight: 600; text-decoration: none; }
+    .pdf-link {
+      display: inline-block;
+      margin-top: 10px;
+      text-decoration: none;
+      background: #0f5f94;
+      color: #ffffff;
+      border: 1px solid #0f5a8c;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: .9rem;
+      font-weight: 600;
+    }
+    .linkbox a.pdf-link,
+    .linkbox a.pdf-link:visited {
+      color: #ffffff;
+      background: #0f5f94;
+      text-decoration: none;
+    }
+    .linkbox a.pdf-link:hover,
+    .linkbox a.pdf-link:focus {
+      color: #ffffff;
+      background: #0c4f7b;
+      text-decoration: none;
+    }
     footer {
       border-top: 1px solid var(--line);
       color: var(--muted);
@@ -173,6 +205,16 @@
 
       <section class="highlight">
         <strong>Conclusion ejecutiva:</strong> la ventaja competitiva inmediata no sera quien tenga mas herramientas de IA, sino quien tenga mejor criterio de negocio y mejor calidad de dato para convertir pilotos en soluciones escalables.
+      </section>
+
+      <section>
+        <h2>Acceso al contenido completo</h2>
+        <div class="linkbox">
+          Repositorio vivo de pildoras:<br>
+          <a href="https://repositorio-para-web-pildoras.svallejo-351.workers.dev" target="_blank" rel="noopener noreferrer">https://repositorio-para-web-pildoras.svallejo-351.workers.dev</a>
+          <br>
+          <a class="pdf-link" href="./pildora-3-texto-completo.pdf" target="_blank" rel="noopener noreferrer">Ver texto completo en PDF</a>
+        </div>
       </section>
     </main>
     <footer>Base: "3a pildora. EL DATO" - Documento interno Isaval.</footer>
