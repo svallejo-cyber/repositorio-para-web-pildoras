@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Reflections for Executives - Isaval</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Merriweather:wght@700&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#eef3f7; --panel:#fff; --ink:#17212c; --muted:#5f6d7c; --line:#d6dee8; --accent:#0f5f94; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family:"IBM Plex Sans",sans-serif; color:var(--ink); background:radial-gradient(circle at 8% 4%,#dce9f4 0,transparent 22%), radial-gradient(circle at 90% 0%,#e8eef3 0,transparent 24%), var(--bg); line-height:1.52; }
+    .page { max-width:1000px; margin:34px auto; background:var(--panel); border:1px solid var(--line); border-radius:16px; overflow:hidden; box-shadow:0 14px 34px rgba(17,34,52,.08); }
+    header { padding:24px 36px 30px; color:#fff; background:linear-gradient(112deg,#12314c 0%,#0f5f94 56%,#1782b6 100%); }
+    .topnav { display:flex; justify-content:flex-end; margin-bottom:10px; }
+    .navbtn { text-decoration:none; background:rgba(255,255,255,.15); color:#fff; border:1px solid rgba(255,255,255,.4); padding:7px 10px; border-radius:8px; font-size:.85rem; font-weight:600; }
+    .kicker { text-transform:uppercase; letter-spacing:.09em; font-size:.76rem; opacity:.9; font-weight:600; }
+    h1 { margin:8px 0 10px; font-family:"Merriweather",serif; font-size:clamp(1.85rem,2.9vw,2.35rem); line-height:1.18; }
+    .sub { max-width:760px; font-size:.98rem; opacity:.95; }
+    main { padding:26px 36px 34px; }
+    .section-title { margin:0 0 10px; color:var(--accent); font-size:1.15rem; }
+    .intro { margin:0 0 18px; color:#2d4458; }
+    .grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    .card { border:1px solid var(--line); border-radius:12px; padding:14px; background:#fbfdff; display:grid; gap:8px; }
+    .tag { display:inline-block; font-size:.74rem; letter-spacing:.07em; text-transform:uppercase; color:#31516a; font-weight:700; }
+    .card h2 { margin:0; font-size:1.1rem; }
+    .card p { margin:0; color:#32485b; font-size:.95rem; }
+    .btn { text-decoration:none; border-radius:8px; padding:8px 12px; font-size:.9rem; font-weight:600; border:1px solid #0f5a8c; color:#fff; background:#0f5f94; display:inline-block; }
+    .next { margin-top:18px; border:1px solid #cfe2d8; background:#f2fbf6; color:#1f4a37; border-radius:12px; padding:12px; font-weight:600; }
+    footer { border-top:1px solid var(--line); padding:14px 36px 20px; color:var(--muted); font-size:.86rem; background:#fafcfe; }
+    @media (max-width:760px){ header,main,footer{padding-left:18px;padding-right:18px;} .grid{grid-template-columns:1fr;} }
+  </style>
+</head>
+<body>
+  <article class="page">
+    <header>
+      <div class="topnav"><a class="navbtn" href="../es/">Leer en español</a></div>
+      <div class="kicker">Isaval · Non-technical executives</div>
+      <h1>AI reflections and progress</h1>
+      <p class="sub">Collection of real cases and executive pills to accelerate AI adoption with a practical business-first approach.</p>
+    </header>
+    <main>
+      <h2 class="section-title">Published</h2>
+      <p class="intro">Single space to review each release and share it internally.</p>
+      <div class="grid">
+        <article class="card"><span class="tag">Real case</span><h2>TenantFlow - Functional app in use</h2><p>End-to-end process of building a tenant-management application with measurable operational impact.</p><a class="btn" href="../projects/tenantflow/">Open</a></article>
+        <article class="card"><span class="tag">Executive pill</span><h2>Pill 3 - DATA</h2><p>Why there is no sustainable AI value without correct, curated, and governed data.</p><a class="btn" href="../projects/pildora-3/">Open</a></article>
+        <article class="card"><span class="tag">Executive pill</span><h2>Pill 4 - Web publishing</h2><p>Practical method: own writing, assisted review, HTML conversion, and continuous publishing.</p><a class="btn" href="../projects/pildora-4/">Open</a></article>
+      </div>
+      <div class="next">Publishing rule: every new pill is added as a new card in this repository.</div>
+    </main>
+    <footer>Central repository of AI content for non-IT executives.</footer>
+  </article>
+</body>
+</html>

@@ -3,162 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Reflexiones IA para Directivos - Isaval</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Merriweather:wght@700&display=swap" rel="stylesheet">
+  <title>Isaval AI Hub · Language</title>
   <style>
-    :root {
-      --bg: #eef3f7;
-      --panel: #ffffff;
-      --ink: #17212c;
-      --muted: #5f6d7c;
-      --line: #d6dee8;
-      --accent: #0f5f94;
-      --accent2: #1f7a5a;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: "IBM Plex Sans", sans-serif;
-      color: var(--ink);
-      background:
-        radial-gradient(circle at 8% 4%, #dce9f4 0, transparent 22%),
-        radial-gradient(circle at 90% 0%, #e8eef3 0, transparent 24%),
-        var(--bg);
-      line-height: 1.52;
-    }
-    .page {
-      max-width: 1000px;
-      margin: 34px auto;
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 14px 34px rgba(17, 34, 52, 0.08);
-    }
-    header {
-      padding: 30px 36px;
-      color: #fff;
-      background: linear-gradient(112deg, #12314c 0%, #0f5f94 56%, #1782b6 100%);
-    }
-    .kicker { text-transform: uppercase; letter-spacing: .09em; font-size: .76rem; opacity: .9; font-weight: 600; }
-    h1 {
-      margin: 8px 0 10px;
-      font-family: "Merriweather", serif;
-      font-size: clamp(1.85rem, 2.9vw, 2.35rem);
-      line-height: 1.18;
-    }
-    .sub { max-width: 760px; font-size: .98rem; opacity: .95; }
-    main { padding: 26px 36px 34px; }
-    .section-title { margin: 0 0 10px; color: var(--accent); font-size: 1.15rem; }
-    .intro { margin: 0 0 18px; color: #2d4458; }
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-    .card {
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 14px;
-      background: #fbfdff;
-      display: grid;
-      gap: 8px;
-    }
-    .tag {
-      display: inline-block;
-      font-size: .74rem;
-      letter-spacing: .07em;
-      text-transform: uppercase;
-      color: #31516a;
-      font-weight: 700;
-    }
-    .card h2 { margin: 0; font-size: 1.1rem; }
-    .card p { margin: 0; color: #32485b; font-size: .95rem; }
-    .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
-    .btn {
-      text-decoration: none;
-      border-radius: 8px;
-      padding: 8px 12px;
-      font-size: .9rem;
-      font-weight: 600;
-      border: 1px solid var(--line);
-      color: #1d3448;
-      background: #f6fafc;
-    }
-    .btn.primary {
-      color: #fff;
-      background: var(--accent);
-      border-color: #0f5a8c;
-    }
-    .next {
-      margin-top: 18px;
-      border: 1px solid #cfe2d8;
-      background: #f2fbf6;
-      color: #1f4a37;
-      border-radius: 12px;
-      padding: 12px;
-      font-weight: 600;
-    }
-    footer {
-      border-top: 1px solid var(--line);
-      padding: 14px 36px 20px;
-      color: var(--muted);
-      font-size: .86rem;
-      background: #fafcfe;
-    }
-    @media (max-width: 760px) {
-      header, main, footer { padding-left: 18px; padding-right: 18px; }
-      .grid { grid-template-columns: 1fr; }
-    }
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #eef3f7; font-family: Arial, sans-serif; }
+    .card { background: #fff; border: 1px solid #d6dee8; border-radius: 14px; padding: 24px; max-width: 540px; text-align: center; }
+    h1 { margin-top: 0; color: #173047; }
+    .btn { display: inline-block; margin: 8px; padding: 10px 16px; border-radius: 8px; text-decoration: none; font-weight: 700; }
+    .es { background: #0f5f94; color: #fff; }
+    .en { background: #1f7a5a; color: #fff; }
   </style>
 </head>
 <body>
-  <article class="page">
-    <header>
-      <div class="kicker">Isaval · Directivos no tecnicos</div>
-      <h1>Reflexiones y avances IA</h1>
-      <p class="sub">Compilacion de casos reales y pildoras ejecutivas para acelerar adopcion de herramientas de IA con enfoque 100% practico.</p>
-    </header>
-
-    <main>
-      <h2 class="section-title">Publicados</h2>
-      <p class="intro">Un unico espacio para consultar cada entrega y compartirlas internamente.</p>
-
-      <div class="grid">
-        <article class="card">
-          <span class="tag">Caso real</span>
-          <h2>TenantFlow - App funcional ya en uso</h2>
-          <p>Proceso completo de creacion de una aplicacion para gestion de datos de inquilino, con impacto real en tiempo y control operativo.</p>
-          <div class="actions">
-            <a class="btn primary" href="./projects/tenantflow/" target="_blank" rel="noopener noreferrer">Abrir documento</a>
-          </div>
-        </article>
-
-        <article class="card">
-          <span class="tag">Pildora ejecutiva</span>
-          <h2>3a Pildora - EL DATO</h2>
-          <p>Resumen para comite: por que sin dato correcto, cuidado y gobernado no hay IA que aporte valor sostenido en la organizacion.</p>
-          <div class="actions">
-            <a class="btn primary" href="./projects/pildora-3/" target="_blank" rel="noopener noreferrer">Abrir documento</a>
-          </div>
-        </article>
-
-        <article class="card">
-          <span class="tag">Pildora ejecutiva</span>
-          <h2>4a Pildora - Como publico en internet mis pildoras</h2>
-          <p>Guia practica de trabajo: escritura propia, revision asistida, conversion a HTML y publicacion continua con GitHub y Cloudflare.</p>
-          <div class="actions">
-            <a class="btn primary" href="./projects/pildora-4/" target="_blank" rel="noopener noreferrer">Abrir documento</a>
-          </div>
-        </article>
-      </div>
-
-      <div class="next">Proximo criterio de publicacion: cada nuevo HTML se incorpora en este mismo repositorio como nueva tarjeta.</div>
-    </main>
-
-    <footer>Repositorio central de contenidos IA para directivos no IT.</footer>
-  </article>
+  <div class="card">
+    <h1>Repositorio de Píldoras IA</h1>
+    <p>Selecciona idioma / Choose language</p>
+    <a class="btn es" href="./es/">Español</a>
+    <a class="btn en" href="./en/">English</a>
+  </div>
 </body>
 </html>

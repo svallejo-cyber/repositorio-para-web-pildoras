@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TenantFlow - Executive Summary</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Merriweather:wght@700&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#f4f6f8; --panel:#fff; --ink:#1d2a36; --muted:#5b6a78; --accent:#0f5b8d; --line:#d6dde4; --ok:#1f7a4e; }
+    *{box-sizing:border-box} body{margin:0;font-family:"IBM Plex Sans",sans-serif;color:var(--ink);background:radial-gradient(circle at 8% 3%,#dce8f2 0,transparent 22%),radial-gradient(circle at 85% 0%,#e7ecef 0,transparent 20%),var(--bg);line-height:1.55}
+    .page{max-width:980px;margin:42px auto;background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:0 14px 42px rgba(15,31,46,.08);overflow:hidden}
+    .top-visual{padding:20px 42px;background:linear-gradient(180deg,#f7fbff 0%,#eef5fb 100%);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:14px}
+    .top-left{display:flex;align-items:center;gap:14px}
+    .top-visual img{width:min(110px,28vw);height:auto;display:block;filter:drop-shadow(0 8px 20px rgba(15,49,79,.2))}
+    .project-name{margin:0;font-size:1rem;letter-spacing:.08em;font-weight:700;text-transform:uppercase;color:#133d59}
+    .project-desc{margin:0;font-size:.86rem;color:#335369;max-width:520px}
+    .navbtn{text-decoration:none;background:#0f5f94;color:#fff;border:1px solid #0f5a8c;padding:7px 10px;border-radius:8px;font-size:.85rem;font-weight:600}
+    header{padding:34px 42px 28px;background:linear-gradient(110deg,#133d59 0%,#0f5b8d 56%,#1573a8 100%);color:#fff}
+    .kicker{letter-spacing:.08em;text-transform:uppercase;font-weight:600;font-size:.78rem;opacity:.9}
+    h1{margin:8px 0 14px;font-family:"Merriweather",serif;font-size:clamp(1.8rem,2.8vw,2.3rem);line-height:1.2}
+    .meta{font-size:.95rem;opacity:.92} main{padding:30px 42px 38px} section+section{margin-top:28px} h2{font-size:1.15rem;margin:0 0 12px;color:var(--accent)} p{margin:0 0 10px} ul{margin:8px 0 0 0;padding-left:18px} li{margin:6px 0}
+    .quote{margin-top:16px;border-left:4px solid #9dc4dc;padding:10px 14px;background:#f3f8fb;color:#27445b;font-weight:500}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:14px}
+    .card{border:1px solid var(--line);border-radius:12px;padding:14px;background:#fbfdff}
+    .tag{display:inline-block;font-size:.76rem;text-transform:uppercase;letter-spacing:.06em;color:#2f4f67;margin-bottom:6px;font-weight:600}
+    .table{width:100%;border-collapse:collapse;margin-top:10px;font-size:.94rem}.table th,.table td{border:1px solid var(--line);padding:10px;vertical-align:top;text-align:left}.table th{background:#eef4f8}
+    .highlight{border:1px solid #cfe3d6;background:#f3fbf6;border-radius:12px;padding:14px;margin-top:10px}.highlight strong{color:var(--ok)}
+    footer{border-top:1px solid var(--line);padding:16px 42px 24px;color:var(--muted);font-size:.88rem;background:#fafcfd}
+    @media (max-width:760px){.top-visual{padding-left:20px;padding-right:20px;align-items:flex-start;flex-direction:column}.top-left{width:100%}header,main,footer{padding-left:20px;padding-right:20px}.grid{grid-template-columns:1fr}.table{font-size:.9rem}}
+  </style>
+</head>
+<body>
+  <article class="page">
+    <div class="top-visual">
+      <div class="top-left">
+        <img src="../assets/tenantflow-desktop-icon.png" alt="TenantFlow application icon" />
+        <div>
+          <p class="project-name">TENANTFLOW</p>
+          <p class="project-desc">Automates utility invoice intake, control and communication for rental management.</p>
+        </div>
+      </div>
+      <div><a class="navbtn" href="/">Back to home</a> <a class="navbtn" href="../es/">Leer en español</a></div>
+    </div>
+    <header>
+      <div class="kicker">Executive committee document</div>
+      <h1>Practical AI for non-technical business</h1>
+      <div class="meta">Real self-learning case with Codex · TenantFlow Project · 03/02/2026</div>
+    </header>
+    <main>
+      <section><h2>Key message</h2><p>You do not need to be a programmer to drive real AI improvements. You need to detect a real problem, explain it clearly, iterate, and measure.</p><div class="quote">"I am 57, not a programmer, and still built a functional app that saves me time and errors."</div></section>
+      <section><h2>Initial problem</h2><p>Monthly utility settlement with a tenant was manual, fragmented and error-prone: downloading invoices from 4 providers, transferring to Excel, sending via WhatsApp and checking repayment in banking records.</p><ul><li>High risk of duplicates, omissions and incorrect manual cross-checks.</li><li>Strong dependency on memory and available time.</li><li>Low traceability to validate repayments.</li><li>Persistent mental load from pending tasks.</li></ul></section>
+      <section><h2>What TenantFlow does</h2><div class="grid"><div class="card"><span class="tag">Smart intake</span><p>Monitors INBOX folder and detects new invoice/receipt PDFs.</p></div><div class="card"><span class="tag">Error control</span><p>Prevents duplicates with SHA-256 hash per file.</p></div><div class="card"><span class="tag">Auto extraction</span><p>Reads provider, date, period, amount, reference and utility type.</p></div><div class="card"><span class="tag">Operations</span><p>Allows corrections, reconciliation and repayment/bank tracking.</p></div><div class="card"><span class="tag">Outputs</span><p>Generates selected PDF report, annual report and pending receipts pack.</p></div><div class="card"><span class="tag">Cycle closure</span><p>Sends email from macOS Mail with attachments and BCC traceability.</p></div></div></section>
+      <section><h2>Operational impact</h2><table class="table"><tr><th>Before</th><th>Now</th></tr><tr><td>Manual, scattered document control</td><td>Centralized and traceable process</td></tr><tr><td>Frequent duplicates and omissions</td><td>Deduplication and automatic extraction</td></tr><tr><td>Long, postponed process</td><td>Simplified flow in minutes</td></tr><tr><td>Manual WhatsApp preparation</td><td>Report + pack + email in one single flow</td></tr></table></section>
+      <section><h2>Build timeline</h2><ul><li><strong>MVP:</strong> INBOX scanning + DB + deduplication + base extraction.</li><li><strong>Interaction:</strong> from technical tool to visual app with buttons.</li><li><strong>Data quality:</strong> parser tuning by provider to improve accuracy.</li><li><strong>Data governance:</strong> new operational and reconciliation fields.</li><li><strong>Usability and reports:</strong> practical table + professional outputs.</li><li><strong>Final automation:</strong> contextual email sending with attachments.</li></ul></section>
+      <section><h2>What non-technical executives should take away</h2><ul><li>AI is a real productivity lever in admin, commercial and support areas.</li><li>You can lead without coding if process and success criteria are clear.</li><li>Focused pilots reduce fear and quickly create internal evidence.</li><li>Best adoption model: business proposes, IT industrializes.</li></ul></section>
+      <section class="highlight"><strong>Executive conclusion:</strong> AI productivity is not a theoretical promise; it is a practical discipline that can start now with real problems, iteration and collaboration with IT.</section>
+    </main>
+    <footer>Source report: "Practical AI / TenantFlow Case" · Draft v3.0</footer>
+  </article>
+</body>
+</html>
