@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3a Pildora - Resumen Ejecutivo (Version 1)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Lora:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f3f6f9;
+      --panel: #ffffff;
+      --ink: #1f2c3a;
+      --muted: #5c6b79;
+      --accent: #0f5f94;
+      --line: #d8e0e8;
+      --ok: #1c7550;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans", sans-serif;
+      color: var(--ink);
+      line-height: 1.56;
+      background:
+        radial-gradient(circle at 8% 5%, #d9e8f4 0, transparent 22%),
+        radial-gradient(circle at 90% 0%, #e9eef3 0, transparent 24%),
+        var(--bg);
+    }
+    .sheet {
+      max-width: 980px;
+      margin: 36px auto;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--panel);
+      overflow: hidden;
+      box-shadow: 0 14px 36px rgba(18, 37, 54, 0.08);
+    }
+    header {
+      padding: 30px 38px;
+      color: #fff;
+      background: linear-gradient(110deg, #10314d 0%, #0f5f94 56%, #1577af 100%);
+    }
+    .kicker {
+      font-size: .76rem;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      opacity: .92;
+      font-weight: 600;
+    }
+    h1 {
+      margin: 8px 0 10px;
+      font-family: "Lora", serif;
+      font-size: clamp(1.85rem, 2.8vw, 2.3rem);
+      line-height: 1.2;
+    }
+    .meta { font-size: .95rem; opacity: .94; }
+    main { padding: 30px 38px 34px; }
+    section + section { margin-top: 26px; }
+    h2 { margin: 0 0 10px; font-size: 1.14rem; color: var(--accent); }
+    p { margin: 0 0 10px; }
+    ul { margin: 8px 0 0; padding-left: 18px; }
+    li { margin: 6px 0; }
+    .quote {
+      border-left: 4px solid #95c1de;
+      background: #f3f8fc;
+      color: #24445c;
+      padding: 12px 14px;
+      border-radius: 0 10px 10px 0;
+      font-weight: 500;
+      margin-top: 10px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      padding: 12px;
+      background: #fbfdff;
+    }
+    .tag {
+      display: inline-block;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      font-size: .74rem;
+      color: #2d536f;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .93rem;
+      margin-top: 10px;
+    }
+    .table th, .table td {
+      border: 1px solid var(--line);
+      padding: 9px;
+      text-align: left;
+      vertical-align: top;
+    }
+    .table th { background: #edf4fa; }
+    .highlight {
+      border: 1px solid #cde2d5;
+      background: #f2fbf5;
+      border-radius: 11px;
+      padding: 14px;
+      margin-top: 10px;
+    }
+    .highlight strong { color: var(--ok); }
+    footer {
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: .87rem;
+      padding: 14px 38px 22px;
+      background: #fafcfe;
+    }
+    @media (max-width: 760px) {
+      header, main, footer { padding-left: 18px; padding-right: 18px; }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <article class="sheet">
+    <header>
+      <div class="kicker">Comite de Direccion - Isaval</div>
+      <h1>3a Pildora - EL DATO</h1>
+      <div class="meta">Resumen ejecutivo para acelerar adopcion de IA en perfiles no IT</div>
+    </header>
+    <main>
+      <section>
+        <h2>Contexto</h2>
+        <p>La organizacion ya muestra reacciones claras: IT avanza a gran velocidad, en direccion conviven perfiles con ritmos distintos y en segunda capa empiezan a aparecer primeros casos de adopcion.</p>
+        <div class="quote">Enero-febrero de 2026 ya parece lejos. El reto es estar preparados para surfear esta ola mejor y mas rapido que los competidores.</div>
+      </section>
+
+      <section>
+        <h2>Que SI es esta etapa</h2>
+        <div class="grid">
+          <div class="card"><span class="tag">Transformacion real</span><p>No va de hacer cosas vistosas. Va de transformar como trabajamos.</p></div>
+          <div class="card"><span class="tag">Negocio primero</span><p>No se pide que nadie programe; se pide detectar fricciones y oportunidades.</p></div>
+          <div class="card"><span class="tag">Nueva logica</span><p>Area identifica mejora, propone output, y IT pule, integra y escala.</p></div>
+          <div class="card"><span class="tag">Efecto red</span><p>Las mejoras pasan de aritmeticas a geometricas cuando se comparten.</p></div>
+        </div>
+      </section>
+
+      <section>
+        <h2>4 mensajes de alineamiento</h2>
+        <table class="table">
+          <tr><th>Mensaje</th><th>Lectura ejecutiva</th></tr>
+          <tr><td>No es magia</td><td>Es capacidad operativa para rediseñar procesos, no una moda de herramientas.</td></tr>
+          <tr><td>No va de programar</td><td>Va de entender negocio, priorizar problemas y hablar con agentes de IA.</td></tr>
+          <tr><td>No es opcional</td><td>Ignorar esta ola resta competitividad en velocidad, coste y calidad de decision.</td></tr>
+          <tr><td>No esperes a que te formen</td><td>Hace falta iniciativa: explorar, pilotar, fallar rapido y volver a iterar.</td></tr>
+        </table>
+      </section>
+
+      <section>
+        <h2>El mensaje central: EL DATO</h2>
+        <ul>
+          <li>Sin dato correcto, recolectado y cuidado, no hay resultados de IA sostenibles.</li>
+          <li>La calidad de dato es materia prima critica para todo avance posterior.</li>
+          <li>La exigencia de volumen y calidad de dato solo va a crecer.</li>
+          <li>Cuidar el dato debe convertirse en disciplina transversal de toda la organizacion.</li>
+        </ul>
+      </section>
+
+      <section class="highlight">
+        <strong>Conclusion ejecutiva:</strong> la ventaja competitiva inmediata no sera quien tenga mas herramientas de IA, sino quien tenga mejor criterio de negocio y mejor calidad de dato para convertir pilotos en soluciones escalables.
+      </section>
+    </main>
+    <footer>Base: "3a pildora. EL DATO" - Documento interno Isaval.</footer>
+  </article>
+</body>
+</html>
