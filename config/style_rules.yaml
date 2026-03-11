@@ -1,0 +1,82 @@
+tone_defaults:
+  formalidad: media-alta
+  calidez: alta
+  firmeza: media-alta
+sentence_length_target:
+  min_words: 14
+  max_words: 24
+paragraph_length_target:
+  min_sentences: 2
+  max_sentences: 4
+preferred_phrases:
+  informar:
+  - Vamos con lo esencial.
+  - 'Lo principal es lo siguiente:'
+  - Dicho esto, el contexto es este.
+  pedir_accion:
+  - Os pido foco total en [POR DEFINIR].
+  - Necesitamos cerrar [POR DEFINIR] con orden y rapidez.
+  - A partir de aquí, toca ejecutar.
+  corregir:
+  - Así no podemos seguir.
+  - Esto requiere un reseteo inmediato.
+  - No se trata de debatir más, sino de corregir y cerrar.
+  negociar:
+  - Nuestra voluntad es avanzar con una solución equilibrada.
+  - Podemos acercar posiciones si cerramos primero [POR DEFINIR].
+  - Necesitamos un marco claro para seguir avanzando.
+  reconocer:
+  - Gracias por el esfuerzo sostenido.
+  - Quiero reconocer el compromiso de todos.
+  - Lo conseguido hasta aquí tiene mérito.
+  escalar:
+  - Necesito elevar este punto por su impacto en [POR DEFINIR].
+  - Conviene resolver esta decisión hoy para no arrastrar el problema.
+  - El riesgo de no actuar ya es mayor que el coste de decidir.
+banned_or_avoid_phrases:
+- urgente!!!
+- esto es inadmisible
+- te lo dije
+- sin comentarios
+- a la mayor brevedad posible
+- como ya sabéis todos
+greeting_templates:
+  interno:
+  - Buenos días a todos/as,
+  - Estimado equipo,
+  directivo:
+  - Buenos días,
+  - Estimados,
+  proveedor:
+  - Buenos días,
+  - Estimado equipo,
+  cliente:
+  - Buenos días,
+  - Estimado/a [POR DEFINIR],
+  consejo:
+  - A la atención del Consejo,
+  - Señores consejeros,
+closing_templates:
+  interno:
+  - Un saludo. Cuidaros.
+  - Un abrazo y mucho ánimo.
+  directivo:
+  - Quedo atento.
+  - Un saludo.
+  proveedor:
+  - Quedo pendiente de vuestra confirmación.
+  - Un saludo.
+  cliente:
+  - Quedo a vuestra disposición.
+  - Un saludo.
+  consejo:
+  - Quedo a disposición del Consejo para ampliar cualquier punto.
+  - Un saludo.
+formatting_preferences:
+  use_short_sections: true
+  prefer_lists_for_actions: true
+  bold_key_labels: false
+  subject_prefix_by_type:
+    email: Asunto
+    memo: Memo
+    nota_comite: Nota para comité
