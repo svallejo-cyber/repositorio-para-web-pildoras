@@ -86,7 +86,7 @@ def p(text, style):
 
 def build_story(styles):
     story = []
-    story.append(p("2ª Píldora · La ventaja no es tener IA. Es tener feedback real", styles["TitleCustom"]))
+    story.append(p("2ª Píldora · La ventaja no es tener IA. Es cerrar el feedback", styles["TitleCustom"]))
     story.append(
         p(
             "Documento interno para comité y consejo. Segunda pieza del proyecto de píldoras ejecutivas de AI.",
@@ -95,77 +95,63 @@ def build_story(styles):
     )
     story.append(
         p(
-            "En muchas conversaciones empresariales se sigue planteando la misma pregunta: cómo usar IA. A mi juicio, esa pregunta se queda corta. La cuestión importante no es usar IA. La cuestión importante es transformar la compañía en una máquina de aprendizaje continuo basada en datos reales.",
+            "El artículo del FT sobre la convergencia entre los quant shops y los laboratorios de IA deja una idea útil: por debajo del discurso tecnológico, los ganadores empiezan a parecerse mucho. Todos compiten con la misma máquina: datos, modelo, restricciones, ejecución y feedback.",
             styles["BodyCustom"],
         )
     )
     story.append(
         p(
-            "Eso sí es estratégico. Porque esto no va solo de tecnología. Va de estructura de poder. El poder empresarial del futuro lo tendrán las compañías capaces de capturar mejor información propia, convertirla en decisiones y cerrar antes que los demás el ciclo entre acción, medición y ajuste.",
+            "Llevado a una empresa industrial como la nuestra, la lectura no es que debamos comportarnos como un hedge fund. La lectura es más simple: la ventaja futura estará en capturar mejor la realidad del negocio, convertirla antes en decisión y aprender más rápido que el mercado.",
             styles["Callout"],
         )
     )
 
-    story.append(p("1. Dónde está la ventaja estructural", styles["HeadingCustom"]))
+    story.append(p("1. Qué nos dice de verdad este artículo", styles["HeadingCustom"]))
     story.append(
         p(
-            "La ventaja no estará en decir que se tiene IA, ni en incorporar una capa cosmética de automatización. La ventaja estructural estará en cuatro capacidades combinadas: controlar datos propios, convertir esos datos en modelos útiles, tomar decisiones más rápido y cerrar el ciclo de feedback antes que los competidores.",
+            "La tesis de fondo es que un laboratorio de IA y una organización obsesionada con decisión cuantitativa terminan construyendo cosas parecidas. No porque vendan lo mismo, sino porque los dos necesitan datos de calidad, capacidad de modelizar, disciplina de despliegue y un sistema continuo de feedback desde el mundo real.",
             styles["BodyCustom"],
         )
     )
     story.append(
         p(
-            "Ese es el punto central. No gana quien compra más herramientas. Gana quien aprende más deprisa del mercado real, de sus operaciones y de sus clientes. Si una compañía puede lanzar, medir, ajustar y volver a lanzar antes que las demás, su ventaja deja de ser táctica y pasa a ser estructural.",
-            styles["BodyCustom"],
-        )
-    )
-
-    story.append(p("2. Esto no va de dashboards bonitos", styles["HeadingCustom"]))
-    story.append(
-        p(
-            "En las grandes empresas hará falta infraestructura tecnológica seria, capacidad interna de procesar datos y menos dependencia ciega de terceros. No todo puede quedarse en un Power BI bonito, en un cuadro de mando elegante o en una lectura retrospectiva de lo que ya ha pasado.",
-            styles["BodyCustom"],
-        )
-    )
-    story.append(
-        p(
-            "El valor aparece cuando el dato deja de ser un informe y se convierte en un sistema vivo de decisión. Cuando alimenta pricing, red comercial, surtido, previsión, operaciones y asignación de recursos casi en tiempo real. Cuando no se limita a describir. Cuando empieza a gobernar mejor la acción.",
+            "Eso explica por qué la conversación buena no es \"qué modelo usamos\" sino \"qué sistema de aprendizaje estamos construyendo\". El modelo importa, sí. Pero por sí solo no crea ventaja duradera.",
             styles["BodyCustom"],
         )
     )
 
-    story.append(p("3. Lo potente no es el modelo", styles["HeadingCustom"]))
+    story.append(p("2. La ventaja no está en el modelo", styles["HeadingCustom"]))
     story.append(
         p(
-            "Hay una tentación muy habitual: centrar la conversación en el modelo. Qué modelo usamos, cuál rinde más, cuál es más barato o más sofisticado. Esa conversación importa, pero no es la decisiva. Lo potente no es el modelo en sí. Lo potente es el sistema que lo rodea.",
+            "Lo potente no es el modelo. Lo potente es poder lanzar algo, medir qué pasa, ajustar y volver a lanzar. Cuando ese circuito existe, la compañía aprende. Cuando no existe, la IA se queda en demostración, en dashboard bonito o en automatización puntual sin efecto estructural.",
             styles["BodyCustom"],
         )
     )
     story.append(
         p(
-            "Lo verdaderamente diferencial es poder lanzar algo al mercado, medir qué ocurre, ajustar, volver a lanzar y hacerlo una y otra vez con disciplina. El modelo es una pieza. El circuito de aprendizaje es la ventaja. Si ese circuito no existe, la IA se convierte en un accesorio interesante pero marginal. Si ese circuito existe, entonces la IA multiplica capacidad de forma acumulativa.",
+            "Por eso la ventaja no es tener IA. La ventaja es tener feedback real. Datos propios, bien capturados, bien leídos y ligados a decisiones que se puedan revisar rápido.",
+            styles["BodyCustom"],
+        )
+    )
+
+    story.append(p("3. Qué significa esto para una empresa industrial", styles["HeadingCustom"]))
+    story.append(
+        p(
+            "En Isaval esto no va de montar un laboratorio futurista. Va de usar mejor la información real del negocio en ámbitos donde ya decidimos todos los días: política comercial, descuentos, mix de producto, pricing, optimización de red, previsión de demanda o gestión de stock.",
+            styles["BodyCustom"],
+        )
+    )
+    story.append(
+        p(
+            "Si convertimos esos frentes en un ciclo continuo de prueba, medición y corrección, la compañía gana tres cosas: más velocidad, mejor criterio y más capacidad de adaptación. Eso sí es estratégico. Eso sí cambia la posición competitiva.",
             styles["Callout"],
-        )
-    )
-
-    story.append(p("4. Qué significa esto para Isaval", styles["HeadingCustom"]))
-    story.append(
-        p(
-            "En nuestro caso, las aplicaciones son muy concretas. Política comercial, descuentos, mix de producto, pricing dinámico, optimización de red, previsión de demanda y gestión de stock. Todos esos frentes generan datos, decisiones y consecuencias. Por tanto, todos pueden convertirse en ciclos de aprendizaje mucho más rápidos y precisos.",
-            styles["BodyCustom"],
-        )
-    )
-    story.append(
-        p(
-            "Si convertimos esas palancas en un sistema continuo de prueba, medición y corrección, la compañía gana velocidad, criterio y capacidad de adaptación. Y esa combinación, sostenida en el tiempo, es la que puede volvernos exponenciales. No por magia tecnológica, sino por disciplina operativa sobre datos reales.",
-            styles["BodyCustom"],
         )
     )
 
     story.append(p("Conclusión ejecutiva", styles["HeadingCustom"]))
     story.append(
         p(
-            "La ventaja no es tener IA. La ventaja es tener feedback real. Las compañías más fuertes no serán las que más hablen de modelos, sino las que mejor conviertan sus datos propios en decisiones más rápidas y en aprendizaje acumulativo. Ahí es donde empieza el poder empresarial nuevo.",
+            "La lectura útil no es tecnológica, sino empresarial: las compañías más fuertes no serán las que más hablen de IA, sino las que mejor conviertan datos propios en decisiones mejores y más rápidas. El artículo llama la atención sobre esa máquina. Nosotros deberíamos construir la nuestra con los pies en la realidad industrial del negocio.",
             styles["Callout"],
         )
     )

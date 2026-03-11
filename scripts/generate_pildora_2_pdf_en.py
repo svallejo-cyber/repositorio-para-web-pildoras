@@ -86,7 +86,7 @@ def p(text, style):
 
 def build_story(styles):
     story = []
-    story.append(p("Pill 2 - The advantage is not having AI. It is having real feedback", styles["TitleCustom"]))
+    story.append(p("Pill 2 - The advantage is not having AI. It is closing the feedback loop", styles["TitleCustom"]))
     story.append(
         p(
             "Internal note for the executive committee and the board. Second piece of the executive AI pills project.",
@@ -95,77 +95,63 @@ def build_story(styles):
     )
     story.append(
         p(
-            "Many business conversations still frame the question in the same way: how do we use AI. In my view, that question is too small. The important issue is not using AI. The important issue is transforming the company into a continuous learning machine built on real data.",
+            "The FT piece on the convergence between quant shops and AI labs leaves one useful idea: beneath the technology narrative, the winners are starting to look very similar. They all compete with the same machine: data, model, constraints, execution, and feedback.",
             styles["BodyCustom"],
         )
     )
     story.append(
         p(
-            "That is what makes this strategic. Because this is not only about technology. It is about power structure. Future corporate power will belong to the companies that can capture better proprietary information, turn it into decisions, and close the action-measurement-adjustment loop before everyone else.",
+            "Applied to an industrial company like ours, the lesson is not that we should behave like a hedge fund. The lesson is simpler: future advantage will belong to the companies that capture business reality better, turn it earlier into decisions, and learn faster than the market.",
             styles["Callout"],
         )
     )
 
-    story.append(p("1. Where structural advantage sits", styles["HeadingCustom"]))
+    story.append(p("1. What this article really says", styles["HeadingCustom"]))
     story.append(
         p(
-            "The advantage will not come from saying you have AI, nor from adding a cosmetic layer of automation. Structural advantage will come from four combined capabilities: controlling proprietary data, turning that data into useful models, making decisions faster, and closing the feedback loop earlier than competitors.",
+            "The core thesis is that an AI lab and an organization obsessed with quantitative decision-making end up building similar systems. Not because they sell the same thing, but because both require high-quality data, modelling capability, disciplined deployment, and a continuous feedback loop from the real world.",
             styles["BodyCustom"],
         )
     )
     story.append(
         p(
-            "That is the central point. The winner is not the company that buys more tools. The winner is the one that learns faster from the real market, from operations, and from customers. If a company can launch, measure, adjust, and launch again earlier than others, its advantage stops being tactical and becomes structural.",
-            styles["BodyCustom"],
-        )
-    )
-
-    story.append(p("2. This is not about pretty dashboards", styles["HeadingCustom"]))
-    story.append(
-        p(
-            "Large companies will need serious technological infrastructure, internal ability to process data, and less blind dependence on third parties. Not everything can remain at the level of a pretty Power BI dashboard, an elegant control panel, or a retrospective view of what has already happened.",
-            styles["BodyCustom"],
-        )
-    )
-    story.append(
-        p(
-            "Value appears when data stops being a report and becomes a living decision system. When it feeds pricing, sales policy, assortment, demand forecasting, operations, and resource allocation almost in real time. When it does not merely describe. When it starts governing action better.",
+            "That is why the good conversation is not \"which model do we use\" but \"what learning system are we building\". The model matters, yes. But on its own it does not create durable advantage.",
             styles["BodyCustom"],
         )
     )
 
-    story.append(p("3. The powerful thing is not the model", styles["HeadingCustom"]))
+    story.append(p("2. The advantage is not in the model", styles["HeadingCustom"]))
     story.append(
         p(
-            "There is a frequent temptation to center the whole conversation on the model. Which model we use, which performs better, which is cheaper, or more sophisticated. That conversation matters, but it is not the decisive one. The model is not the true source of power. The surrounding system is.",
+            "The powerful thing is not the model itself. The powerful thing is being able to launch something, measure what happens, adjust, and launch again. When that circuit exists, the company learns. When it does not, AI remains a demo, a pretty dashboard, or a one-off automation without structural effect.",
             styles["BodyCustom"],
         )
     )
     story.append(
         p(
-            "What truly differentiates a company is the ability to launch something into the market, measure what happens, adjust, launch again, and repeat that cycle with discipline. The model is one component. The learning circuit is the advantage. Without that circuit, AI becomes an interesting but marginal accessory. With that circuit, AI multiplies capability in a cumulative way.",
+            "That is why the advantage is not having AI. The advantage is having real feedback. Proprietary data, properly captured, properly read, and tied to decisions that can be reviewed quickly.",
+            styles["BodyCustom"],
+        )
+    )
+
+    story.append(p("3. What this means for an industrial company", styles["HeadingCustom"]))
+    story.append(
+        p(
+            "At Isaval this does not mean building a futuristic lab. It means using real business information better in areas where we already make decisions every day: commercial policy, discounts, product mix, pricing, network optimization, demand forecasting, and stock management.",
+            styles["BodyCustom"],
+        )
+    )
+    story.append(
+        p(
+            "If we turn those fronts into a continuous loop of testing, measurement, and correction, the company gains three things: more speed, better judgment, and greater adaptive capacity. That is strategic. That is what changes competitive position.",
             styles["Callout"],
-        )
-    )
-
-    story.append(p("4. What this means for Isaval", styles["HeadingCustom"]))
-    story.append(
-        p(
-            "In our case, the applications are concrete: commercial policy, discounts, product mix, dynamic pricing, network optimization, demand forecasting, and stock management. All of those fronts generate data, decisions, and consequences. Therefore, all of them can become much faster and more precise learning cycles.",
-            styles["BodyCustom"],
-        )
-    )
-    story.append(
-        p(
-            "If we convert those levers into a continuous system of testing, measurement, and correction, the company gains speed, judgment, and adaptive capacity. Sustained over time, that combination is what can make us exponential. Not because of technological magic, but because of operational discipline on real data.",
-            styles["BodyCustom"],
         )
     )
 
     story.append(p("Executive conclusion", styles["HeadingCustom"]))
     story.append(
         p(
-            "The advantage is not having AI. The advantage is having real feedback. The strongest companies will not be those that talk most about models, but those that best convert proprietary data into faster decisions and cumulative learning. That is where the new corporate power begins.",
+            "The useful reading here is not technological but managerial: the strongest companies will not be those that talk most about AI, but those that best convert proprietary data into better and faster decisions. The article points to that machine. We should build ours with both feet on the ground of an industrial business.",
             styles["Callout"],
         )
     )
