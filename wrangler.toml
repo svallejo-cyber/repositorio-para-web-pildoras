@@ -1,5 +1,16 @@
 name = "isaval-ai-executive-hub"
-compatibility_date = "2026-03-07"
+main = "src/worker.js"
+compatibility_date = "2026-03-13"
 
 [assets]
 directory = "."
+binding = "ASSETS"
+run_worker_first = ["/api/*"]
+
+[[durable_objects.bindings]]
+name = "HUB_DATA"
+class_name = "HubData"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["HubData"]
