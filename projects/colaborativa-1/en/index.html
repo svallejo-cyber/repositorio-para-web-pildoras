@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Collaborative Pill 1 · From tender document to useful data</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Lora:wght@600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f4f8f5;
+      --panel: #ffffff;
+      --ink: #1f2c3a;
+      --muted: #5c6b79;
+      --accent: #1f7a5a;
+      --accent-dark: #18493b;
+      --line: #d8e0e8;
+      --soft: #eef8f2;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans", sans-serif;
+      color: var(--ink);
+      line-height: 1.56;
+      background:
+        radial-gradient(circle at 8% 5%, #d7ebdf 0, transparent 22%),
+        radial-gradient(circle at 90% 0%, #e7f1eb 0, transparent 24%),
+        var(--bg);
+    }
+    .sheet {
+      max-width: 980px;
+      margin: 36px auto;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--panel);
+      overflow: hidden;
+      box-shadow: 0 14px 36px rgba(18, 37, 54, 0.08);
+    }
+    header {
+      padding: 22px 38px 30px;
+      color: #fff;
+      background: linear-gradient(110deg, var(--accent-dark) 0%, var(--accent) 56%, #2a9a73 100%);
+    }
+    .topnav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .navbtn {
+      text-decoration: none;
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      padding: 7px 10px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .hero {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 18px;
+      align-items: center;
+      margin-top: 8px;
+    }
+    .portrait {
+      width: 180px;
+      height: 180px;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15);
+    }
+    .portrait img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .kicker {
+      font-size: 0.76rem;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      opacity: 0.92;
+      font-weight: 600;
+    }
+    h1 {
+      margin: 8px 0 10px;
+      font-family: "Lora", serif;
+      font-size: clamp(1.85rem, 2.8vw, 2.3rem);
+      line-height: 1.2;
+    }
+    .meta { font-size: 0.95rem; opacity: 0.94; }
+    main { padding: 30px 38px 34px; }
+    section + section { margin-top: 24px; }
+    h2 {
+      margin: 0 0 10px;
+      font-size: 1.12rem;
+      color: var(--accent);
+    }
+    p { margin: 0 0 10px; }
+    .quote {
+      border-left: 4px solid #8fc9af;
+      background: var(--soft);
+      color: #20493a;
+      padding: 12px 14px;
+      border-radius: 0 10px 10px 0;
+      font-weight: 500;
+      margin-top: 10px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      padding: 12px;
+      background: #fbfefd;
+    }
+    .tag {
+      display: inline-block;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      font-size: 0.74rem;
+      color: #245641;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    ul { margin: 8px 0 0; padding-left: 18px; }
+    li { margin: 6px 0; }
+    .highlight {
+      border: 1px solid #cfe3d6;
+      background: #f2fbf5;
+      border-radius: 11px;
+      padding: 14px;
+      margin-top: 10px;
+    }
+    .highlight strong { color: var(--accent); }
+    .linkbox {
+      border: 1px solid #cfe3d6;
+      background: #f3fbf6;
+      border-radius: 10px;
+      padding: 12px;
+      word-break: break-word;
+    }
+    .pdf-link {
+      display: inline-block;
+      margin-top: 10px;
+      text-decoration: none;
+      background: var(--accent);
+      color: #fff;
+      border: 1px solid #196348;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    .linkbox a.pdf-link,
+    .linkbox a.pdf-link:visited,
+    .linkbox a.pdf-link:hover,
+    .linkbox a.pdf-link:focus { color: #fff; }
+    footer {
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.87rem;
+      padding: 14px 38px 22px;
+      background: #fafcfe;
+    }
+    @media (max-width: 760px) {
+      header, main, footer { padding-left: 18px; padding-right: 18px; }
+      .hero { grid-template-columns: 1fr; }
+      .portrait { width: 150px; height: 150px; }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <article class="sheet">
+    <header>
+      <div class="topnav">
+        <a class="navbtn" href="/projects/pildoras-colaborativas/en/">Back to collaborative pills</a>
+        <a class="navbtn" href="/">Go to main hub</a>
+        <a class="navbtn" href="../es/">Leer en español</a>
+      </div>
+      <div class="hero">
+        <div class="portrait">
+          <img src="/assets/profile/merelo.png" alt="Author of the collaborative pill" />
+        </div>
+        <div>
+          <div class="kicker">Collaborative pill · Isaval team</div>
+          <h1>From tender document to useful data: assisted tender reading</h1>
+          <div class="meta">Luis Merelo · First collaborative contribution to the hub on document automation oriented to business opportunity</div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section>
+        <h2>Context</h2>
+        <p>This piece starts from a very concrete need: reducing time and friction in the initial review of tenders by turning long, heterogeneous documents into a clear and useful output for decision-making.</p>
+        <div class="quote">The goal was not simply to read PDFs, but to convert complex documentation into a structured, business-oriented reading.</div>
+      </section>
+
+      <section>
+        <h2>The operational problem</h2>
+        <p>Each file requires the rapid identification of critical information: what is being requested, which items appear, which amounts matter, and which requirements condition participation.</p>
+        <p>The difficulty lies in the mix of document types, the poor quality of extracted text, and the need to distinguish useful signals from misleading matches.</p>
+      </section>
+
+      <section>
+        <h2>What the project is trying to solve</h2>
+        <div class="grid">
+          <div class="card">
+            <span class="tag">Speed</span>
+            <p>Reduce the time needed to read and filter tender files in the early stages.</p>
+          </div>
+          <div class="card">
+            <span class="tag">Shared criteria</span>
+            <p>Read different documents with the same structure and the same business logic.</p>
+          </div>
+          <div class="card">
+            <span class="tag">Useful signal</span>
+            <p>Detect relevant items and amounts for paints, ETICS, fireproofing and other lines of interest.</p>
+          </div>
+          <div class="card">
+            <span class="tag">Less friction</span>
+            <p>Remove mechanical work without replacing the professional judgment of the person reviewing the opportunity.</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Key difficulties found</h2>
+        <ul>
+          <li>High variability between technical specifications, administrative conditions, tender notices and unrelated documents.</li>
+          <li>PDF outputs with noise, badly interpreted tables, repeated headers and weak OCR.</li>
+          <li>The need to move from simple keyword searches to a more contextual and validated reading.</li>
+          <li>The importance of knowing when a match is truly a useful item and when it should be discarded.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Contribution to the organization</h2>
+        <p>The tool improves the speed of preliminary opportunity analysis, brings consistency and reduces dependence on a fully manual first review.</p>
+        <p>It also turns dispersed knowledge about what we should look for in a tender into an explicit, reusable and improvable operational criterion.</p>
+      </section>
+
+      <section class="highlight">
+        <strong>Collaborative conclusion:</strong> the real value is not in digitizing documents, but in translating complex documentation into faster, clearer and better grounded decisions.
+      </section>
+
+      <section>
+        <h2>Access the full content</h2>
+        <div class="linkbox">
+          Full text of the collaborative pill:<br />
+          <a class="pdf-link" href="./colaborativa-1-full-text-en.pdf" target="_blank" rel="noopener noreferrer">View full text in PDF</a>
+        </div>
+      </section>
+    </main>
+
+    <footer>Collaborative pill 1 · Internal Isaval document.</footer>
+  </article>
+  <script src="/assets/js/hub-interactions.js" defer></script>
+</body>
+</html>
