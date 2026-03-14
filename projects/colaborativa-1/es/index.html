@@ -1,2 +1,288 @@
 <!doctype html>
-<html lang="es"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Píldora colaborativa 1 · Del pliego al dato útil</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Lora:wght@600;700&display=swap" rel="stylesheet"><style>:root{--bg:#f4f8f5;--panel:#fff;--ink:#1f2c3a;--muted:#5c6b79;--accent:#1f7a5a;--line:#d8e0e8}*{box-sizing:border-box}body{margin:0;font-family:"IBM Plex Sans",sans-serif;color:var(--ink);line-height:1.58;background:radial-gradient(circle at 8% 5%,#d7ebdf 0,transparent 22%),radial-gradient(circle at 90% 0%,#e7f1eb 0,transparent 24%),var(--bg)}.sheet{max-width:980px;margin:36px auto;border:1px solid var(--line);border-radius:16px;background:var(--panel);overflow:hidden;box-shadow:0 14px 36px rgba(18,37,54,.08)}header{padding:22px 38px 30px;color:#fff;background:linear-gradient(110deg,#18493b 0%,#1f7a5a 56%,#2a9a73 100%)}.topnav{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.navbtn{text-decoration:none;background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.4);padding:7px 10px;border-radius:8px;font-size:.85rem;font-weight:600}.hero{display:grid;grid-template-columns:180px 1fr;gap:18px;align-items:center;margin-top:8px}.portrait{width:180px;height:180px;border-radius:18px;overflow:hidden;border:3px solid rgba(255,255,255,.3);box-shadow:0 10px 24px rgba(0,0,0,.15)}.portrait img{width:100%;height:100%;object-fit:cover;display:block}.kicker{font-size:.76rem;letter-spacing:.09em;text-transform:uppercase;opacity:.92;font-weight:600}h1{margin:8px 0 10px;font-family:"Lora",serif;font-size:clamp(1.85rem,2.8vw,2.3rem);line-height:1.2}.meta{font-size:.95rem;opacity:.94}main{padding:30px 38px 34px}section+section{margin-top:24px}p{margin:0 0 12px}.linkbox{border:1px solid #cfe3d6;background:#f3fbf6;border-radius:10px;padding:12px;word-break:break-word}.linkbox a{color:#1f7a5a;font-weight:600;text-decoration:none}.pdf-link{display:inline-block;margin-top:10px;text-decoration:none;background:#1f7a5a;color:#fff;border:1px solid #196348;border-radius:8px;padding:8px 12px;font-size:.9rem;font-weight:600}.linkbox a.pdf-link,.linkbox a.pdf-link:visited{color:#fff;background:#1f7a5a}.linkbox a.pdf-link:hover,.linkbox a.pdf-link:focus{color:#fff;background:#196348}footer{border-top:1px solid var(--line);color:var(--muted);font-size:.87rem;padding:14px 38px 22px;background:#fafcfe}h2{margin:0 0 10px;font-size:1.12rem;color:var(--accent)}@media (max-width:760px){header,main,footer{padding-left:18px;padding-right:18px}.hero{grid-template-columns:1fr}.portrait{width:150px;height:150px}}</style></head><body><article class="sheet"><header><div class="topnav"><a class="navbtn" href="/projects/pildoras-colaborativas/es/">Volver a colaborativas</a><a class="navbtn" href="/">Ir a la principal</a></div><div class="hero"><div class="portrait"><img src="/assets/profile/autor-colaborativa-1-caricature.png" alt="Autor de la píldora colaborativa" /></div><div><div class="kicker">Píldora colaborativa · Equipo Isaval</div><h1>Del pliego al dato útil: cómo estamos construyendo un sistema de lectura asistida de licitaciones</h1><div class="meta">Aportación externa al hub · Publicación en español · Autor colaborativo</div></div></div></header><main><section><p>En muchas organizaciones, la revisión de licitaciones sigue siendo una tarea intensiva en tiempo, repetitiva y expuesta a errores de interpretación. Cada expediente exige localizar rápidamente información clave, identificar si encaja con la actividad de la empresa y responder a preguntas muy concretas: qué se pide, qué partidas aparecen, qué importes son relevantes y qué requisitos condicionan la participación. La idea de este proyecto surge precisamente de esa necesidad operativa: transformar documentos extensos, heterogéneos y muchas veces difíciles de leer en una salida clara, comparable y útil para la toma de decisiones.</p><p>El punto de partida fue una necesidad muy práctica. No se trataba solo de “leer PDFs”, sino de convertir pliegos, anuncios y documentación administrativa en una lectura estructurada orientada al negocio. La organización necesitaba saber, con rapidez, si una licitación incluía partidas de pintura, SATE, ignifugación, revestimientos, pavimentos, moqueta, impermeabilización o laminados, y además detectar si había importes de cierto peso económico. Es decir, no bastaba con extraer texto: hacía falta interpretar el documento desde una lógica de oportunidad comercial y operativa.</p><p>A medida que el desarrollo avanzó, aparecieron problemas que son habituales en este tipo de iniciativas, pero que solo se entienden bien cuando se trabaja con documentación real. El primero fue la enorme variabilidad documental. Bajo el mismo flujo podían entrar pliegos técnicos, pliegos administrativos, anuncios de licitación e incluso documentos que no eran licitaciones, como facturas o albaranes. Un sistema demasiado rígido confundía tipos documentales; uno demasiado flexible generaba falsos positivos. Este punto fue crítico, porque una mala clasificación inicial arrastra errores en toda la cadena de análisis.</p><p>El segundo problema fue la calidad del texto extraído. Muchos PDF contienen saltos de línea extraños, tablas mal interpretadas, encabezados repetidos, ruido de OCR o estructuras administrativas que dificultan localizar el dato verdaderamente útil. En los primeros análisis observamos importes pegados, nombres de organismo capturados de forma incorrecta y coincidencias engañosas por la simple aparición de una palabra dentro de otra. Esto nos obligó a pasar de una búsqueda básica por palabras clave a una lógica más cuidadosa, basada en contexto, limpieza textual, reglas de negocio y validación sobre ejemplos reales.</p><p>El tercer problema es el más relevante desde el punto de vista funcional: responder bien a las preguntas obligatorias no significa solo detectar una palabra. Significa saber cuándo esa referencia es realmente una partida útil, cuándo un importe está vinculado a una línea relevante y cuándo una coincidencia debe descartarse. El reto no es extraer “más texto”, sino producir una salida más fiable, más legible y más accionable.</p><p>El problema que estamos resolviendo, por tanto, es doble. Por un lado, reducir el tiempo de lectura y cribado de expedientes. Por otro, aumentar la calidad de la primera interpretación del documento, de modo que la persona que revisa la licitación parta ya de una base estructurada. La herramienta no sustituye el criterio profesional, pero sí elimina gran parte del trabajo mecánico y mejora la consistencia del análisis.</p><p>Las dificultades técnicas han sido significativas. Hemos tenido que distinguir entre documentos de contratación y documentos ajenos al proceso, limpiar salidas sucias procedentes del PDF, estructurar respuestas para preguntas de negocio muy específicas y presentar la información de una forma que facilite la lectura rápida. También ha sido necesario incorporar un histórico de salidas JSON para comparar iteraciones, revisar mejoras y convertir el propio uso diario en una fuente de aprendizaje del sistema. Esto es importante porque en este tipo de proyectos la mejora no nace solo del desarrollo, sino de la observación continua de casos reales.</p><p>La aportación a la organización es clara. En primer lugar, mejora la velocidad de análisis preliminar de oportunidades. En segundo lugar, aporta homogeneidad: distintos documentos pasan a leerse con una estructura común. En tercero, reduce la dependencia de una revisión completamente manual en las primeras fases. Y, quizá lo más importante, convierte el conocimiento disperso de “qué debemos buscar en una licitación” en un criterio operativo explícito, reutilizable y mejorable.</p><p>Este proyecto demuestra que la automatización documental útil no consiste solo en digitalizar archivos, sino en traducir documentación compleja a decisiones comprensibles. El valor real aparece cuando la tecnología se adapta al modo en que trabaja la organización, a sus preguntas reales y a sus prioridades comerciales y técnicas. Ese es el camino en el que estamos: pasar del documento al dato, y del dato a una decisión más rápida, más clara y mejor fundamentada.</p></section><section><h2>Acceso al contenido completo</h2><div class="linkbox">Texto completo de la píldora colaborativa:<br><a class="pdf-link" href="./colaborativa-1-full-text-es.pdf" target="_blank" rel="noopener noreferrer">Ver texto completo en PDF</a></div></section></main><footer>Píldora colaborativa 1 · Documento interno Isaval.</footer></article><script src="/assets/js/hub-interactions.js" defer></script></body></html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Píldora colaborativa 1 · Del pliego al dato útil</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Lora:wght@600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f4f8f5;
+      --panel: #ffffff;
+      --ink: #1f2c3a;
+      --muted: #5c6b79;
+      --accent: #1f7a5a;
+      --accent-dark: #18493b;
+      --line: #d8e0e8;
+      --soft: #eef8f2;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans", sans-serif;
+      color: var(--ink);
+      line-height: 1.56;
+      background:
+        radial-gradient(circle at 8% 5%, #d7ebdf 0, transparent 22%),
+        radial-gradient(circle at 90% 0%, #e7f1eb 0, transparent 24%),
+        var(--bg);
+    }
+    .sheet {
+      max-width: 980px;
+      margin: 36px auto;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--panel);
+      overflow: hidden;
+      box-shadow: 0 14px 36px rgba(18, 37, 54, 0.08);
+    }
+    header {
+      padding: 22px 38px 30px;
+      color: #fff;
+      background: linear-gradient(110deg, var(--accent-dark) 0%, var(--accent) 56%, #2a9a73 100%);
+    }
+    .topnav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .navbtn {
+      text-decoration: none;
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      padding: 7px 10px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .hero {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 18px;
+      align-items: center;
+      margin-top: 8px;
+    }
+    .portrait {
+      width: 180px;
+      height: 180px;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15);
+    }
+    .portrait img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .kicker {
+      font-size: 0.76rem;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      opacity: 0.92;
+      font-weight: 600;
+    }
+    h1 {
+      margin: 8px 0 10px;
+      font-family: "Lora", serif;
+      font-size: clamp(1.85rem, 2.8vw, 2.3rem);
+      line-height: 1.2;
+    }
+    .meta {
+      font-size: 0.95rem;
+      opacity: 0.94;
+    }
+    main { padding: 30px 38px 34px; }
+    section + section { margin-top: 24px; }
+    h2 {
+      margin: 0 0 10px;
+      font-size: 1.12rem;
+      color: var(--accent);
+    }
+    p {
+      margin: 0 0 10px;
+    }
+    .quote {
+      border-left: 4px solid #8fc9af;
+      background: var(--soft);
+      color: #20493a;
+      padding: 12px 14px;
+      border-radius: 0 10px 10px 0;
+      font-weight: 500;
+      margin-top: 10px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      padding: 12px;
+      background: #fbfefd;
+    }
+    .tag {
+      display: inline-block;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      font-size: 0.74rem;
+      color: #245641;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    ul {
+      margin: 8px 0 0;
+      padding-left: 18px;
+    }
+    li { margin: 6px 0; }
+    .highlight {
+      border: 1px solid #cfe3d6;
+      background: #f2fbf5;
+      border-radius: 11px;
+      padding: 14px;
+      margin-top: 10px;
+    }
+    .highlight strong { color: var(--accent); }
+    .linkbox {
+      border: 1px solid #cfe3d6;
+      background: #f3fbf6;
+      border-radius: 10px;
+      padding: 12px;
+      word-break: break-word;
+    }
+    .pdf-link {
+      display: inline-block;
+      margin-top: 10px;
+      text-decoration: none;
+      background: var(--accent);
+      color: #fff;
+      border: 1px solid #196348;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    .linkbox a.pdf-link,
+    .linkbox a.pdf-link:visited,
+    .linkbox a.pdf-link:hover,
+    .linkbox a.pdf-link:focus {
+      color: #fff;
+    }
+    footer {
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.87rem;
+      padding: 14px 38px 22px;
+      background: #fafcfe;
+    }
+    @media (max-width: 760px) {
+      header, main, footer {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+      .hero { grid-template-columns: 1fr; }
+      .portrait {
+        width: 150px;
+        height: 150px;
+      }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <article class="sheet">
+    <header>
+      <div class="topnav">
+        <a class="navbtn" href="/projects/pildoras-colaborativas/es/">Volver a colaborativas</a>
+        <a class="navbtn" href="/">Ir a la principal</a>
+      </div>
+      <div class="hero">
+        <div class="portrait">
+          <img src="/assets/profile/autor-colaborativa-1-caricature.png" alt="Autor de la píldora colaborativa" />
+        </div>
+        <div>
+          <div class="kicker">Píldora colaborativa · Equipo Isaval</div>
+          <h1>Del pliego al dato útil: lectura asistida de licitaciones</h1>
+          <div class="meta">Primera aportación colaborativa del hub sobre automatización documental orientada a oportunidad comercial</div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section>
+        <h2>Contexto</h2>
+        <p>Esta pieza parte de una necesidad muy concreta: reducir el tiempo y la fricción en la revisión inicial de licitaciones, transformando documentos largos y heterogéneos en una salida clara y útil para decidir.</p>
+        <div class="quote">El objetivo no era simplemente leer PDFs, sino convertir documentación compleja en una lectura estructurada orientada al negocio.</div>
+      </section>
+
+      <section>
+        <h2>El problema operativo</h2>
+        <p>Cada expediente obliga a localizar información crítica con rapidez: qué se pide, qué partidas aparecen, qué importes importan y qué requisitos condicionan la participación.</p>
+        <p>La dificultad está en la mezcla de tipos documentales, la baja calidad del texto extraído y la necesidad de distinguir señales útiles de coincidencias engañosas.</p>
+      </section>
+
+      <section>
+        <h2>Qué se busca resolver</h2>
+        <div class="grid">
+          <div class="card">
+            <span class="tag">Velocidad</span>
+            <p>Reducir el tiempo de lectura y cribado de expedientes en las primeras fases.</p>
+          </div>
+          <div class="card">
+            <span class="tag">Criterio común</span>
+            <p>Leer documentos distintos con una misma estructura y una misma lógica de negocio.</p>
+          </div>
+          <div class="card">
+            <span class="tag">Señal útil</span>
+            <p>Detectar partidas e importes relevantes para pintura, SATE, ignifugación y otras líneas de interés.</p>
+          </div>
+          <div class="card">
+            <span class="tag">Menos fricción</span>
+            <p>Eliminar trabajo mecánico sin sustituir el criterio profesional de quien revisa la oportunidad.</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Dificultades encontradas</h2>
+        <ul>
+          <li>Variabilidad muy alta entre pliegos técnicos, administrativos, anuncios y documentos ajenos al proceso.</li>
+          <li>Salidas de PDF con ruido, tablas mal interpretadas, encabezados repetidos y OCR deficiente.</li>
+          <li>Necesidad de pasar de palabras clave simples a una lectura más contextual y validada.</li>
+          <li>Importancia de saber cuándo una coincidencia es realmente una partida útil y cuándo debe descartarse.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Aportación a la organización</h2>
+        <p>La herramienta mejora la velocidad de análisis preliminar, aporta homogeneidad y reduce la dependencia de una revisión completamente manual al inicio.</p>
+        <p>Además, convierte el conocimiento disperso sobre qué debemos buscar en una licitación en un criterio operativo explícito, reutilizable y mejorable.</p>
+      </section>
+
+      <section class="highlight">
+        <strong>Conclusión colaborativa:</strong> el valor no está en digitalizar documentos, sino en traducir documentación compleja a decisiones más rápidas, más claras y mejor fundamentadas.
+      </section>
+
+      <section>
+        <h2>Acceso al contenido completo</h2>
+        <div class="linkbox">
+          Texto completo de la píldora colaborativa:<br />
+          <a class="pdf-link" href="./colaborativa-1-full-text-es.pdf" target="_blank" rel="noopener noreferrer">Ver texto completo en PDF</a>
+        </div>
+      </section>
+    </main>
+
+    <footer>Píldora colaborativa 1 · Documento interno Isaval.</footer>
+  </article>
+  <script src="/assets/js/hub-interactions.js" defer></script>
+</body>
+</html>
