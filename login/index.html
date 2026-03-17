@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Acceso al Hub IA · Isaval</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Lora:wght@600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root { --bg:#f3f6f9; --panel:#fff; --ink:#1f2c3a; --muted:#5c6b79; --accent:#0f5f94; --line:#d8e0e8; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; display:grid; place-items:center; padding:24px; font-family:"IBM Plex Sans",sans-serif; color:var(--ink); background:radial-gradient(circle at 8% 5%,#d9e8f4 0,transparent 22%),radial-gradient(circle at 90% 0%,#e9eef3 0,transparent 24%),var(--bg); }
+    .card { width:min(560px,100%); background:var(--panel); border:1px solid var(--line); border-radius:18px; padding:28px; box-shadow:0 14px 36px rgba(18,37,54,.08); }
+    .eyebrow { margin:0 0 8px; font-size:.8rem; letter-spacing:.14em; text-transform:uppercase; color:#567088; font-weight:700; }
+    h1 { margin:0 0 10px; font-family:"Lora",serif; font-size:clamp(1.9rem,3vw,2.4rem); line-height:1.15; }
+    p { margin:0 0 12px; color:var(--muted); line-height:1.55; }
+    form { display:grid; gap:12px; margin-top:18px; }
+    input { width:100%; border:1px solid #cfd8e1; border-radius:10px; padding:12px 14px; font:inherit; }
+    button { border:1px solid var(--accent); background:var(--accent); color:#fff; border-radius:10px; padding:12px 14px; font:inherit; font-weight:600; cursor:pointer; }
+    .status { min-height:22px; font-size:.92rem; color:var(--muted); }
+    .status.error { color:#b54848; }
+    .status.ok { color:#1f7a5a; }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <p class="eyebrow">Uso interno autorizado</p>
+    <h1>Acceso al Hub de IA</h1>
+    <p>Introduce tu correo corporativo. Si figura en la lista interna de invitados, el acceso al Hub se abrirá directamente.</p>
+    <p>Este acceso es deliberadamente simple. El objetivo es controlar quién entra y registrar el uso, sin añadir fricción innecesaria.</p>
+    <form id="login-form">
+      <input id="email" type="email" placeholder="nombre@empresa.com" autocomplete="email" required />
+      <button type="submit">Entrar</button>
+      <div class="status" id="status"></div>
+    </form>
+  </main>
+  <script>
+    (function () {
+      const form = document.getElementById('login-form');
+      const email = document.getElementById('email');
+      const status = document.getElementById('status');
+      const params = new URLSearchParams(window.location.search);
+      const next = params.get('next') || '/';
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        status.textContent = 'Validando acceso...';
+        status.className = 'status';
+        try {
+          const response = await fetch('/api/auth/login', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ email: email.value.trim(), next }),
+          });
+          const data = await response.json().catch(() => ({}));
+          if (!response.ok) throw new Error(data.error || 'login_failed');
+
+          const check = await fetch('/api/auth/session', {
+            method: 'GET',
+            credentials: 'same-origin',
+            cache: 'no-store',
+          });
+          const session = await check.json().catch(() => ({}));
+          if (!check.ok || !session.authenticated) throw new Error('session_not_persisted');
+
+          status.textContent = 'Acceso concedido. Entrando...';
+          status.className = 'status ok';
+          window.location.assign(data.next || '/');
+        } catch (error) {
+          status.textContent = error.message === 'session_not_persisted' ? 'El navegador no ha guardado la sesión. Recarga la página e inténtalo de nuevo.' : 'Ese correo no está autorizado en este momento.';
+          status.className = 'status error';
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

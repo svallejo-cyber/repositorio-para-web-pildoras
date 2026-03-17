@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard de Accesos · Hub IA Isaval</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Lora:wght@600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root { --bg:#f3f6f9; --panel:#fff; --ink:#1f2c3a; --muted:#5c6b79; --accent:#0f5f94; --accent-dark:#10314d; --line:#d8e0e8; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:"IBM Plex Sans",sans-serif; color:var(--ink); background:radial-gradient(circle at 8% 5%,#d9e8f4 0,transparent 22%),radial-gradient(circle at 90% 0%,#e9eef3 0,transparent 24%),var(--bg); }
+    .shell { max-width:1240px; margin:30px auto; padding:0 18px; }
+    .panel { background:var(--panel); border:1px solid var(--line); border-radius:16px; box-shadow:0 14px 36px rgba(18,37,54,.08); overflow:hidden; }
+    .header { padding:24px 28px; color:#fff; background:linear-gradient(110deg,var(--accent-dark) 0%,var(--accent) 56%,#1577af 100%); }
+    .header h1 { margin:6px 0 8px; font-family:"Lora",serif; font-size:clamp(1.9rem,3vw,2.4rem); }
+    .header p { margin:0; max-width:780px; opacity:.94; }
+    .topnav { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px; }
+    .navbtn { display:inline-block; text-decoration:none; color:#fff; border:1px solid rgba(255,255,255,.4); background:rgba(255,255,255,.15); border-radius:8px; padding:8px 12px; font-size:.9rem; font-weight:600; }
+    .content { padding:24px 28px 30px; }
+    .summary { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin-bottom:20px; }
+    .stat { border:1px solid var(--line); border-radius:12px; background:#fbfdff; padding:14px; }
+    .stat small { display:block; color:var(--muted); margin-bottom:6px; }
+    .stat strong { font-size:1.5rem; }
+    .section { margin-top:18px; }
+    .section h2 { color:var(--accent); margin:0 0 12px; }
+    table { width:100%; border-collapse:collapse; background:#fff; border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+    th, td { text-align:left; padding:12px; border-bottom:1px solid #e6edf3; vertical-align:top; }
+    th { background:#f6f9fc; color:#345068; font-size:.86rem; text-transform:uppercase; letter-spacing:.04em; }
+    tr:last-child td { border-bottom:0; }
+    .muted { color:var(--muted); }
+    .status { margin-top:12px; color:var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="panel">
+      <div class="header">
+        <div class="topnav">
+          <a class="navbtn" href="/">Ir al hub</a>
+          <a class="navbtn" href="/admin/invitados/">Ir a invitados</a>
+        </div>
+        <p>Seguimiento interno</p>
+        <h1>Dashboard de accesos al Hub</h1>
+        <p>Visión simple de quién entra, cuántas veces accede y cuál ha sido su última actividad registrada.</p>
+      </div>
+      <div class="content">
+        <div class="summary" id="summary"></div>
+        <section class="section">
+          <h2>Usuarios</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Accesos</th>
+                <th>Último acceso</th>
+                <th>Última ruta</th>
+                <th>Idioma</th>
+              </tr>
+            </thead>
+            <tbody id="users-body"></tbody>
+          </table>
+        </section>
+        <section class="section">
+          <h2>Eventos recientes</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Usuario</th>
+                <th>Tipo</th>
+                <th>Ruta</th>
+                <th>Idioma</th>
+              </tr>
+            </thead>
+            <tbody id="events-body"></tbody>
+          </table>
+        </section>
+        <div class="status" id="status"></div>
+      </div>
+    </div>
+  </div>
+  <script src="/assets/js/access-dashboard.js" defer></script>
+</body>
+</html>
