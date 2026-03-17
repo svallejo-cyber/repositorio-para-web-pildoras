@@ -25,6 +25,16 @@ function redirect(location, status = 302, headers = {}) {
   });
 }
 
+function withNoStore(response) {
+  const headers = new Headers(response.headers);
+  headers.set("cache-control", "no-store");
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
+}
+
 function normalizeSlug(value) {
   return String(value || "")
     .trim()
@@ -169,7 +179,8 @@ export default {
 
     if (isPublicPath(url.pathname)) {
       if (session) return redirect("/");
-      return env.ASSETS.fetch(request);
+      const response = await env.ASSETS.fetch(request);
+      return withNoStore(response);
     }
 
     if (!session) {
