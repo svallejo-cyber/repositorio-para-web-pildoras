@@ -30,6 +30,11 @@
     setMessage(formMessage, '', '');
   }
 
+  const fetchOptions = {
+    credentials: 'same-origin',
+    cache: 'no-store',
+  };
+
   function csvEscape(value) {
     const text = String(value ?? '');
     return '"' + text.replace(/"/g, '""') + '"';
@@ -119,8 +124,8 @@
         <td><span class="status ${user.active ? 'active' : 'inactive'}">${user.active ? 'Activo' : 'Inactivo'}</span></td>
         <td>
           <div class="row-actions">
-            <button class="mini" data-edit="${user.id}">Editar</button>
-            <button class="mini" data-toggle="${user.id}">${user.active ? 'Desactivar' : 'Activar'}</button>
+            <button class="mini" type="button" data-edit="${user.id}">Editar</button>
+            <button class="mini" type="button" data-toggle="${user.id}">${user.active ? 'Desactivar' : 'Activar'}</button>
           </div>
         </td>
       `;
@@ -129,7 +134,7 @@
   }
 
   async function loadUsers() {
-    const response = await fetch('/api/invited-users');
+    const response = await fetch('/api/invited-users', fetchOptions);
     if (!response.ok) throw new Error('load_failed');
     const payload = await response.json();
     users = payload.users || [];
@@ -138,6 +143,7 @@
 
   async function saveUser(payload, id) {
     const response = await fetch(id ? `/api/invited-users/${id}` : '/api/invited-users', {
+      ...fetchOptions,
       method: id ? 'PUT' : 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify(payload),
@@ -148,6 +154,7 @@
 
   async function importUsers(rows) {
     const response = await fetch('/api/invited-users/import', {
+      ...fetchOptions,
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ users: rows }),
@@ -158,7 +165,7 @@
   }
 
   async function toggleUser(id) {
-    const response = await fetch(`/api/invited-users/${id}/toggle`, { method: 'POST' });
+    const response = await fetch(`/api/invited-users/${id}/toggle`, { ...fetchOptions, method: 'POST' });
     const data = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(data.error || 'toggle_failed');
   }
@@ -209,6 +216,7 @@
       nameInput.value = user.name;
       emailInput.value = user.email;
       setMessage(formMessage, 'Editando usuario seleccionado.', '');
+      form.scrollIntoView({ behavior: 'smooth', block: 'start' });
       return;
     }
 
