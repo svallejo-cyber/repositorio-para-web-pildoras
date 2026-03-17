@@ -1,6 +1,6 @@
 import { DurableObject } from "cloudflare:workers";
 
-const SESSION_COOKIE = "hub_session";
+const SESSION_COOKIE = "hub_session_v2";
 const SESSION_MAX_AGE = 60 * 60 * 24 * 30;
 const ADMIN_EMAILS = new Set(["svallejo@isaval.es"]);
 
@@ -96,9 +96,9 @@ function shouldUseSecureCookie(request) {
   return url.protocol === "https:" && url.hostname !== "localhost" && url.hostname !== "127.0.0.1";
 }
 
-function buildSessionCookie(request, token, maxAge = SESSION_MAX_AGE) {
+function buildSessionCookie(request, token) {
   const secure = shouldUseSecureCookie(request) ? '; Secure' : '';
-  return `${SESSION_COOKIE}=${encodeURIComponent(token)}; Path=/; Max-Age=${maxAge}; HttpOnly; SameSite=Lax${secure}`;
+  return `${SESSION_COOKIE}=${encodeURIComponent(token)}; Path=/; HttpOnly; SameSite=Lax${secure}`;
 }
 
 function clearSessionCookie(request) {
