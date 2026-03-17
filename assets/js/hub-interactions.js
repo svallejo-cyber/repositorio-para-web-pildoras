@@ -16,8 +16,12 @@
       signedAs: 'Comentas como',
       message: 'Comentario',
       submit: 'Enviar comentario',
+      save: 'Guardar cambios',
+      edit: 'Editar',
+      cancel: 'Cancelar',
       sending: 'Enviando...',
       posted: 'Comentario publicado.',
+      updated: 'Comentario actualizado.',
       error: 'No se ha podido guardar el comentario.',
     },
     en: {
@@ -28,8 +32,12 @@
       signedAs: 'Signed in as',
       message: 'Comment',
       submit: 'Post comment',
+      save: 'Save changes',
+      edit: 'Edit',
+      cancel: 'Cancel',
       sending: 'Sending...',
       posted: 'Comment posted.',
+      updated: 'Comment updated.',
       error: 'The comment could not be saved.',
     },
   }[lang];
@@ -45,6 +53,7 @@
     .hub-comments-list{display:grid;gap:10px;margin:12px 0 16px}
     .hub-comment{border:1px solid #d8e0e8;border-radius:10px;background:#fff;padding:12px}
     .hub-comment-head{display:flex;justify-content:space-between;gap:12px;font-size:.86rem;color:#5c6b79;margin-bottom:6px}
+    .hub-comment-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
     .hub-comment-body{white-space:pre-wrap;color:#1f2c3a;line-height:1.5}
     .hub-empty{color:#5c6b79;font-size:.95rem}
     .hub-form{display:grid;gap:10px}
@@ -52,8 +61,11 @@
     .hub-textarea{width:100%;border:1px solid #cfd8e1;border-radius:8px;padding:10px 12px;font:inherit;background:#fff;color:#1f2c3a}
     .hub-textarea{min-height:120px;resize:vertical}
     .hub-submit{justify-self:start;border:1px solid #0f5a8c;border-radius:8px;background:#0f5f94;color:#fff;padding:9px 14px;font:inherit;font-weight:600;cursor:pointer}
+    .hub-secondary{justify-self:start;border:1px solid #cfd8e1;border-radius:8px;background:#fff;color:#1f2c3a;padding:9px 14px;font:inherit;font-weight:600;cursor:pointer}
+    .hub-actions{display:flex;gap:10px;flex-wrap:wrap}
     .hub-submit[disabled]{opacity:.65;cursor:wait}
     .hub-status{font-size:.9rem;color:#5c6b79}
+    .hub-edit{border:1px solid #d8e0e8;background:#fff;border-radius:8px;padding:5px 9px;font:inherit;font-size:.82rem;font-weight:600;color:#1f2c3a;cursor:pointer}
   `;
   document.head.appendChild(style);
 
@@ -72,8 +84,11 @@
     <p class="hub-empty" data-comments-empty>${copy.commentsEmpty}</p>
     <form class="hub-form" data-comment-form>
       <div class="hub-signed" data-signed-as></div>
-      <textarea class="hub-textarea" name="message" maxlength="1200" placeholder="${copy.message}" required></textarea>
-      <button class="hub-submit" type="submit">${copy.submit}</button>
+      <textarea class="hub-textarea" name="message" maxlength="1200" placeholder="${copy.message}" lang="${lang}" spellcheck="true" autocapitalize="sentences" required></textarea>
+      <div class="hub-actions">
+        <button class="hub-submit" type="submit">${copy.submit}</button>
+        <button class="hub-secondary" type="button" data-cancel-edit hidden>${copy.cancel}</button>
+      </div>
       <div class="hub-status" data-status></div>
     </form>
   `;
@@ -85,11 +100,31 @@
   const formEl = panel.querySelector('[data-comment-form]');
   const statusEl = panel.querySelector('[data-status]');
   const signedAsEl = panel.querySelector('[data-signed-as]');
+  const messageEl = formEl.querySelector('textarea[name="message"]');
+  const submitEl = formEl.querySelector('.hub-submit');
+  const cancelEditEl = formEl.querySelector('[data-cancel-edit]');
   const pdfLink = document.querySelector('.pdf-link');
+  let currentSession = null;
+  let editingCommentId = null;
 
   function formatDate(value) {
     const date = new Date(value);
     return Number.isNaN(date.getTime()) ? '' : date.toLocaleString(lang === 'es' ? 'es-ES' : 'en-GB');
+  }
+
+  function canEdit(comment) {
+    if (!currentSession) return false;
+    if (comment.userId && currentSession.userId && comment.userId === currentSession.userId) return true;
+    if (comment.email && currentSession.email && comment.email.toLowerCase() === currentSession.email.toLowerCase()) return true;
+    return false;
+  }
+
+  function resetEditor() {
+    editingCommentId = null;
+    formEl.reset();
+    submitEl.textContent = copy.submit;
+    cancelEditEl.hidden = true;
+    statusEl.textContent = '';
   }
 
   function renderComments(comments) {
@@ -100,11 +135,23 @@
       item.className = 'hub-comment';
       const head = document.createElement('div');
       head.className = 'hub-comment-head';
+      const meta = document.createElement('div');
+      meta.className = 'hub-comment-meta';
       const name = document.createElement('strong');
       name.textContent = comment.name;
       const date = document.createElement('span');
-      date.textContent = formatDate(comment.createdAt);
-      head.append(name, date);
+      date.textContent = formatDate(comment.updatedAt || comment.createdAt);
+      meta.append(name, date);
+      head.append(meta);
+      if (canEdit(comment)) {
+        const edit = document.createElement('button');
+        edit.type = 'button';
+        edit.className = 'hub-edit';
+        edit.textContent = copy.edit;
+        edit.dataset.editComment = comment.id;
+        edit.dataset.editMessage = comment.message;
+        head.append(edit);
+      }
       const body = document.createElement('div');
       body.className = 'hub-comment-body';
       body.textContent = comment.message;
@@ -127,6 +174,7 @@
     });
     if (!response.ok) throw new Error('session_failed');
     const payload = await response.json();
+    currentSession = payload?.session || null;
     const name = payload?.session?.name || payload?.session?.email || '';
     signedAsEl.textContent = `${copy.signedAs}: ${name}`;
   }
@@ -158,30 +206,51 @@
     };
     if (!payload.message) return;
 
-    const button = formEl.querySelector('button');
-    button.disabled = true;
-    button.textContent = copy.sending;
+    submitEl.disabled = true;
+    cancelEditEl.disabled = true;
+    submitEl.textContent = copy.sending;
     statusEl.textContent = '';
+    const wasEditing = Boolean(editingCommentId);
 
     try {
-      const response = await fetch('/api/comments', {
-        method: 'POST',
+      const response = await fetch(editingCommentId ? `/api/comments/${editingCommentId}` : '/api/comments', {
+        method: editingCommentId ? 'PUT' : 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify(payload),
       });
       if (!response.ok) throw new Error('request_failed');
-      formEl.reset();
-      statusEl.textContent = copy.posted;
+      resetEditor();
+      statusEl.textContent = wasEditing ? copy.updated : copy.posted;
       await loadComments();
     } catch (error) {
       statusEl.textContent = copy.error;
     } finally {
-      button.disabled = false;
-      button.textContent = copy.submit;
+      submitEl.disabled = false;
+      cancelEditEl.disabled = false;
+      if (!editingCommentId) submitEl.textContent = copy.submit;
     }
   });
 
-  loadSession().catch(() => { signedAsEl.textContent = ''; });
+  listEl.addEventListener('click', (event) => {
+    const trigger = event.target.closest('[data-edit-comment]');
+    if (!trigger) return;
+    editingCommentId = trigger.dataset.editComment;
+    messageEl.value = trigger.dataset.editMessage || '';
+    submitEl.textContent = copy.save;
+    cancelEditEl.hidden = false;
+    statusEl.textContent = '';
+    messageEl.focus();
+  });
+
+  cancelEditEl.addEventListener('click', () => {
+    resetEditor();
+  });
+
+  loadSession()
+    .then(() => loadComments())
+    .catch(() => {
+      signedAsEl.textContent = '';
+      loadComments().catch(() => {});
+    });
   loadStats().catch(() => {});
-  loadComments().catch(() => {});
 })();

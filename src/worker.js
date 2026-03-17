@@ -97,6 +97,12 @@ function isTogglePath(pathname) {
   return parts.length === 4 && parts[0] === "api" && parts[1] === "invited-users" && parts[3] === "toggle";
 }
 
+function getCommentIdFromPath(pathname) {
+  const parts = pathname.split("/").filter(Boolean);
+  if (parts.length < 3 || parts[0] !== "api" || parts[1] !== "comments") return null;
+  return parts[2] || null;
+}
+
 function parseCookies(request) {
   const raw = request.headers.get("cookie") || "";
   const out = {};
@@ -383,6 +389,32 @@ async function handleApi(request, url, store, session) {
     return json({ ok: true, comment }, 201);
   }
 
+  if (request.method === "PUT" && /^\/api\/comments\/.+/.test(url.pathname)) {
+    const commentId = getCommentIdFromPath(url.pathname);
+    if (!commentId) return json({ error: "Missing comment id" }, 400);
+    const payload = await request.json().catch(() => null);
+    if (!payload) return json({ error: "Invalid JSON" }, 400);
+
+    const slug = normalizeSlug(payload.slug);
+    const message = cleanMessage(payload.message);
+    if (!slug || !message) {
+      return json({ error: "Missing slug or message" }, 400);
+    }
+
+    const updated = await store.updateComment({
+      slug,
+      commentId,
+      userId: session.userId,
+      email: session.email,
+      message,
+    });
+    if (!updated.ok) {
+      const status = updated.error === "Comment not found" ? 404 : updated.error === "Forbidden" ? 403 : 400;
+      return json({ error: updated.error }, status);
+    }
+    return json({ ok: true, comment: updated.comment });
+  }
+
   if (request.method === "GET" && url.pathname === "/api/stats") {
     const slug = normalizeSlug(url.searchParams.get("slug"));
     if (!slug) return json({ error: "Missing slug" }, 400);
@@ -523,6 +555,26 @@ export class HubData extends DurableObject {
     comments.unshift(comment);
     await this.ctx.storage.put(key, comments.slice(0, 200));
     return comment;
+  }
+
+  async updateComment({ slug, commentId, userId, email, message }) {
+    const key = `comments:${slug}`;
+    const comments = (await this.ctx.storage.get(key)) || [];
+    const index = comments.findIndex((comment) => comment.id === commentId);
+    if (index === -1) return { ok: false, error: "Comment not found" };
+
+    const target = comments[index];
+    const matchesUserId = target.userId && userId && target.userId === userId;
+    const matchesEmail = target.email && email && String(target.email).toLowerCase() === String(email).toLowerCase();
+    if (!matchesUserId && !matchesEmail) return { ok: false, error: "Forbidden" };
+
+    comments[index] = {
+      ...target,
+      message,
+      updatedAt: new Date().toISOString(),
+    };
+    await this.ctx.storage.put(key, comments);
+    return { ok: true, comment: comments[index] };
   }
 
   async getStats(slug) {
