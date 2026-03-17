@@ -128,11 +128,11 @@ export default {
       if (!payload) return json({ error: "Invalid JSON" }, 400);
 
       const name = cleanName(payload.name);
-      const department = cleanDepartment(payload.department);
       const email = cleanEmail(payload.email);
+      const department = cleanDepartment(payload.department || "");
 
-      if (!name || !department || !email) {
-        return json({ error: "Missing name, department or email" }, 400);
+      if (!name || !email) {
+        return json({ error: "Missing name or email" }, 400);
       }
       if (!isValidEmail(email)) {
         return json({ error: "Invalid email" }, 400);
@@ -143,6 +143,23 @@ export default {
       return json({ ok: true, user: user.user }, 201);
     }
 
+    if (request.method === "POST" && url.pathname === "/api/invited-users/import") {
+      const payload = await request.json().catch(() => null);
+      if (!payload || !Array.isArray(payload.users)) return json({ error: "Invalid JSON" }, 400);
+
+      const cleaned = [];
+      for (const item of payload.users) {
+        const name = cleanName(item.name || item.displayName || item["Display Name"] || "");
+        const email = cleanEmail(item.email || item["E-mail Address"] || item.emailAddress || "");
+        const department = cleanDepartment(item.department || "");
+        if (!name || !email || !isValidEmail(email)) continue;
+        cleaned.push({ name, email, department });
+      }
+
+      const result = await store.importInvitedUsers(cleaned);
+      return json({ ok: true, result });
+    }
+
     if (request.method === "PUT" && /^\/api\/invited-users\/.+/.test(url.pathname) && !isTogglePath(url.pathname)) {
       const userId = getUserIdFromPath(url.pathname);
       if (!userId) return json({ error: "Missing user id" }, 400);
@@ -151,11 +168,11 @@ export default {
       if (!payload) return json({ error: "Invalid JSON" }, 400);
 
       const name = cleanName(payload.name);
-      const department = cleanDepartment(payload.department);
       const email = cleanEmail(payload.email);
+      const department = cleanDepartment(payload.department || "");
 
-      if (!name || !department || !email) {
-        return json({ error: "Missing name, department or email" }, 400);
+      if (!name || !email) {
+        return json({ error: "Missing name or email" }, 400);
       }
       if (!isValidEmail(email)) {
         return json({ error: "Invalid email" }, 400);
@@ -229,7 +246,7 @@ export class HubData extends DurableObject {
     const user = {
       id: crypto.randomUUID(),
       name,
-      department,
+      department: department || "",
       email,
       active: true,
       createdAt: now,
@@ -238,6 +255,36 @@ export class HubData extends DurableObject {
     users.push(user);
     await this.ctx.storage.put("invited-users", users);
     return { ok: true, user };
+  }
+
+  async importInvitedUsers(items) {
+    const users = (await this.ctx.storage.get("invited-users")) || [];
+    const emails = new Set(users.map((user) => user.email));
+    let added = 0;
+    let skipped = 0;
+    const now = new Date().toISOString();
+
+    for (const item of items) {
+      if (emails.has(item.email)) {
+        skipped += 1;
+        continue;
+      }
+      const user = {
+        id: crypto.randomUUID(),
+        name: item.name,
+        department: item.department || "",
+        email: item.email,
+        active: true,
+        createdAt: now,
+        updatedAt: now,
+      };
+      users.push(user);
+      emails.add(item.email);
+      added += 1;
+    }
+
+    await this.ctx.storage.put("invited-users", users);
+    return { added, skipped, total: users.length };
   }
 
   async updateInvitedUser({ id, name, department, email }) {
@@ -250,7 +297,7 @@ export class HubData extends DurableObject {
     users[index] = {
       ...users[index],
       name,
-      department,
+      department: department || "",
       email,
       updatedAt: new Date().toISOString(),
     };

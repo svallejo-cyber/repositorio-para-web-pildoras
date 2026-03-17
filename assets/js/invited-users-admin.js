@@ -2,14 +2,16 @@
   const form = document.getElementById('invite-form');
   const idInput = document.getElementById('user-id');
   const nameInput = document.getElementById('name');
-  const departmentInput = document.getElementById('department');
   const emailInput = document.getElementById('email');
   const formMessage = document.getElementById('form-message');
+  const importMessage = document.getElementById('import-message');
   const tableMessage = document.getElementById('table-message');
   const body = document.getElementById('users-body');
   const searchInput = document.getElementById('search');
   const resetButton = document.getElementById('reset-form');
   const exportButton = document.getElementById('export-csv');
+  const importButton = document.getElementById('import-csv');
+  const csvFileInput = document.getElementById('csv-file');
   const totalCount = document.getElementById('total-count');
   const activeCount = document.getElementById('active-count');
   const inactiveCount = document.getElementById('inactive-count');
@@ -35,10 +37,9 @@
 
   function exportCsv() {
     const rows = [
-      ['Nombre', 'Departamento', 'Email', 'Estado', 'Creado', 'Actualizado'],
+      ['Nombre', 'Email', 'Estado', 'Creado', 'Actualizado'],
       ...filteredUsers.map((user) => [
         user.name,
-        user.department,
         user.email,
         user.active ? 'Activo' : 'Inactivo',
         user.createdAt || '',
@@ -55,10 +56,47 @@
     URL.revokeObjectURL(url);
   }
 
+  function parseCsv(text) {
+    const lines = text.split(/\r?\n/).filter(Boolean);
+    if (!lines.length) return [];
+    const split = (line) => {
+      const out = [];
+      let current = '';
+      let inQuotes = false;
+      for (let i = 0; i < line.length; i += 1) {
+        const ch = line[i];
+        if (ch === '"') {
+          if (inQuotes && line[i + 1] === '"') {
+            current += '"';
+            i += 1;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (ch === ',' && !inQuotes) {
+          out.push(current);
+          current = '';
+        } else {
+          current += ch;
+        }
+      }
+      out.push(current);
+      return out.map((value) => value.trim());
+    };
+    const header = split(lines[0]);
+    return lines.slice(1).map((line) => {
+      const values = split(line);
+      const row = {};
+      header.forEach((key, index) => {
+        row[key] = values[index] || '';
+      });
+      return row;
+    }).filter((row) => Object.values(row).some(Boolean));
+  }
+
   function render() {
     const q = searchInput.value.trim().toLowerCase();
     filteredUsers = users.filter((user) => {
-      const haystack = [user.name, user.department, user.email].join(' ').toLowerCase();
+      const haystack = [user.name, user.email].join(' ').toLowerCase();
       return !q || haystack.includes(q);
     });
 
@@ -77,7 +115,6 @@
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td>${user.name}</td>
-        <td>${user.department}</td>
         <td>${user.email}</td>
         <td><span class="status ${user.active ? 'active' : 'inactive'}">${user.active ? 'Activo' : 'Inactivo'}</span></td>
         <td>
@@ -109,6 +146,17 @@
     if (!response.ok) throw new Error(data.error || 'save_failed');
   }
 
+  async function importUsers(rows) {
+    const response = await fetch('/api/invited-users/import', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ users: rows }),
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(data.error || 'import_failed');
+    return data.result;
+  }
+
   async function toggleUser(id) {
     const response = await fetch(`/api/invited-users/${id}/toggle`, { method: 'POST' });
     const data = await response.json().catch(() => ({}));
@@ -119,7 +167,6 @@
     event.preventDefault();
     const payload = {
       name: nameInput.value.trim(),
-      department: departmentInput.value.trim(),
       email: emailInput.value.trim(),
     };
     try {
@@ -132,6 +179,25 @@
     }
   });
 
+  importButton.addEventListener('click', async () => {
+    const file = csvFileInput.files && csvFileInput.files[0];
+    if (!file) {
+      setMessage(importMessage, 'Selecciona primero un CSV.', 'error');
+      return;
+    }
+    try {
+      const text = await file.text();
+      const rows = parseCsv(text);
+      if (!rows.length) throw new Error('empty_csv');
+      const result = await importUsers(rows);
+      setMessage(importMessage, `Importación completada. Añadidos: ${result.added}. Omitidos: ${result.skipped}. Total: ${result.total}.`, 'ok');
+      csvFileInput.value = '';
+      await loadUsers();
+    } catch (error) {
+      setMessage(importMessage, 'No se ha podido importar el CSV.', 'error');
+    }
+  });
+
   body.addEventListener('click', async (event) => {
     const editId = event.target.getAttribute('data-edit');
     const toggleId = event.target.getAttribute('data-toggle');
@@ -141,7 +207,6 @@
       if (!user) return;
       idInput.value = user.id;
       nameInput.value = user.name;
-      departmentInput.value = user.department;
       emailInput.value = user.email;
       setMessage(formMessage, 'Editando usuario seleccionado.', '');
       return;

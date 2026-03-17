@@ -8,88 +8,27 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Lora:wght@600;700&display=swap" rel="stylesheet" />
   <style>
-    :root {
-      --bg: #f3f6f9;
-      --panel: #ffffff;
-      --ink: #1f2c3a;
-      --muted: #5c6b79;
-      --accent: #0f5f94;
-      --accent-dark: #10314d;
-      --line: #d8e0e8;
-      --green: #1f7a5a;
-      --red: #b54848;
-    }
+    :root { --bg: #f3f6f9; --panel: #ffffff; --ink: #1f2c3a; --muted: #5c6b79; --accent: #0f5f94; --accent-dark: #10314d; --line: #d8e0e8; --green: #1f7a5a; --red: #b54848; }
     * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: "IBM Plex Sans", sans-serif;
-      color: var(--ink);
-      background:
-        radial-gradient(circle at 8% 5%, #d9e8f4 0, transparent 22%),
-        radial-gradient(circle at 90% 0%, #e9eef3 0, transparent 24%),
-        var(--bg);
-    }
+    body { margin: 0; font-family: "IBM Plex Sans", sans-serif; color: var(--ink); background: radial-gradient(circle at 8% 5%, #d9e8f4 0, transparent 22%), radial-gradient(circle at 90% 0%, #e9eef3 0, transparent 24%), var(--bg); }
     .shell { max-width: 1180px; margin: 30px auto; padding: 0 18px; }
-    .panel {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      box-shadow: 0 14px 36px rgba(18, 37, 54, 0.08);
-      overflow: hidden;
-    }
-    .header {
-      padding: 24px 28px;
-      color: #fff;
-      background: linear-gradient(110deg, var(--accent-dark) 0%, var(--accent) 56%, #1577af 100%);
-    }
+    .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 14px 36px rgba(18, 37, 54, 0.08); overflow: hidden; }
+    .header { padding: 24px 28px; color: #fff; background: linear-gradient(110deg, var(--accent-dark) 0%, var(--accent) 56%, #1577af 100%); }
     .header h1 { margin: 6px 0 8px; font-family: "Lora", serif; font-size: clamp(1.9rem, 3vw, 2.4rem); }
     .header p { margin: 0; max-width: 760px; opacity: .94; }
     .topnav { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
-    .navbtn {
-      display: inline-block;
-      text-decoration: none;
-      color: #fff;
-      border: 1px solid rgba(255,255,255,.4);
-      background: rgba(255,255,255,.15);
-      border-radius: 8px;
-      padding: 8px 12px;
-      font-size: .9rem;
-      font-weight: 600;
-    }
+    .navbtn { display: inline-block; text-decoration: none; color: #fff; border: 1px solid rgba(255,255,255,.4); background: rgba(255,255,255,.15); border-radius: 8px; padding: 8px 12px; font-size: .9rem; font-weight: 600; }
     .content { padding: 24px 28px 30px; }
     .grid { display: grid; grid-template-columns: 360px 1fr; gap: 20px; align-items: start; }
-    .card {
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      background: #fbfdff;
-      padding: 18px;
-    }
+    .card { border: 1px solid var(--line); border-radius: 14px; background: #fbfdff; padding: 18px; }
     .card h2 { margin: 0 0 14px; color: var(--accent); font-size: 1.08rem; }
     .field { display: grid; gap: 6px; margin-bottom: 12px; }
     .field label { font-size: .9rem; font-weight: 600; color: #304558; }
-    .field input {
-      width: 100%;
-      border: 1px solid #cfd8e1;
-      border-radius: 10px;
-      padding: 10px 12px;
-      font: inherit;
-      background: #fff;
-      color: var(--ink);
-    }
+    .field input { width: 100%; border: 1px solid #cfd8e1; border-radius: 10px; padding: 10px 12px; font: inherit; background: #fff; color: var(--ink); }
     .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
-    .btn {
-      border: 1px solid var(--accent);
-      background: var(--accent);
-      color: #fff;
-      border-radius: 10px;
-      padding: 10px 14px;
-      font: inherit;
-      font-weight: 600;
-      cursor: pointer;
-    }
+    .btn { border: 1px solid var(--accent); background: var(--accent); color: #fff; border-radius: 10px; padding: 10px 14px; font: inherit; font-weight: 600; cursor: pointer; }
     .btn.secondary { background: #fff; color: var(--accent); }
     .btn.green { background: var(--green); border-color: var(--green); }
-    .btn.red { background: var(--red); border-color: var(--red); }
     .toolbar { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
     .search { min-width: 280px; flex: 1; }
     .summary { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
@@ -121,7 +60,7 @@
         </div>
         <p>Mantenimiento interno</p>
         <h1>Usuarios invitados al Hub</h1>
-        <p>Alta, edición y desactivación de lectores invitados. Base útil para una futura capa de control de acceso.</p>
+        <p>Alta, edición, desactivación e importación CSV de lectores invitados. Base útil para una futura capa de control de acceso.</p>
       </div>
       <div class="content">
         <div class="grid">
@@ -134,10 +73,6 @@
                 <input id="name" name="name" maxlength="60" required />
               </div>
               <div class="field">
-                <label for="department">Departamento</label>
-                <input id="department" name="department" maxlength="80" required />
-              </div>
-              <div class="field">
                 <label for="email">Email</label>
                 <input id="email" name="email" type="email" maxlength="160" required />
               </div>
@@ -147,6 +82,16 @@
               </div>
               <div class="message" id="form-message"></div>
             </form>
+
+            <h2 style="margin-top:22px;">Importación CSV</h2>
+            <div class="field">
+              <label for="csv-file">Archivo CSV</label>
+              <input id="csv-file" type="file" accept=".csv,text/csv" />
+            </div>
+            <div class="actions">
+              <button class="btn green" type="button" id="import-csv">Importar CSV</button>
+            </div>
+            <div class="message" id="import-message"></div>
           </section>
 
           <section class="card">
@@ -157,14 +102,13 @@
               <div class="stat"><small>Inactivos</small><strong id="inactive-count">0</strong></div>
             </div>
             <div class="toolbar">
-              <input class="field search" id="search" placeholder="Buscar por nombre, departamento o email" />
+              <input class="field search" id="search" placeholder="Buscar por nombre o email" />
               <button class="btn green" type="button" id="export-csv">Exportar CSV</button>
             </div>
             <table>
               <thead>
                 <tr>
                   <th>Nombre</th>
-                  <th>Departamento</th>
                   <th>Email</th>
                   <th>Estado</th>
                   <th>Acciones</th>
