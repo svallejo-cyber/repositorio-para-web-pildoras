@@ -3,6 +3,10 @@
   const usersBody = document.getElementById('users-body');
   const eventsBody = document.getElementById('events-body');
   const statusEl = document.getElementById('status');
+  const fetchOptions = {
+    credentials: 'same-origin',
+    cache: 'no-store',
+  };
 
   function fmtDate(value) {
     if (!value) return '-';
@@ -15,7 +19,7 @@
   }
 
   async function load() {
-    const response = await fetch('/api/access-dashboard');
+    const response = await fetch('/api/access-dashboard', fetchOptions);
     if (!response.ok) throw new Error('load_failed');
     const data = await response.json();
 
