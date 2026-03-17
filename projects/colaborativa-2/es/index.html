@@ -16,7 +16,8 @@
     .topnav { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
     .navbtn { text-decoration: none; background: rgba(255, 255, 255, 0.15); color: #fff; border: 1px solid rgba(255, 255, 255, 0.4); padding: 7px 10px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; }
     .hero { display: grid; grid-template-columns: 120px 1fr; gap: 18px; align-items: center; margin-top: 8px; }
-    .avatar { width: 120px; height: 120px; border-radius: 22px; display: grid; place-items: center; background: linear-gradient(135deg, rgba(255,255,255,.28), rgba(255,255,255,.08)); border: 3px solid rgba(255,255,255,.25); font-size: 2rem; font-weight: 700; letter-spacing: .04em; box-shadow: 0 10px 24px rgba(0,0,0,.15); }
+    .avatar { width: 120px; height: 120px; border-radius: 22px; overflow: hidden; border: 3px solid rgba(255,255,255,.25); box-shadow: 0 10px 24px rgba(0,0,0,.15); background: linear-gradient(135deg, rgba(255,255,255,.28), rgba(255,255,255,.08)); }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .kicker { font-size: 0.76rem; letter-spacing: 0.09em; text-transform: uppercase; opacity: 0.92; font-weight: 600; }
     h1 { margin: 8px 0 10px; font-family: "Lora", serif; font-size: clamp(1.85rem, 2.8vw, 2.3rem); line-height: 1.2; }
     .meta { font-size: 0.95rem; opacity: 0.94; }
@@ -47,7 +48,7 @@
         <a class="navbtn" href="/">Ir a la principal</a>
       </div>
       <div class="hero">
-        <div class="avatar" aria-label="Javier Valencia">JV</div>
+        <div class="avatar" aria-label="Javier Valencia"><img src="/assets/profile/javier-valencia-320.jpg" alt="Javier Valencia" width="120" height="120" loading="eager" decoding="async" /></div>
         <div>
           <div class="kicker">Píldora colaborativa · Equipo Isaval</div>
           <h1>De la factura al criterio de gestión: análisis energético útil para la red de tiendas</h1>
