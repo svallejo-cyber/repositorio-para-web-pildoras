@@ -161,6 +161,10 @@ function isAdminApi(pathname) {
   return pathname === "/api/access-dashboard" || pathname.startsWith("/api/invited-users");
 }
 
+function isAdminAssetPath(pathname) {
+  return pathname === "/assets/js/access-dashboard.js" || pathname === "/assets/js/invited-users-admin.js";
+}
+
 function isAdminMaintenanceApi(pathname) {
   return pathname === "/api/admin-maintenance/purge-excluded-accesses";
 }
@@ -200,6 +204,15 @@ export default {
       return withNoStore(response);
     }
 
+    if (isAdminAssetPath(url.pathname)) {
+      if (!adminSession) {
+        const next = encodeURIComponent(url.pathname + url.search);
+        return redirect(`/admin/login/?next=${next}`);
+      }
+      const response = await env.ASSETS.fetch(request);
+      return withNoStore(response);
+    }
+
     if (isAdminPath(url.pathname) || isAdminApi(url.pathname) || isAdminMaintenanceApi(url.pathname)) {
       if (!adminSession) {
         const next = encodeURIComponent(url.pathname + url.search);
@@ -212,7 +225,8 @@ export default {
         }
         return handleApi(request, url, store, adminSession);
       }
-      return env.ASSETS.fetch(request);
+      const response = await env.ASSETS.fetch(request);
+      return withNoStore(response);
     }
 
     if (isAuthApi(url.pathname)) {
