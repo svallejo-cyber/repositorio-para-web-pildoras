@@ -710,6 +710,7 @@ export class HubData extends DurableObject {
   }
 
   async getAccessDashboard() {
+    await this.purgeExcludedAccesses(Array.from(EXCLUDED_TRACKING_EMAILS));
     const users = (await this.getInvitedUsers()).filter((user) => !isTrackingExcludedEmail(user.email));
     const events = ((await this.ctx.storage.get("access-events")) || []).filter((event) => !isTrackingExcludedEmail(event.email));
     const sorted = [...users].sort((a, b) => {
