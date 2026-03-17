@@ -4,6 +4,7 @@ const SESSION_COOKIE = "hub_session_v3";
 const ADMIN_SESSION_COOKIE = "admin_session_v1";
 const SESSION_MAX_AGE = 60 * 30;
 const ADMIN_EMAILS = new Set(["svallejoi@icloud.com"]);
+const EXCLUDED_TRACKING_EMAILS = new Set(["svallejo@isaval.es", "svallejoi@icloud.com"]);
 
 function json(data, status = 200, headers = {}) {
   return new Response(JSON.stringify(data), {
@@ -148,12 +149,20 @@ function isAdminEmail(email) {
   return ADMIN_EMAILS.has(String(email || "").toLowerCase());
 }
 
+function isTrackingExcludedEmail(email) {
+  return EXCLUDED_TRACKING_EMAILS.has(String(email || "").toLowerCase());
+}
+
 function isAdminPath(pathname) {
   return pathname.startsWith("/admin/");
 }
 
 function isAdminApi(pathname) {
   return pathname === "/api/access-dashboard" || pathname.startsWith("/api/invited-users");
+}
+
+function isAdminMaintenanceApi(pathname) {
+  return pathname === "/api/admin-maintenance/purge-excluded-accesses";
 }
 
 async function getAuthenticatedSession(request, store) {
@@ -191,13 +200,16 @@ export default {
       return withNoStore(response);
     }
 
-    if (isAdminPath(url.pathname) || isAdminApi(url.pathname)) {
+    if (isAdminPath(url.pathname) || isAdminApi(url.pathname) || isAdminMaintenanceApi(url.pathname)) {
       if (!adminSession) {
         const next = encodeURIComponent(url.pathname + url.search);
         if (url.pathname.startsWith("/api/")) return json({ error: "Unauthorized" }, 401);
         return redirect(`/admin/login/?next=${next}`);
       }
       if (url.pathname.startsWith("/api/")) {
+        if (isAdminMaintenanceApi(url.pathname)) {
+          return handleAdminMaintenanceApi(request, url, store);
+        }
         return handleApi(request, url, store, adminSession);
       }
       return env.ASSETS.fetch(request);
@@ -295,6 +307,14 @@ async function handleAdminAuthApi(request, url, store) {
     return json({ ok: true }, 200, { "set-cookie": clearSessionCookie(request, ADMIN_SESSION_COOKIE) });
   }
 
+  return json({ error: "Not found" }, 404);
+}
+
+async function handleAdminMaintenanceApi(request, url, store) {
+  if (request.method === "POST" && url.pathname === "/api/admin-maintenance/purge-excluded-accesses") {
+    const result = await store.purgeExcludedAccesses(Array.from(EXCLUDED_TRACKING_EMAILS));
+    return json({ ok: true, result });
+  }
   return json({ error: "Not found" }, 404);
 }
 
@@ -578,13 +598,15 @@ export class HubData extends DurableObject {
 
     const now = new Date().toISOString();
     const user = users[index];
-    users[index] = {
-      ...user,
-      accessCount: (user.accessCount || 0) + 1,
-      firstAccessAt: user.firstAccessAt || now,
-      lastAccessAt: now,
-      updatedAt: now,
-    };
+    users[index] = isTrackingExcludedEmail(email)
+      ? { ...user, updatedAt: now }
+      : {
+          ...user,
+          accessCount: (user.accessCount || 0) + 1,
+          firstAccessAt: user.firstAccessAt || now,
+          lastAccessAt: now,
+          updatedAt: now,
+        };
     await this.saveInvitedUsers(users);
 
     const token = crypto.randomUUID();
@@ -597,15 +619,17 @@ export class HubData extends DurableObject {
       expiresAt: new Date(Date.now() + SESSION_MAX_AGE * 1000).toISOString(),
     };
     await this.ctx.storage.put(`session:${token}`, session);
-    await this.appendAccessEvent({
-      type: "login",
-      userId: session.userId,
-      email: session.email,
-      name: session.name,
-      path: "/login",
-      language: "es",
-      at: now,
-    });
+    if (!isTrackingExcludedEmail(session.email)) {
+      await this.appendAccessEvent({
+        type: "login",
+        userId: session.userId,
+        email: session.email,
+        name: session.name,
+        path: "/login",
+        language: "es",
+        at: now,
+      });
+    }
     return { ok: true, token, user: users[index] };
   }
 
@@ -661,6 +685,9 @@ export class HubData extends DurableObject {
   }
 
   async recordPageView({ userId, email, name, path, language, type = "page-view" }) {
+    if (isTrackingExcludedEmail(email)) {
+      return;
+    }
     const users = await this.getInvitedUsers();
     const index = users.findIndex((user) => user.id === userId);
     if (index !== -1) {
@@ -683,8 +710,8 @@ export class HubData extends DurableObject {
   }
 
   async getAccessDashboard() {
-    const users = await this.getInvitedUsers();
-    const events = (await this.ctx.storage.get("access-events")) || [];
+    const users = (await this.getInvitedUsers()).filter((user) => !isTrackingExcludedEmail(user.email));
+    const events = ((await this.ctx.storage.get("access-events")) || []).filter((event) => !isTrackingExcludedEmail(event.email));
     const sorted = [...users].sort((a, b) => {
       const ad = a.lastAccessAt ? new Date(a.lastAccessAt).getTime() : 0;
       const bd = b.lastAccessAt ? new Date(b.lastAccessAt).getTime() : 0;
@@ -699,6 +726,36 @@ export class HubData extends DurableObject {
       },
       users: sorted,
       recentEvents: events.slice(0, 80),
+    };
+  }
+
+  async purgeExcludedAccesses(emails) {
+    const excluded = new Set(emails.map((value) => String(value || "").toLowerCase()));
+    const users = await this.getInvitedUsers();
+    let resetUsers = 0;
+    for (let i = 0; i < users.length; i += 1) {
+      if (!excluded.has(users[i].email)) continue;
+      users[i] = {
+        ...users[i],
+        accessCount: 0,
+        firstAccessAt: null,
+        lastAccessAt: null,
+        lastPath: null,
+        lastLanguage: null,
+        updatedAt: new Date().toISOString(),
+      };
+      resetUsers += 1;
+    }
+    await this.saveInvitedUsers(users);
+
+    const events = (await this.ctx.storage.get("access-events")) || [];
+    const filteredEvents = events.filter((event) => !excluded.has(String(event.email || "").toLowerCase()));
+    await this.ctx.storage.put("access-events", filteredEvents);
+
+    return {
+      resetUsers,
+      removedEvents: events.length - filteredEvents.length,
+      excluded: Array.from(excluded),
     };
   }
 }
