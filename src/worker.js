@@ -1,7 +1,7 @@
 import { DurableObject } from "cloudflare:workers";
 
-const SESSION_COOKIE = "hub_session_v2";
-const SESSION_MAX_AGE = 60 * 60 * 24 * 30;
+const SESSION_COOKIE = "hub_session_v3";
+const SESSION_MAX_AGE = 60 * 30;
 const ADMIN_EMAILS = new Set(["svallejo@isaval.es"]);
 
 function json(data, status = 200, headers = {}) {

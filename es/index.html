@@ -35,7 +35,7 @@
 <body>
   <article class="page">
     <header>
-      <div class="topnav"><a class="navbtn" href="../en/">Read in English</a></div>
+      <div class="topnav"><a class="navbtn" href="../en/">Read in English</a><a class="navbtn" href="#" data-logout>Cerrar sesión</a></div>
       <div class="kicker">Isaval · Directivos no técnicos</div>
       <h1>Reflexiones y avances IA</h1>
       <p class="sub">Repositorio de píldoras ejecutivas y aportaciones colaborativas para acelerar la adopción práctica de IA dentro de Isaval.</p>
@@ -61,5 +61,22 @@
     </main>
     <footer>Repositorio central de contenidos IA para directivos no IT.</footer>
   </article>
+
+<script>
+(function(){
+  async function logout(){
+    try {
+      await fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' });
+    } catch (e) {}
+    window.location.href = '/login/';
+  }
+  document.addEventListener('click', function(event){
+    var trigger = event.target.closest('[data-logout]');
+    if (!trigger) return;
+    event.preventDefault();
+    logout();
+  });
+})();
+</script>
 </body>
 </html>

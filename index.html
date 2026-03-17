@@ -372,6 +372,9 @@
 </head>
 <body>
   <main class="card">
+    <div style="display:flex;justify-content:flex-end;position:relative;z-index:1;margin-bottom:6px;">
+      <a href="#" data-logout style="text-decoration:none;background:rgba(15,95,148,.08);color:#0f5f94;border:1px solid rgba(15,95,148,.18);padding:8px 12px;border-radius:999px;font-size:.86rem;font-weight:700;">Cerrar sesión</a>
+    </div>
     <header class="header">
       <div class="logo" aria-label="Pinturas Isaval">
         <img src="assets/brand/isaval-caricature-480.jpg" alt="Pinturas Isaval" width="300" height="300" loading="eager" fetchpriority="high" decoding="async" />
@@ -421,5 +424,22 @@
 
     <p class="footer-note">Repositorio interno de aprendizaje sobre Inteligencia Artificial – Grupo Pinturas Isaval</p>
   </main>
+
+<script>
+(function(){
+  async function logout(){
+    try {
+      await fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' });
+    } catch (e) {}
+    window.location.href = '/login/';
+  }
+  document.addEventListener('click', function(event){
+    var trigger = event.target.closest('[data-logout]');
+    if (!trigger) return;
+    event.preventDefault();
+    logout();
+  });
+})();
+</script>
 </body>
 </html>
