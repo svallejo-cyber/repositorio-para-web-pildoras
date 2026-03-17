@@ -13,7 +13,7 @@
       pdfViews: 'Aperturas del PDF completo',
       commentsTitle: 'Comentarios',
       commentsEmpty: 'Todavía no hay comentarios en esta píldora.',
-      name: 'Nombre',
+      signedAs: 'Comentas como',
       message: 'Comentario',
       submit: 'Enviar comentario',
       sending: 'Enviando...',
@@ -25,7 +25,7 @@
       pdfViews: 'Full PDF opens',
       commentsTitle: 'Comments',
       commentsEmpty: 'There are no comments on this pill yet.',
-      name: 'Name',
+      signedAs: 'Signed in as',
       message: 'Comment',
       submit: 'Post comment',
       sending: 'Sending...',
@@ -48,7 +48,8 @@
     .hub-comment-body{white-space:pre-wrap;color:#1f2c3a;line-height:1.5}
     .hub-empty{color:#5c6b79;font-size:.95rem}
     .hub-form{display:grid;gap:10px}
-    .hub-input,.hub-textarea{width:100%;border:1px solid #cfd8e1;border-radius:8px;padding:10px 12px;font:inherit;background:#fff;color:#1f2c3a}
+    .hub-signed{font-size:.92rem;color:#5c6b79;background:#fff;border:1px solid #d8e0e8;border-radius:8px;padding:10px 12px}
+    .hub-textarea{width:100%;border:1px solid #cfd8e1;border-radius:8px;padding:10px 12px;font:inherit;background:#fff;color:#1f2c3a}
     .hub-textarea{min-height:120px;resize:vertical}
     .hub-submit{justify-self:start;border:1px solid #0f5a8c;border-radius:8px;background:#0f5f94;color:#fff;padding:9px 14px;font:inherit;font-weight:600;cursor:pointer}
     .hub-submit[disabled]{opacity:.65;cursor:wait}
@@ -70,7 +71,7 @@
     <div class="hub-comments-list" data-comments-list></div>
     <p class="hub-empty" data-comments-empty>${copy.commentsEmpty}</p>
     <form class="hub-form" data-comment-form>
-      <input class="hub-input" name="name" maxlength="60" placeholder="${copy.name}" />
+      <div class="hub-signed" data-signed-as></div>
       <textarea class="hub-textarea" name="message" maxlength="1200" placeholder="${copy.message}" required></textarea>
       <button class="hub-submit" type="submit">${copy.submit}</button>
       <div class="hub-status" data-status></div>
@@ -83,6 +84,7 @@
   const emptyEl = panel.querySelector('[data-comments-empty]');
   const formEl = panel.querySelector('[data-comment-form]');
   const statusEl = panel.querySelector('[data-status]');
+  const signedAsEl = panel.querySelector('[data-signed-as]');
   const pdfLink = document.querySelector('.pdf-link');
 
   function formatDate(value) {
@@ -118,6 +120,17 @@
     countEl.textContent = String(payload.stats?.pdfViews || 0);
   }
 
+  async function loadSession() {
+    const response = await fetch('/api/auth/session', {
+      credentials: 'same-origin',
+      cache: 'no-store',
+    });
+    if (!response.ok) throw new Error('session_failed');
+    const payload = await response.json();
+    const name = payload?.session?.name || payload?.session?.email || '';
+    signedAsEl.textContent = `${copy.signedAs}: ${name}`;
+  }
+
   async function loadComments() {
     const response = await fetch(`/api/comments?slug=${encodeURIComponent(slug)}`);
     if (!response.ok) return;
@@ -141,7 +154,6 @@
     const formData = new FormData(formEl);
     const payload = {
       slug,
-      name: String(formData.get('name') || '').trim(),
       message: String(formData.get('message') || '').trim(),
     };
     if (!payload.message) return;
@@ -169,6 +181,7 @@
     }
   });
 
+  loadSession().catch(() => { signedAsEl.textContent = ''; });
   loadStats().catch(() => {});
   loadComments().catch(() => {});
 })();

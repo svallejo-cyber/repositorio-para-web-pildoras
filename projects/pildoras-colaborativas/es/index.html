@@ -112,6 +112,51 @@
       padding: 14px;
       margin-top: 10px;
     }
+    .podium-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 12px;
+    }
+    .podium-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fcf9 100%);
+      text-align: center;
+    }
+    .podium-place {
+      width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      display: inline-grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 1.05rem;
+      margin-bottom: 10px;
+    }
+    .podium-place.gold { background: linear-gradient(180deg, #f8e7a2, #d9aa28); color: #5c4300; }
+    .podium-place.silver { background: linear-gradient(180deg, #edf1f5, #bac6d1); color: #45525f; }
+    .podium-place.bronze { background: linear-gradient(180deg, #f0d3ba, #be7e4f); color: #5a3416; }
+    .podium-avatar {
+      width: 86px;
+      height: 86px;
+      border-radius: 50%;
+      overflow: hidden;
+      margin: 0 auto 10px;
+      border: 3px solid #fff;
+      box-shadow: 0 10px 24px rgba(18, 37, 54, 0.10);
+    }
+    .podium-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 18%;
+      display: block;
+    }
+    .podium-name { font-weight: 700; font-size: 1.02rem; margin-bottom: 4px; }
+    .podium-score { color: var(--accent); font-weight: 700; margin-bottom: 4px; }
+    .podium-meta { color: var(--muted); font-size: 0.9rem; }
     .highlight strong { color: var(--ok); }
     footer {
       border-top: 1px solid var(--line);
@@ -124,6 +169,9 @@
       header, main, footer {
         padding-left: 18px;
         padding-right: 18px;
+      }
+      .podium-grid {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -143,6 +191,11 @@
       <section>
         <h2>Qué encontrarás aquí</h2>
         <p>Esta sección recoge aportaciones breves, firmadas y útiles de miembros del equipo que ya están aplicando inteligencia artificial a procesos reales.</p>
+      </section>
+      <section>
+        <h2>Podium colaborativo</h2>
+        <p>Ranking de autores con más píldoras colaborativas publicadas en español. En caso de empate, gana la publicación más reciente.</p>
+        <div class="podium-grid" id="collaborative-podium"></div>
       </section>
       <section>
         <div class="card">
@@ -174,5 +227,33 @@
     </main>
     <footer>Píldoras colaborativas · Repositorio interno Isaval.</footer>
   </article>
+  <script>
+    (function () {
+      const root = document.getElementById('collaborative-podium');
+      if (!root) return;
+      const medals = ['gold', 'silver', 'bronze'];
+
+      fetch('/api/collaborative-podium?lang=es', {
+        credentials: 'same-origin',
+        cache: 'no-store',
+      })
+        .then((response) => response.ok ? response.json() : Promise.reject(new Error('load_failed')))
+        .then((data) => {
+          const podium = data.podium || [];
+          root.innerHTML = podium.map((item, index) => `
+            <article class="podium-card">
+              <div class="podium-place ${medals[index] || 'bronze'}">${index + 1}</div>
+              <div class="podium-avatar"><img src="${item.avatar}" alt="${item.author}" loading="lazy" decoding="async" /></div>
+              <div class="podium-name">${item.author}</div>
+              <div class="podium-score">${item.count} píldora${item.count === 1 ? '' : 's'}</div>
+              <div class="podium-meta">Última publicación: ${new Date(item.latestPublishedAt).toLocaleDateString('es-ES')}</div>
+            </article>
+          `).join('');
+        })
+        .catch(() => {
+          root.innerHTML = '<div class="card">No se ha podido cargar el ranking en este momento.</div>';
+        });
+    })();
+  </script>
 </body>
 </html>

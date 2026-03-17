@@ -5,6 +5,11 @@ const ADMIN_SESSION_COOKIE = "admin_session_v1";
 const SESSION_MAX_AGE = 60 * 30;
 const ADMIN_EMAILS = new Set(["svallejoi@icloud.com"]);
 const EXCLUDED_TRACKING_EMAILS = new Set(["svallejo@isaval.es", "svallejoi@icloud.com"]);
+const COLLABORATIVE_PILLS = [
+  { slug: "colaborativa-1", lang: "es", title: "Del pliego al dato útil", author: "Luis Merelo", avatar: "/assets/profile/luis2-360.jpg", publishedAt: "2026-03-14T12:33:48Z" },
+  { slug: "colaborativa-2", lang: "es", title: "De la factura al criterio de gestión", author: "Javier Valencia", avatar: "/assets/profile/javi2-360.jpg", publishedAt: "2026-03-17T16:48:17Z" },
+  { slug: "colaborativa-3", lang: "es", title: "De Excel a dashboard OEE", author: "Silvia Soriano", avatar: "/assets/profile/silvia-soriano-2-320.jpg", publishedAt: "2026-03-17T17:04:26Z" },
+];
 
 function json(data, status = 200, headers = {}) {
   return new Response(JSON.stringify(data), {
@@ -161,6 +166,10 @@ function isAdminApi(pathname) {
   return pathname === "/api/access-dashboard" || pathname.startsWith("/api/invited-users");
 }
 
+function isPublicApi(pathname) {
+  return pathname === "/api/collaborative-podium";
+}
+
 function isAdminAssetPath(pathname) {
   return pathname === "/assets/js/access-dashboard.js" || pathname === "/assets/js/invited-users-admin.js";
 }
@@ -234,6 +243,10 @@ export default {
     }
 
     const session = await getAuthenticatedSession(request, store);
+
+    if (isPublicApi(url.pathname)) {
+      return handlePublicApi(request, url, store);
+    }
 
     if (url.pathname.startsWith("/api/")) {
       if (!session) return json({ error: "Unauthorized" }, 401);
@@ -332,6 +345,15 @@ async function handleAdminMaintenanceApi(request, url, store) {
   return json({ error: "Not found" }, 404);
 }
 
+async function handlePublicApi(request, url, store) {
+  if (request.method === "GET" && url.pathname === "/api/collaborative-podium") {
+    const lang = url.searchParams.get("lang") === "en" ? "en" : "es";
+    const podium = await store.getCollaborativePodium(lang);
+    return json(podium);
+  }
+  return json({ error: "Not found" }, 404);
+}
+
 async function handleApi(request, url, store, session) {
   if (request.method === "GET" && url.pathname === "/api/comments") {
     const slug = normalizeSlug(url.searchParams.get("slug"));
@@ -345,14 +367,19 @@ async function handleApi(request, url, store, session) {
     if (!payload) return json({ error: "Invalid JSON" }, 400);
 
     const slug = normalizeSlug(payload.slug);
-    const name = cleanName(payload.name || session.name || "Anónimo");
     const message = cleanMessage(payload.message);
 
     if (!slug || !message) {
       return json({ error: "Missing slug or message" }, 400);
     }
 
-    const comment = await store.addComment({ slug, name, message });
+    const comment = await store.addComment({
+      slug,
+      userId: session.userId,
+      email: session.email,
+      name: cleanName(session.name || "Anónimo"),
+      message,
+    });
     return json({ ok: true, comment }, 201);
   }
 
@@ -482,11 +509,13 @@ export class HubData extends DurableObject {
     return (await this.ctx.storage.get(`comments:${slug}`)) || [];
   }
 
-  async addComment({ slug, name, message }) {
+  async addComment({ slug, userId, email, name, message }) {
     const key = `comments:${slug}`;
     const comments = (await this.ctx.storage.get(key)) || [];
     const comment = {
       id: crypto.randomUUID(),
+      userId: userId || null,
+      email: email || null,
       name,
       message,
       createdAt: new Date().toISOString(),
@@ -721,6 +750,42 @@ export class HubData extends DurableObject {
     const events = (await this.ctx.storage.get("access-events")) || [];
     events.unshift({ id: crypto.randomUUID(), ...event });
     await this.ctx.storage.put("access-events", events.slice(0, 500));
+  }
+
+  async getCollaborativePodium(lang = "es") {
+    const items = COLLABORATIVE_PILLS.filter((item) => item.lang === lang);
+    const byAuthor = new Map();
+    for (const item of items) {
+      const current = byAuthor.get(item.author) || {
+        author: item.author,
+        avatar: item.avatar,
+        count: 0,
+        latestPublishedAt: item.publishedAt,
+        latestTitle: item.title,
+        slugs: [],
+      };
+      current.count += 1;
+      current.slugs.push(item.slug);
+      if (new Date(item.publishedAt).getTime() >= new Date(current.latestPublishedAt).getTime()) {
+        current.latestPublishedAt = item.publishedAt;
+        current.latestTitle = item.title;
+        current.avatar = item.avatar || current.avatar;
+      }
+      byAuthor.set(item.author, current);
+    }
+    const ranking = Array.from(byAuthor.values()).sort((a, b) => {
+      if (b.count !== a.count) return b.count - a.count;
+      const at = new Date(a.latestPublishedAt).getTime();
+      const bt = new Date(b.latestPublishedAt).getTime();
+      if (bt !== at) return bt - at;
+      return a.author.localeCompare(b.author, "es", { sensitivity: "base" });
+    });
+    return {
+      lang,
+      updatedAt: new Date().toISOString(),
+      ranking,
+      podium: ranking.slice(0, 3),
+    };
   }
 
   async getAccessDashboard() {
