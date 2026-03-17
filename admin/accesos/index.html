@@ -38,7 +38,7 @@
     <div class="panel">
       <div class="header">
         <div class="topnav">
-          <a class="navbtn" href="/">Ir al hub</a>
+          <a class="navbtn" href="/">Ir al hub</a><a class="navbtn" href="#" data-admin-logout>Cerrar sesión</a>
           <a class="navbtn" href="/admin/invitados/">Ir a invitados</a>
         </div>
         <p>Seguimiento interno</p>
@@ -83,5 +83,18 @@
     </div>
   </div>
   <script src="/assets/js/access-dashboard.js" defer></script>
+  <script>
+    (function () {
+      document.addEventListener('click', async function (event) {
+        const trigger = event.target.closest('[data-admin-logout]');
+        if (!trigger) return;
+        event.preventDefault();
+        try {
+          await fetch('/api/admin-auth/logout', { method: 'POST', credentials: 'same-origin' });
+        } catch (e) {}
+        window.location.href = '/admin/login/';
+      });
+    })();
+  </script>
 </body>
 </html>

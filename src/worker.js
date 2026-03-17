@@ -1,8 +1,9 @@
 import { DurableObject } from "cloudflare:workers";
 
 const SESSION_COOKIE = "hub_session_v3";
+const ADMIN_SESSION_COOKIE = "admin_session_v1";
 const SESSION_MAX_AGE = 60 * 30;
-const ADMIN_EMAILS = new Set(["svallejo@isaval.es"]);
+const ADMIN_EMAILS = new Set(["svallejoi@icloud.com"]);
 
 function json(data, status = 200, headers = {}) {
   return new Response(JSON.stringify(data), {
@@ -106,22 +107,30 @@ function shouldUseSecureCookie(request) {
   return url.protocol === "https:" && url.hostname !== "localhost" && url.hostname !== "127.0.0.1";
 }
 
-function buildSessionCookie(request, token) {
+function buildSessionCookie(request, token, cookieName = SESSION_COOKIE) {
   const secure = shouldUseSecureCookie(request) ? '; Secure' : '';
-  return `${SESSION_COOKIE}=${encodeURIComponent(token)}; Path=/; HttpOnly; SameSite=Lax${secure}`;
+  return `${cookieName}=${encodeURIComponent(token)}; Path=/; HttpOnly; SameSite=Lax${secure}`;
 }
 
-function clearSessionCookie(request) {
+function clearSessionCookie(request, cookieName = SESSION_COOKIE) {
   const secure = shouldUseSecureCookie(request) ? '; Secure' : '';
-  return `${SESSION_COOKIE}=; Path=/; Max-Age=0; HttpOnly; SameSite=Lax${secure}`;
+  return `${cookieName}=; Path=/; Max-Age=0; HttpOnly; SameSite=Lax${secure}`;
 }
 
 function isPublicPath(pathname) {
   return pathname === "/login" || pathname === "/login/" || pathname === "/login/index.html";
 }
 
+function isAdminPublicPath(pathname) {
+  return pathname === "/admin/login" || pathname === "/admin/login/" || pathname === "/admin/login/index.html";
+}
+
 function isAuthApi(pathname) {
   return pathname === "/api/auth/login" || pathname === "/api/auth/logout" || pathname === "/api/auth/session";
+}
+
+function isAdminAuthApi(pathname) {
+  return pathname === "/api/admin-auth/login" || pathname === "/api/admin-auth/logout" || pathname === "/api/admin-auth/session";
 }
 
 function isTrackablePath(pathname) {
@@ -154,6 +163,13 @@ async function getAuthenticatedSession(request, store) {
   return store.getSession(token);
 }
 
+async function getAdminAuthenticatedSession(request, store) {
+  const cookies = parseCookies(request);
+  const token = cookies[ADMIN_SESSION_COOKIE];
+  if (!token) return null;
+  return store.getAdminSession(token);
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -161,6 +177,30 @@ export default {
 
     if (url.pathname === "/api/health") {
       return json({ ok: true });
+    }
+
+    if (isAdminAuthApi(url.pathname)) {
+      return handleAdminAuthApi(request, url, store);
+    }
+
+    const adminSession = await getAdminAuthenticatedSession(request, store);
+
+    if (isAdminPublicPath(url.pathname)) {
+      if (adminSession) return redirect("/admin/accesos/");
+      const response = await env.ASSETS.fetch(request);
+      return withNoStore(response);
+    }
+
+    if (isAdminPath(url.pathname) || isAdminApi(url.pathname)) {
+      if (!adminSession) {
+        const next = encodeURIComponent(url.pathname + url.search);
+        if (url.pathname.startsWith("/api/")) return json({ error: "Unauthorized" }, 401);
+        return redirect(`/admin/login/?next=${next}`);
+      }
+      if (url.pathname.startsWith("/api/")) {
+        return handleApi(request, url, store, adminSession);
+      }
+      return env.ASSETS.fetch(request);
     }
 
     if (isAuthApi(url.pathname)) {
@@ -171,9 +211,6 @@ export default {
 
     if (url.pathname.startsWith("/api/")) {
       if (!session) return json({ error: "Unauthorized" }, 401);
-      if (isAdminApi(url.pathname) && !isAdminEmail(session.email)) {
-        return json({ error: "Forbidden" }, 403);
-      }
       return handleApi(request, url, store, session);
     }
 
@@ -186,10 +223,6 @@ export default {
     if (!session) {
       const next = encodeURIComponent(url.pathname + url.search);
       return redirect(`/login/?next=${next}`);
-    }
-
-    if (isAdminPath(url.pathname) && !isAdminEmail(session.email)) {
-      return redirect('/');
     }
 
     if (request.method === "GET" && isTrackablePath(url.pathname)) {
@@ -230,6 +263,36 @@ async function handleAuthApi(request, url, store) {
     const session = await getAuthenticatedSession(request, store);
     if (session) await store.deleteSession(session.token);
     return json({ ok: true }, 200, { "set-cookie": clearSessionCookie(request) });
+  }
+
+  return json({ error: "Not found" }, 404);
+}
+
+async function handleAdminAuthApi(request, url, store) {
+  if (request.method === "GET" && url.pathname === "/api/admin-auth/session") {
+    const session = await getAdminAuthenticatedSession(request, store);
+    return json({ authenticated: Boolean(session), session: session || null });
+  }
+
+  if (request.method === "POST" && url.pathname === "/api/admin-auth/login") {
+    const payload = await request.json().catch(() => null);
+    if (!payload) return json({ error: "Invalid JSON" }, 400);
+    const email = cleanEmail(payload.email);
+    if (!email || !isValidEmail(email)) return json({ error: "Invalid email" }, 400);
+    if (!isAdminEmail(email)) return json({ error: "Unauthorized email" }, 403);
+
+    const result = await store.loginAdminWithEmail(email);
+    if (!result.ok) return json({ error: result.error }, 400);
+
+    return json({ ok: true, user: result.user, next: payload.next || "/admin/accesos/" }, 200, {
+      "set-cookie": buildSessionCookie(request, result.token, ADMIN_SESSION_COOKIE),
+    });
+  }
+
+  if (request.method === "POST" && url.pathname === "/api/admin-auth/logout") {
+    const session = await getAdminAuthenticatedSession(request, store);
+    if (session) await store.deleteAdminSession(session.token);
+    return json({ ok: true }, 200, { "set-cookie": clearSessionCookie(request, ADMIN_SESSION_COOKIE) });
   }
 
   return json({ error: "Not found" }, 404);
@@ -546,6 +609,20 @@ export class HubData extends DurableObject {
     return { ok: true, token, user: users[index] };
   }
 
+  async loginAdminWithEmail(email) {
+    const now = new Date().toISOString();
+    const token = crypto.randomUUID();
+    const session = {
+      token,
+      email,
+      name: email,
+      createdAt: now,
+      expiresAt: new Date(Date.now() + SESSION_MAX_AGE * 1000).toISOString(),
+    };
+    await this.ctx.storage.put(`admin-session:${token}`, session);
+    return { ok: true, token, user: { email, name: email } };
+  }
+
   async getSession(token) {
     const session = await this.ctx.storage.get(`session:${token}`);
     if (!session) return null;
@@ -563,6 +640,24 @@ export class HubData extends DurableObject {
 
   async deleteSession(token) {
     await this.ctx.storage.delete(`session:${token}`);
+  }
+
+  async getAdminSession(token) {
+    const session = await this.ctx.storage.get(`admin-session:${token}`);
+    if (!session) return null;
+    if (new Date(session.expiresAt).getTime() < Date.now()) {
+      await this.ctx.storage.delete(`admin-session:${token}`);
+      return null;
+    }
+    if (!isAdminEmail(session.email)) {
+      await this.ctx.storage.delete(`admin-session:${token}`);
+      return null;
+    }
+    return session;
+  }
+
+  async deleteAdminSession(token) {
+    await this.ctx.storage.delete(`admin-session:${token}`);
   }
 
   async recordPageView({ userId, email, name, path, language, type = "page-view" }) {
