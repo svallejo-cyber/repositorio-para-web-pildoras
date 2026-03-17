@@ -8,67 +8,71 @@
   <h1>Cálculo del OEE =Disponibilidad×Rendimiento×Calidad</h1>
   <p>He desarrollado un dashboard web a partir de los datos de productividad de cada planta de fabricación. Las imágenes  mostradas corresponden a la planta de agua, sección VF270, año 2025 completo</p>
   <p>Para construirlo, el primer paso fue diseñar un proceso de lectura del archivo Excel procedente del ERP, extrayendo la información de sus dos hojas principales: producción y envasado. Este proceso transforma los datos en un archivo intermedio en JavaScript (dashboard-data.js), donde la información queda estructurada y preparada para su visualización.</p>
+  <p><img src="./media/image1.png" alt="Imagen del dashboard OEE" /></p>
   <p>A partir de estos datos, desarrollé la interfaz del dashboard en dashboard.js y su estilo visual en dashboard.css. El objetivo fue replicar una estética similar a la de un sistema MES (como el que se está evaluando de MAPEX), pero adaptada a nuestras necesidades actuales y a la estructura real de nuestras secciones productivas.</p>
   <p>El resultado es un panel compacto que incluye:</p>
   <p>Un bloque principal de rendimiento</p>
-  <p>Indicadores resumidos</p>
-  <p>Evolución mensual</p>
-  <p>Rankings de productos/pinturas</p>
-  <p>Actividad reciente</p>
-  <p>Tabla detallada de lotes</p>
-  <p>La principal mejora, o avance, es la posibilidad de visualizar todas las plantas en un único dashboard, incorporando un desplegable para seleccionar la máquina o línea (por ejemplo: VF-270, VF-75, VF-50, DLD8000-1, DLD8000-2, Pasta, etc.).
-Al cambiar la selección, el contenido se recalcula automáticamente, permitiendo analizar cada sección de forma dinámica en tiempo</p>
+  <ul>
+    <li>Indicadores resumidos</li>
+    <li>Evolución mensual</li>
+    <li>Rankings de productos/pinturas</li>
+    <li>Actividad reciente</li>
+    <li>Tabla detallada de lotes</li>
+    <li>La principal mejora, o avance, es la posibilidad de visualizar todas las plantas en un único dashboard, incorporando un desplegable para seleccionar la máquina o línea (por ejemplo: VF-270, VF-75, VF-50, DLD8000-1, DLD8000-2, Pasta, etc.).
+Al cambiar la selección, el contenido se recalcula automáticamente, permitiendo analizar cada sección de forma dinámica en tiempo</li>
+  </ul>
+  <p><img src="./media/image2.png" alt="Imagen del dashboard OEE" /></p>
+  <p><img src="./media/image3.png" alt="Imagen del dashboard OEE" /></p>
+  <p><img src="./media/image4.png" alt="Imagen del dashboard OEE" /></p>
   <p>A nivel funcional, el dashboard calcula métricas clave como:</p>
   <p>Kilos fabricados</p>
   <p>Tiempo total</p>
-  <p>Disponibilidad</p>
+  <h2>Disponibilidad</h2>
   <p>Productividad (kg/h)</p>
   <p>Ajustes acumulados</p>
-  <p>Evolución mensual</p>
+  <h3>Evolución mensual</h3>
   <p>Además, incluye filtros por mes y búsqueda por lote o pintura, lo que lo convierte no solo en un panel visual, sino también en una herramienta de análisis operativo.</p>
-  <p>En resumen, se ha transformado un Excel de productividad en un dashboard interactivo, visual y reutilizable, diseñado para consultar el rendimiento de cualquier sección de la planta desde una única pantalla.</p>
-  <p>Punto crítico: el dato</p>
-  <p>Para calcular correctamente el OEE de una línea de fabricación, el elemento fundamental es la calidad del dato.
-Actualmente, este es nuestro principal reto: los datos no siempre existen, no se capturan o no son fiables. Por ello, estamos trabajando en mejorar su obtención y estructuración.</p>
-  <p>Los datos necesarios se agrupan en tres pilares:</p>
-  <p>1. Disponibilidad</p>
-  <p>Permite conocer cuánto tiempo la línea estuvo realmente produciendo frente al tiempo planificado.</p>
-  <p>Es necesario capturar:</p>
-  <p>Tiempo planificado de producción (turnos, descansos excluidos)</p>
-  <p>Paradas planificadas (según criterio de inclusión en OEE)</p>
+  <ul>
+    <li>En resumen, se ha transformado un Excel de productividad en un dashboard interactivo, visual y reutilizable, diseñado para consultar el rendimiento de cualquier sección de la planta desde una única pantalla.</li>
+    <li>Punto crítico: el dato</li>
+    <li>Para calcular correctamente el OEE de una línea de fabricación, el elemento fundamental es la calidad del dato.
+Actualmente, este es nuestro principal reto: los datos no siempre existen, no se capturan o no son fiables. Por ello, estamos trabajando en mejorar su obtención y estructuración.</li>
+    <li>Los datos necesarios se agrupan en tres pilares:</li>
+    <li>1. Disponibilidad</li>
+    <li>Permite conocer cuánto tiempo la línea estuvo realmente produciendo frente al tiempo planificado.</li>
+    <li>Es necesario capturar:</li>
+    <li>Tiempo planificado de producción (turnos, descansos excluidos)</li>
+  </ul>
+  <h3>Paradas planificadas (según criterio de inclusión en OEE)</h3>
   <p>Paradas no planificadas:</p>
   <p>Averías</p>
-  <p>Esperas por material</p>
-  <p>Falta de operario</p>
-  <p>Limpiezas no planificadas</p>
-  <p>Cambios largos no previstos</p>
-  <p>2. Rendimiento</p>
-  <p>Mide si la línea ha trabajado a la velocidad esperada.</p>
-  <p>Se requiere:</p>
-  <p>Producción total (litros, kg, envases, lotes)</p>
-  <p>Velocidad o ciclo ideal (envases/min, litros/h, etc.)</p>
-  <p>Tiempo operativo real</p>
+  <ul>
+    <li>Esperas por material</li>
+    <li>Falta de operario</li>
+    <li>Limpiezas no planificadas</li>
+    <li>Cambios largos no previstos</li>
+    <li>2. Rendimiento</li>
+    <li>Mide si la línea ha trabajado a la velocidad esperada.</li>
+    <li>Se requiere:</li>
+    <li>Producción total (litros, kg, envases, lotes)</li>
+    <li>Velocidad o ciclo ideal (envases/min, litros/h, etc.)</li>
+  </ul>
+  <h3>Tiempo operativo real</h3>
   <p>En nuestro caso, este punto es especialmente complejo, ya que una misma línea trabaja con:</p>
   <p>Diferentes formatos</p>
-  <p>Distintas viscosidades</p>
-  <p>Colores variados</p>
-  <p>Tiempos de mezcla y cambios de producto</p>
-  <p>Por ello, es necesario definir una velocidad ideal por formato o familia de producto, basada en datos históricos (máximo un año) y debidamente ponderada.</p>
-  <p>3. Calidad</p>
-  <p>Evalúa qué parte de la producción es válida a la primera.</p>
-  <p>Se necesita medir:</p>
-  <p>Producción buena</p>
-  <p>Producción total</p>
-  <p>Mermas, rechazos o retrabajos:</p>
+  <ul>
+    <li>Distintas viscosidades</li>
+    <li>Colores variados</li>
+    <li>Tiempos de mezcla y cambios de producto</li>
+    <li>Por ello, es necesario definir una velocidad ideal por formato o familia de producto, basada en datos históricos (máximo un año) y debidamente ponderada.</li>
+    <li>3. Calidad</li>
+    <li>Evalúa qué parte de la producción es válida a la primera.</li>
+    <li>Se necesita medir:</li>
+    <li>Producción buena</li>
+    <li>Producción total</li>
+    <li>Mermas, rechazos o retrabajos:</li>
+  </ul>
   <p>Fuera de especificación</p>
   <p>Errores de color</p>
-  <p>Viscosidad incorrecta</p>
-  <p>Mal llenado</p>
-  <p>Etiquetado defectuoso</p>
-  <p>Envases dañados</p>
-  <p>Lotes rehechos</p>
-  <p>Muchos de estos datos actualmente no se recogen, o no se registran de forma estructurada y fiable, especialmente en aspectos como averías, tiempos auxiliares o esperas.</p>
-  <p>Y aquí está el verdadero reto del proyecto:</p>
-  <p>👉 Conseguir el dato.</p>
 </body>
 </html>

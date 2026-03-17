@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Collaborative 3 · Full text</title>
+</head>
+<body>
+  <h1>OEE calculation = Availability × Performance × Quality</h1>
+  <p>I developed a web dashboard based on productivity data from each manufacturing plant. The images shown correspond to the water plant, VF270 section, full year 2025.</p>
+  <p>To build it, the first step was to design a reading process for the Excel file coming from the ERP, extracting information from its two main sheets: production and packaging. This process transforms the data into an intermediate JavaScript file (dashboard-data.js), where the information is structured and prepared for visualization.</p>
+  <p><img src="./media/image1.png" alt="OEE dashboard image" /></p>
+  <p>From these data, I developed the dashboard interface in dashboard.js and its visual style in dashboard.css. The objective was to replicate an aesthetic similar to that of an MES system (such as the one currently being evaluated from MAPEX), but adapted to our current needs and to the real structure of our production sections.</p>
+  <p>The result is a compact panel that includes:</p>
+  <ul>
+    <li>A main performance block</li>
+    <li>Summary indicators</li>
+    <li>Monthly evolution</li>
+    <li>Product/paint rankings</li>
+    <li>Recent activity</li>
+    <li>Detailed batch table</li>
+  </ul>
+  <p><img src="./media/image2.png" alt="OEE dashboard image" /></p>
+  <p><img src="./media/image3.png" alt="OEE dashboard image" /></p>
+  <p><img src="./media/image4.png" alt="OEE dashboard image" /></p>
+  <p>The main improvement is the possibility of visualizing all plants within a single dashboard, incorporating a dropdown to select the machine or line (for example: VF-270, VF-75, VF-50, DLD8000-1, DLD8000-2, Pasta, etc.). By changing the selection, the content is recalculated automatically, allowing each section to be analyzed dynamically in real time.</p>
+  <p>At a functional level, the dashboard calculates key metrics such as:</p>
+  <ul>
+    <li>Kilos produced</li>
+    <li>Total time</li>
+    <li>Availability</li>
+    <li>Productivity (kg/h)</li>
+    <li>Accumulated adjustments</li>
+    <li>Monthly evolution</li>
+  </ul>
+  <p>In addition, it includes filters by month and search by batch or paint, which makes it not only a visual panel, but also an operational analysis tool.</p>
+  <p>In summary, a productivity Excel file has been transformed into an interactive, visual and reusable dashboard, designed to consult the performance of any plant section from a single screen.</p>
+  <h2>Critical point: the data</h2>
+  <p>To calculate the OEE of a manufacturing line correctly, the fundamental element is data quality. At present, this is our main challenge: the data does not always exist, is not captured or is not reliable. That is why we are working to improve its collection and structuring.</p>
+  <p>The required data are grouped into three pillars:</p>
+  <h3>1. Availability</h3>
+  <p>It allows us to know how much time the line was actually producing compared with planned time.</p>
+  <p>It is necessary to capture:</p>
+  <ul>
+    <li>Planned production time (excluding shifts and breaks)</li>
+    <li>Planned stoppages (depending on OEE inclusion criteria)</li>
+    <li>Unplanned stoppages:</li>
+    <li>Breakdowns</li>
+    <li>Waiting for material</li>
+    <li>Lack of operator</li>
+    <li>Unplanned cleaning</li>
+    <li>Unexpected long changeovers</li>
+  </ul>
+  <h3>2. Performance</h3>
+  <p>It measures whether the line has worked at the expected speed.</p>
+  <p>It requires:</p>
+  <ul>
+    <li>Total production (litres, kg, containers, batches)</li>
+    <li>Ideal speed or cycle (containers/min, litres/h, etc.)</li>
+    <li>Real operating time</li>
+  </ul>
+  <p>In our case, this point is especially complex because the same line works with different formats, different viscosities, varied colors, and mixing times and product changes. Therefore, it is necessary to define an ideal speed by format or product family, based on historical data (maximum one year) and properly weighted.</p>
+  <h3>3. Quality</h3>
+  <p>It evaluates what share of production is valid the first time.</p>
+  <p>It is necessary to measure:</p>
+  <ul>
+    <li>Good production</li>
+    <li>Total production</li>
+    <li>Waste, rejects or rework:</li>
+    <li>Out of specification</li>
+    <li>Color errors</li>
+    <li>Incorrect viscosity</li>
+    <li>Poor filling</li>
+    <li>Defective labeling</li>
+  </ul>
+  <p>Damaged containers</p>
+  <p>Reworked batches</p>
+  <p>Many of these data are currently not collected, or are not recorded in a structured and reliable way, especially in areas such as breakdowns, auxiliary times or waiting periods.</p>
+</body>
+</html>
