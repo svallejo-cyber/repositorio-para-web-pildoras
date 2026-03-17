@@ -40,7 +40,7 @@
       const email = document.getElementById('email');
       const status = document.getElementById('status');
       const params = new URLSearchParams(window.location.search);
-      const next = params.get('next') || '/admin/accesos/';
+      const next = params.get('next') || '/admin/';
       form.addEventListener('submit', async (event) => {
         event.preventDefault();
         status.textContent = 'Validando acceso...';
@@ -63,7 +63,7 @@
           if (!check.ok || !session.authenticated) throw new Error('session_not_persisted');
           status.textContent = 'Acceso concedido. Entrando...';
           status.className = 'status ok';
-          window.location.assign(data.next || '/admin/accesos/');
+          window.location.assign(data.next || '/admin/');
         } catch (error) {
           status.textContent = error.message === 'session_not_persisted' ? 'El navegador no ha guardado la sesión. Recarga la página e inténtalo de nuevo.' : 'Ese correo no está autorizado para administración.';
           status.className = 'status error';

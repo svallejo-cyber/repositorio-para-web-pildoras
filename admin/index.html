@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Administración del Hub · Isaval</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Lora:wght@600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root { --bg:#f3f6f9; --panel:#fff; --ink:#1f2c3a; --muted:#5c6b79; --accent:#10314d; --line:#d8e0e8; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; display:grid; place-items:center; padding:24px; font-family:"IBM Plex Sans",sans-serif; color:var(--ink); background:radial-gradient(circle at 8% 5%,#d9e8f4 0,transparent 22%),radial-gradient(circle at 90% 0%,#e9eef3 0,transparent 24%),var(--bg); }
+    .card { width:min(920px,100%); background:var(--panel); border:1px solid var(--line); border-radius:18px; padding:28px; box-shadow:0 14px 36px rgba(18,37,54,.08); }
+    .topnav { display:flex; justify-content:space-between; gap:10px; margin-bottom:14px; flex-wrap:wrap; }
+    .navbtn { display:inline-block; text-decoration:none; color:#10314d; border:1px solid rgba(16,49,77,.18); background:rgba(16,49,77,.06); border-radius:999px; padding:8px 12px; font-size:.86rem; font-weight:700; }
+    .eyebrow { margin:0 0 8px; font-size:.8rem; letter-spacing:.14em; text-transform:uppercase; color:#567088; font-weight:700; }
+    h1 { margin:0 0 10px; font-family:"Lora",serif; font-size:clamp(1.9rem,3vw,2.4rem); line-height:1.15; }
+    p { margin:0 0 12px; color:var(--muted); line-height:1.55; }
+    .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-top:20px; }
+    .item { border:1px solid var(--line); border-radius:14px; padding:18px; background:#fbfdff; }
+    .item h2 { margin:0 0 8px; color:#10314d; font-size:1.2rem; }
+    .item p { margin:0 0 14px; }
+    .btn { display:inline-block; text-decoration:none; background:#10314d; color:#fff; border-radius:10px; padding:10px 14px; font-weight:700; }
+    @media (max-width:720px) { .grid { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="topnav">
+      <a class="navbtn" href="/">Ir al hub</a>
+      <a class="navbtn" href="#" data-admin-logout>Cerrar sesión</a>
+    </div>
+    <p class="eyebrow">Acceso de administrador</p>
+    <h1>Administración del Hub</h1>
+    <p>Desde aquí puedes entrar a las dos funciones internas de control del repositorio.</p>
+    <div class="grid">
+      <section class="item">
+        <h2>Dashboard de accesos</h2>
+        <p>Consulta quién entra al hub, cuántas veces lo hace y cuál ha sido su última actividad registrada.</p>
+        <a class="btn" href="/admin/accesos/">Abrir dashboard</a>
+      </section>
+      <section class="item">
+        <h2>Usuarios invitados</h2>
+        <p>Da de alta, edita o desactiva usuarios invitados y mantén la base que soporta el acceso al hub.</p>
+        <a class="btn" href="/admin/invitados/">Abrir mantenimiento</a>
+      </section>
+    </div>
+  </main>
+  <script>
+    (function () {
+      document.addEventListener('click', async function (event) {
+        const trigger = event.target.closest('[data-admin-logout]');
+        if (!trigger) return;
+        event.preventDefault();
+        try {
+          await fetch('/api/admin-auth/logout', { method: 'POST', credentials: 'same-origin' });
+        } catch (e) {}
+        window.location.href = '/admin/login/';
+      });
+    })();
+  </script>
+</body>
+</html>

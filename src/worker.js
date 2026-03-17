@@ -186,7 +186,7 @@ export default {
     const adminSession = await getAdminAuthenticatedSession(request, store);
 
     if (isAdminPublicPath(url.pathname)) {
-      if (adminSession) return redirect("/admin/accesos/");
+      if (adminSession) return redirect("/admin/");
       const response = await env.ASSETS.fetch(request);
       return withNoStore(response);
     }
@@ -284,7 +284,7 @@ async function handleAdminAuthApi(request, url, store) {
     const result = await store.loginAdminWithEmail(email);
     if (!result.ok) return json({ error: result.error }, 400);
 
-    return json({ ok: true, user: result.user, next: payload.next || "/admin/accesos/" }, 200, {
+    return json({ ok: true, user: result.user, next: payload.next || "/admin/" }, 200, {
       "set-cookie": buildSessionCookie(request, result.token, ADMIN_SESSION_COOKIE),
     });
   }
