@@ -24,6 +24,20 @@ function cleanName(value) {
     .slice(0, 60);
 }
 
+function cleanDepartment(value) {
+  return String(value || "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 80);
+}
+
+function cleanEmail(value) {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .slice(0, 160);
+}
+
 function cleanMessage(value) {
   return String(value || "")
     .replace(/\r\n/g, "\n")
@@ -32,8 +46,23 @@ function cleanMessage(value) {
     .slice(0, 1200);
 }
 
+function isValidEmail(value) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+}
+
 function getStore(env) {
   return env.HUB_DATA.getByName("hub-data");
+}
+
+function getUserIdFromPath(pathname) {
+  const parts = pathname.split("/").filter(Boolean);
+  if (parts.length < 3 || parts[0] !== "api" || parts[1] !== "invited-users") return null;
+  return parts[2] || null;
+}
+
+function isTogglePath(pathname) {
+  const parts = pathname.split("/").filter(Boolean);
+  return parts.length === 4 && parts[0] === "api" && parts[1] === "invited-users" && parts[3] === "toggle";
 }
 
 export default {
@@ -89,6 +118,62 @@ export default {
       return json({ ok: true, stats });
     }
 
+    if (request.method === "GET" && url.pathname === "/api/invited-users") {
+      const users = await store.getInvitedUsers();
+      return json({ users });
+    }
+
+    if (request.method === "POST" && url.pathname === "/api/invited-users") {
+      const payload = await request.json().catch(() => null);
+      if (!payload) return json({ error: "Invalid JSON" }, 400);
+
+      const name = cleanName(payload.name);
+      const department = cleanDepartment(payload.department);
+      const email = cleanEmail(payload.email);
+
+      if (!name || !department || !email) {
+        return json({ error: "Missing name, department or email" }, 400);
+      }
+      if (!isValidEmail(email)) {
+        return json({ error: "Invalid email" }, 400);
+      }
+
+      const user = await store.addInvitedUser({ name, department, email });
+      if (!user.ok) return json({ error: user.error }, 409);
+      return json({ ok: true, user: user.user }, 201);
+    }
+
+    if (request.method === "PUT" && /^\/api\/invited-users\/.+/.test(url.pathname) && !isTogglePath(url.pathname)) {
+      const userId = getUserIdFromPath(url.pathname);
+      if (!userId) return json({ error: "Missing user id" }, 400);
+
+      const payload = await request.json().catch(() => null);
+      if (!payload) return json({ error: "Invalid JSON" }, 400);
+
+      const name = cleanName(payload.name);
+      const department = cleanDepartment(payload.department);
+      const email = cleanEmail(payload.email);
+
+      if (!name || !department || !email) {
+        return json({ error: "Missing name, department or email" }, 400);
+      }
+      if (!isValidEmail(email)) {
+        return json({ error: "Invalid email" }, 400);
+      }
+
+      const updated = await store.updateInvitedUser({ id: userId, name, department, email });
+      if (!updated.ok) return json({ error: updated.error }, updated.error === "User not found" ? 404 : 409);
+      return json({ ok: true, user: updated.user });
+    }
+
+    if (request.method === "POST" && isTogglePath(url.pathname)) {
+      const userId = getUserIdFromPath(url.pathname);
+      if (!userId) return json({ error: "Missing user id" }, 400);
+      const toggled = await store.toggleInvitedUser(userId);
+      if (!toggled.ok) return json({ error: toggled.error }, 404);
+      return json({ ok: true, user: toggled.user });
+    }
+
     return json({ error: "Not found" }, 404);
   },
 };
@@ -128,5 +213,62 @@ export class HubData extends DurableObject {
     stats.updatedAt = new Date().toISOString();
     await this.ctx.storage.put(key, stats);
     return stats;
+  }
+
+  async getInvitedUsers() {
+    const users = (await this.ctx.storage.get("invited-users")) || [];
+    return users.sort((a, b) => a.name.localeCompare(b.name, "es", { sensitivity: "base" }));
+  }
+
+  async addInvitedUser({ name, department, email }) {
+    const users = (await this.ctx.storage.get("invited-users")) || [];
+    const exists = users.some((user) => user.email === email);
+    if (exists) return { ok: false, error: "Email already exists" };
+
+    const now = new Date().toISOString();
+    const user = {
+      id: crypto.randomUUID(),
+      name,
+      department,
+      email,
+      active: true,
+      createdAt: now,
+      updatedAt: now,
+    };
+    users.push(user);
+    await this.ctx.storage.put("invited-users", users);
+    return { ok: true, user };
+  }
+
+  async updateInvitedUser({ id, name, department, email }) {
+    const users = (await this.ctx.storage.get("invited-users")) || [];
+    const index = users.findIndex((user) => user.id === id);
+    if (index === -1) return { ok: false, error: "User not found" };
+    const duplicate = users.some((user) => user.email === email && user.id !== id);
+    if (duplicate) return { ok: false, error: "Email already exists" };
+
+    users[index] = {
+      ...users[index],
+      name,
+      department,
+      email,
+      updatedAt: new Date().toISOString(),
+    };
+    await this.ctx.storage.put("invited-users", users);
+    return { ok: true, user: users[index] };
+  }
+
+  async toggleInvitedUser(id) {
+    const users = (await this.ctx.storage.get("invited-users")) || [];
+    const index = users.findIndex((user) => user.id === id);
+    if (index === -1) return { ok: false, error: "User not found" };
+
+    users[index] = {
+      ...users[index],
+      active: !users[index].active,
+      updatedAt: new Date().toISOString(),
+    };
+    await this.ctx.storage.put("invited-users", users);
+    return { ok: true, user: users[index] };
   }
 }

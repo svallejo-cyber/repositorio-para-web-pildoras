@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mantenimiento de Invitados · Hub IA Isaval</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Lora:wght@600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f3f6f9;
+      --panel: #ffffff;
+      --ink: #1f2c3a;
+      --muted: #5c6b79;
+      --accent: #0f5f94;
+      --accent-dark: #10314d;
+      --line: #d8e0e8;
+      --green: #1f7a5a;
+      --red: #b54848;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 5%, #d9e8f4 0, transparent 22%),
+        radial-gradient(circle at 90% 0%, #e9eef3 0, transparent 24%),
+        var(--bg);
+    }
+    .shell { max-width: 1180px; margin: 30px auto; padding: 0 18px; }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: 0 14px 36px rgba(18, 37, 54, 0.08);
+      overflow: hidden;
+    }
+    .header {
+      padding: 24px 28px;
+      color: #fff;
+      background: linear-gradient(110deg, var(--accent-dark) 0%, var(--accent) 56%, #1577af 100%);
+    }
+    .header h1 { margin: 6px 0 8px; font-family: "Lora", serif; font-size: clamp(1.9rem, 3vw, 2.4rem); }
+    .header p { margin: 0; max-width: 760px; opacity: .94; }
+    .topnav { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+    .navbtn {
+      display: inline-block;
+      text-decoration: none;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.4);
+      background: rgba(255,255,255,.15);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: .9rem;
+      font-weight: 600;
+    }
+    .content { padding: 24px 28px 30px; }
+    .grid { display: grid; grid-template-columns: 360px 1fr; gap: 20px; align-items: start; }
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fbfdff;
+      padding: 18px;
+    }
+    .card h2 { margin: 0 0 14px; color: var(--accent); font-size: 1.08rem; }
+    .field { display: grid; gap: 6px; margin-bottom: 12px; }
+    .field label { font-size: .9rem; font-weight: 600; color: #304558; }
+    .field input {
+      width: 100%;
+      border: 1px solid #cfd8e1;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font: inherit;
+      background: #fff;
+      color: var(--ink);
+    }
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+    .btn {
+      border: 1px solid var(--accent);
+      background: var(--accent);
+      color: #fff;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn.secondary { background: #fff; color: var(--accent); }
+    .btn.green { background: var(--green); border-color: var(--green); }
+    .btn.red { background: var(--red); border-color: var(--red); }
+    .toolbar { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+    .search { min-width: 280px; flex: 1; }
+    .summary { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+    .stat { border: 1px solid var(--line); background: #fff; border-radius: 12px; padding: 10px 12px; min-width: 120px; }
+    .stat small { display: block; color: var(--muted); margin-bottom: 4px; }
+    .stat strong { font-size: 1.2rem; }
+    table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+    th, td { text-align: left; padding: 12px; border-bottom: 1px solid #e6edf3; vertical-align: top; }
+    th { background: #f6f9fc; color: #345068; font-size: .86rem; text-transform: uppercase; letter-spacing: .04em; }
+    tr:last-child td { border-bottom: 0; }
+    .status { display: inline-block; border-radius: 999px; padding: 5px 9px; font-size: .78rem; font-weight: 700; }
+    .status.active { background: #e8f7ef; color: #1f7a5a; }
+    .status.inactive { background: #fdeaea; color: #b54848; }
+    .row-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .mini { border: 1px solid var(--line); background: #fff; color: var(--ink); border-radius: 8px; padding: 7px 10px; font: inherit; font-size: .85rem; cursor: pointer; }
+    .message { margin-top: 12px; font-size: .92rem; color: var(--muted); }
+    .message.error { color: var(--red); }
+    .message.ok { color: var(--green); }
+    @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="panel">
+      <div class="header">
+        <div class="topnav">
+          <a class="navbtn" href="/">Ir al hub</a>
+          <a class="navbtn" href="/projects/pildoras-colaborativas/es/">Ir a colaborativas</a>
+        </div>
+        <p>Mantenimiento interno</p>
+        <h1>Usuarios invitados al Hub</h1>
+        <p>Alta, edición y desactivación de lectores invitados. Base útil para una futura capa de control de acceso.</p>
+      </div>
+      <div class="content">
+        <div class="grid">
+          <section class="card">
+            <h2>Ficha de usuario</h2>
+            <form id="invite-form">
+              <input type="hidden" id="user-id" />
+              <div class="field">
+                <label for="name">Nombre</label>
+                <input id="name" name="name" maxlength="60" required />
+              </div>
+              <div class="field">
+                <label for="department">Departamento</label>
+                <input id="department" name="department" maxlength="80" required />
+              </div>
+              <div class="field">
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" maxlength="160" required />
+              </div>
+              <div class="actions">
+                <button class="btn" type="submit">Guardar</button>
+                <button class="btn secondary" type="button" id="reset-form">Limpiar</button>
+              </div>
+              <div class="message" id="form-message"></div>
+            </form>
+          </section>
+
+          <section class="card">
+            <h2>Listado de invitados</h2>
+            <div class="summary">
+              <div class="stat"><small>Total</small><strong id="total-count">0</strong></div>
+              <div class="stat"><small>Activos</small><strong id="active-count">0</strong></div>
+              <div class="stat"><small>Inactivos</small><strong id="inactive-count">0</strong></div>
+            </div>
+            <div class="toolbar">
+              <input class="field search" id="search" placeholder="Buscar por nombre, departamento o email" />
+              <button class="btn green" type="button" id="export-csv">Exportar CSV</button>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Departamento</th>
+                  <th>Email</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="users-body"></tbody>
+            </table>
+            <div class="message" id="table-message"></div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="/assets/js/invited-users-admin.js" defer></script>
+</body>
+</html>
