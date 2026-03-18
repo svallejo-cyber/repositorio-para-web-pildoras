@@ -631,6 +631,54 @@ async function handleApi(request, url, store, session, env) {
     return json({ ok: true, sent: true, recipients: preview.recipients.length, pills: preview.pills.length });
   }
 
+  if (request.method === "POST" && url.pathname === "/api/admin-notifications/mark-sent") {
+    const payload = await request.json().catch(() => null);
+    if (!payload) return json({ error: "Invalid JSON" }, 400);
+    const kind = String(payload.kind || "").trim().toLowerCase();
+    const at = new Date().toISOString();
+
+    if (kind === "initial-hub") {
+      const recipients = Number(payload.recipients || 0);
+      const pills = Number(payload.pills || 0);
+      await store.markInitialAnnouncementSent({ at, recipients, pills });
+      await store.logNotificationRun({
+        kind,
+        status: "sent-local",
+        at,
+        detail: `Recipients: ${recipients}. Pills: ${pills}. Sender: iCloud SMTP.`,
+      });
+      return json({ ok: true });
+    }
+
+    if (kind === "daily-pills") {
+      const notificationKeys = Array.isArray(payload.notificationKeys) ? payload.notificationKeys.map(String) : [];
+      if (!notificationKeys.length) return json({ error: "Missing notification keys" }, 400);
+      await store.markPillsNotified(notificationKeys);
+      await store.logNotificationRun({
+        kind,
+        status: "sent-local",
+        at,
+        detail: `Pills: ${notificationKeys.length}. Sender: iCloud SMTP.`,
+      });
+      return json({ ok: true });
+    }
+
+    if (kind === "weekly-comments") {
+      const commentIds = Array.isArray(payload.commentIds) ? payload.commentIds.map(String) : [];
+      if (!commentIds.length) return json({ error: "Missing comment ids" }, 400);
+      await store.markCommentsDigested(commentIds);
+      await store.logNotificationRun({
+        kind,
+        status: "sent-local",
+        at,
+        detail: `Comments: ${commentIds.length}. Sender: iCloud SMTP.`,
+      });
+      return json({ ok: true });
+    }
+
+    return json({ error: "Invalid kind" }, 400);
+  }
+
   if (request.method === "POST" && url.pathname === "/api/invited-users") {
     const payload = await request.json().catch(() => null);
     if (!payload) return json({ error: "Invalid JSON" }, 400);

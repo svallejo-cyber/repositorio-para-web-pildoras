@@ -55,7 +55,7 @@
         </div>
         <p>Automatización de avisos</p>
         <h1>Notificaciones del Hub</h1>
-        <p>Desde aquí puedes revisar el borrador del correo inicial a todos los invitados activos y lanzar manualmente el envío cuando Microsoft 365 esté listo.</p>
+        <p>Desde aquí puedes revisar el borrador del correo inicial a todos los invitados activos y obtener el comando exacto para enviarlo desde este Mac usando tu cuenta iCloud.</p>
       </div>
       <div class="content">
         <section class="card">
@@ -64,9 +64,14 @@
           <div class="meta" id="meta"></div>
           <div class="actions">
             <button class="btn secondary" id="reload-preview">Actualizar borrador</button>
-            <button class="btn" id="send-initial">Enviar correo inicial</button>
           </div>
           <div class="status" id="status"></div>
+        </section>
+
+        <section class="card">
+          <h2>Comando local de envío</h2>
+          <p class="muted">El canal activo previsto es un script local que envía desde <strong>svallejo@icloud.com</strong> por SMTP de iCloud y, después, marca el correo como enviado dentro del Hub.</p>
+          <div class="code" id="command-preview">Cargando…</div>
         </section>
 
         <section class="card">
@@ -103,8 +108,8 @@
       const statusEl = document.getElementById('status');
       const frameEl = document.getElementById('preview-frame');
       const textPreviewEl = document.getElementById('text-preview');
+      const commandPreviewEl = document.getElementById('command-preview');
       const runsBody = document.getElementById('runs-body');
-      const sendBtn = document.getElementById('send-initial');
       const reloadBtn = document.getElementById('reload-preview');
       let currentPreview = null;
 
@@ -130,6 +135,7 @@
         ].join('');
         frameEl.srcdoc = currentPreview.html;
         textPreviewEl.textContent = currentPreview.text;
+        commandPreviewEl.textContent = `export ICLOUD_APP_PASSWORD='TU_APP_SPECIFIC_PASSWORD'\npython3 '/Users/santiagoisaacvallejoizquierdo/codex programas/01-isaval-ia/isaval-ai-executive-hub/scripts/send_hub_notifications.py' --kind initial-hub`;
       }
 
       async function loadStatus() {
@@ -170,32 +176,6 @@
             statusEl.className = 'status warn';
             statusEl.textContent = 'No se ha podido cargar la información de notificaciones.';
           });
-      });
-
-      sendBtn.addEventListener('click', async function () {
-        if (!window.confirm('Se enviará el correo inicial a todos los invitados activos. ¿Quieres continuar?')) return;
-        sendBtn.disabled = true;
-        sendBtn.textContent = 'Enviando…';
-        statusEl.className = 'status';
-        statusEl.textContent = 'Lanzando envío…';
-        try {
-          const response = await fetch('/api/admin-notifications/send-initial', {
-            method: 'POST',
-            credentials: 'same-origin',
-            cache: 'no-store',
-          });
-          const payload = await response.json().catch(() => ({}));
-          if (!response.ok) throw new Error(payload.error || 'send_failed');
-          statusEl.className = 'status ok';
-          statusEl.textContent = `Correo inicial enviado. Destinatarios: ${payload.recipients}. Píldoras: ${payload.pills}.`;
-          await loadStatus();
-        } catch (error) {
-          statusEl.className = 'status warn';
-          statusEl.textContent = `No se ha podido enviar el correo: ${error.message}`;
-        } finally {
-          sendBtn.disabled = false;
-          sendBtn.textContent = 'Enviar correo inicial';
-        }
       });
 
       document.addEventListener('click', async function (event) {
