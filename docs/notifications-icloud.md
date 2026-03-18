@@ -3,7 +3,7 @@
 La solución activa para no depender de IT es:
 
 - el Hub genera el contenido y los destinatarios;
-- este Mac envía los correos desde `svallejo@icloud.com` usando SMTP de iCloud;
+- este Mac envía los correos desde `svallejoi@icloud.com` usando SMTP de iCloud;
 - tras el envío, el script marca el aviso como enviado dentro del Hub.
 
 ### Requisito único
@@ -58,7 +58,7 @@ python3 '/Users/santiagoisaacvallejoizquierdo/codex programas/01-isaval-ia/isava
 
 1. El script hace login admin en el Hub con `svallejoi@icloud.com`.
 2. Recupera el borrador ya preparado por el Worker.
-3. Envía el correo desde `svallejo@icloud.com`.
+3. Envía el correo desde `svallejoi@icloud.com`.
 4. Marca el aviso como enviado para no repetirlo.
 
 ### Observación

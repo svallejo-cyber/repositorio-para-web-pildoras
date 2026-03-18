@@ -155,7 +155,6 @@
       function resetForm() {
         idInput.value = '';
         form.reset();
-        setMessage(formMessage, '', '');
       }
 
       function csvEscape(value) {
@@ -300,9 +299,10 @@
           email: emailInput.value.trim(),
         };
         try {
+          const wasEditing = Boolean(idInput.value);
           await saveUser(payload, idInput.value || null);
-          setMessage(formMessage, idInput.value ? 'Usuario actualizado.' : 'Usuario creado.', 'ok');
           resetForm();
+          setMessage(formMessage, wasEditing ? 'Usuario actualizado.' : 'Usuario creado.', 'ok');
           await loadUsers();
         } catch (error) {
           setMessage(formMessage, error.message === 'Email already exists' ? 'Ese email ya existe.' : 'No se ha podido guardar el usuario.', 'error');

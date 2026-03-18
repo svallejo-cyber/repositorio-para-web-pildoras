@@ -82,56 +82,60 @@ def smtp_send(sender, password, msg):
         server.send_message(msg)
 
 
-def send_initial(client, sender, password, dry_run):
+def send_initial(client, sender, password, dry_run, override_to=None):
     preview = fetch_preview(client, "initial-hub")
     recipients = preview.get("recipients", [])
     pills = preview.get("pills", [])
     if not recipients:
         print("No active recipients for initial-hub")
         return
+    effective_recipients = [override_to] if override_to else recipients
     msg = build_message(
         sender=sender,
         to_list=[sender],
-        bcc_list=recipients,
+        bcc_list=effective_recipients,
         subject=preview["subject"],
         html=preview["html"],
         text=preview["text"],
     )
     if not dry_run:
         smtp_send(sender, password, msg)
-        mark_sent(client, {
-            "kind": "initial-hub",
-            "recipients": len(recipients),
-            "pills": len(pills),
-        })
-    print(f"initial-hub: recipients={len(recipients)} pills={len(pills)} dry_run={dry_run}")
+        if not override_to:
+            mark_sent(client, {
+                "kind": "initial-hub",
+                "recipients": len(recipients),
+                "pills": len(pills),
+            })
+    print(f"initial-hub: recipients={len(effective_recipients)} pills={len(pills)} dry_run={dry_run} override_to={override_to or '-'}")
 
 
-def send_daily(client, sender, password, dry_run):
+def send_daily(client, sender, password, dry_run, override_to=None):
     preview = fetch_preview(client, "daily-pills")
     recipients = preview.get("recipients", [])
     pills = preview.get("pills", [])
     if not recipients or not pills:
         print("No pending daily pills to send")
         return
+    effective_recipients = [override_to] if override_to else recipients
     msg = build_message(
         sender=sender,
         to_list=[sender],
-        bcc_list=recipients,
+        bcc_list=effective_recipients,
         subject=preview["subject"],
         html=preview["html"],
         text=preview["text"],
     )
     if not dry_run:
         smtp_send(sender, password, msg)
-        mark_sent(client, {
-            "kind": "daily-pills",
-            "notificationKeys": [pill["notificationKey"] for pill in pills],
-        })
-    print(f"daily-pills: recipients={len(recipients)} pills={len(pills)} dry_run={dry_run}")
+        if not override_to:
+            mark_sent(client, {
+                "kind": "daily-pills",
+                "notificationKeys": [pill["notificationKey"] for pill in pills],
+            })
+    print(f"daily-pills: recipients={len(effective_recipients)} pills={len(pills)} dry_run={dry_run} override_to={override_to or '-'}")
 
 
-def send_weekly(client, sender, password, dry_run):
+def send_weekly(client, sender, password, dry_run, override_to=None):
     previews = fetch_preview(client, "weekly-comments")
     if not previews:
         print("No pending weekly comment digests")
@@ -140,7 +144,7 @@ def send_weekly(client, sender, password, dry_run):
     for digest in previews:
         msg = build_message(
             sender=sender,
-            to_list=[digest["authorEmail"]],
+            to_list=[override_to or digest["authorEmail"]],
             bcc_list=[],
             subject=digest["subject"],
             html=digest["html"],
@@ -148,9 +152,10 @@ def send_weekly(client, sender, password, dry_run):
         )
         if not dry_run:
             smtp_send(sender, password, msg)
-            sent_comment_ids.extend(digest["commentIds"])
-        print(f"weekly-comments: author={digest['authorEmail']} comments={len(digest['commentIds'])} dry_run={dry_run}")
-    if sent_comment_ids and not dry_run:
+            if not override_to:
+                sent_comment_ids.extend(digest["commentIds"])
+        print(f"weekly-comments: author={override_to or digest['authorEmail']} comments={len(digest['commentIds'])} dry_run={dry_run}")
+    if sent_comment_ids and not dry_run and not override_to:
         mark_sent(client, {
             "kind": "weekly-comments",
             "commentIds": sent_comment_ids,
@@ -162,8 +167,9 @@ def main():
     parser.add_argument("--kind", choices=["initial-hub", "daily-pills", "weekly-comments"], required=True)
     parser.add_argument("--base-url", default="https://repositorio-para-web-pildoras.svallejo-351.workers.dev")
     parser.add_argument("--admin-email", default="svallejoi@icloud.com")
-    parser.add_argument("--sender-email", default="svallejo@icloud.com")
+    parser.add_argument("--sender-email", default="svallejoi@icloud.com")
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--override-to")
     args = parser.parse_args()
 
     password = os.environ.get("ICLOUD_APP_PASSWORD")
@@ -176,11 +182,11 @@ def main():
         login_admin(client, args.admin_email)
 
         if args.kind == "initial-hub":
-            send_initial(client, args.sender_email, password, args.dry_run)
+            send_initial(client, args.sender_email, password, args.dry_run, args.override_to)
         elif args.kind == "daily-pills":
-            send_daily(client, args.sender_email, password, args.dry_run)
+            send_daily(client, args.sender_email, password, args.dry_run, args.override_to)
         else:
-            send_weekly(client, args.sender_email, password, args.dry_run)
+            send_weekly(client, args.sender_email, password, args.dry_run, args.override_to)
         return 0
     finally:
         client.close()
