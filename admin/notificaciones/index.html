@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notificaciones · Hub IA Isaval</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Lora:wght@600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root { --bg:#f3f6f9; --panel:#fff; --ink:#1f2c3a; --muted:#5c6b79; --accent:#0f5f94; --accent-dark:#10314d; --line:#d8e0e8; --ok:#1f7a4e; --warn:#8d5d12; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:"IBM Plex Sans",sans-serif; color:var(--ink); background:radial-gradient(circle at 8% 5%,#d9e8f4 0,transparent 22%),radial-gradient(circle at 90% 0%,#e9eef3 0,transparent 24%),var(--bg); }
+    .shell { max-width:1240px; margin:30px auto; padding:0 18px; }
+    .panel { background:var(--panel); border:1px solid var(--line); border-radius:16px; box-shadow:0 14px 36px rgba(18,37,54,.08); overflow:hidden; }
+    .header { padding:24px 28px; color:#fff; background:linear-gradient(110deg,var(--accent-dark) 0%,var(--accent) 56%,#1577af 100%); }
+    .header h1 { margin:6px 0 8px; font-family:"Lora",serif; font-size:clamp(1.9rem,3vw,2.4rem); }
+    .header p { margin:0; max-width:820px; opacity:.94; }
+    .topnav { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px; }
+    .navbtn { display:inline-block; text-decoration:none; color:#fff; border:1px solid rgba(255,255,255,.4); background:rgba(255,255,255,.15); border-radius:8px; padding:8px 12px; font-size:.9rem; font-weight:600; }
+    .content { padding:24px 28px 30px; display:grid; gap:18px; }
+    .card { border:1px solid var(--line); border-radius:14px; padding:18px; background:#fbfdff; }
+    .card h2 { margin:0 0 8px; color:var(--accent); }
+    .muted { color:var(--muted); line-height:1.6; }
+    .meta { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-top:14px; }
+    .stat { border:1px solid var(--line); border-radius:12px; background:#fff; padding:14px; }
+    .stat small { display:block; color:var(--muted); margin-bottom:6px; }
+    .stat strong { font-size:1.25rem; }
+    .actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
+    .btn { border:1px solid #0f5a8c; background:#0f5f94; color:#fff; border-radius:10px; padding:10px 14px; font:inherit; font-weight:700; cursor:pointer; }
+    .btn.secondary { background:#fff; color:#1f2c3a; border-color:#cfd8e1; }
+    .btn[disabled] { opacity:.65; cursor:wait; }
+    .status { margin-top:14px; font-size:.95rem; }
+    .status.ok { color:var(--ok); }
+    .status.warn { color:var(--warn); }
+    .preview-box { border:1px solid var(--line); border-radius:12px; background:#fff; min-height:240px; overflow:hidden; }
+    iframe { width:100%; height:640px; border:0; background:#fff; }
+    .code { margin-top:14px; padding:14px; border-radius:12px; background:#fff; border:1px solid var(--line); font-size:.92rem; white-space:pre-wrap; color:#33485c; }
+    table { width:100%; border-collapse:collapse; background:#fff; border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+    th, td { text-align:left; padding:12px; border-bottom:1px solid #e6edf3; vertical-align:top; }
+    th { background:#f6f9fc; color:#345068; font-size:.86rem; text-transform:uppercase; letter-spacing:.04em; }
+    tr:last-child td { border-bottom:0; }
+    @media (max-width:900px) { .meta { grid-template-columns:1fr; } iframe { height:420px; } }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="panel">
+      <div class="header">
+        <div class="topnav">
+          <a class="navbtn" href="/admin/">Volver a administración</a>
+          <a class="navbtn" href="/admin/accesos/">Ir a dashboard</a>
+          <a class="navbtn" href="/admin/invitados/">Ir a invitados</a>
+          <a class="navbtn" href="#" data-admin-logout>Cerrar sesión</a>
+        </div>
+        <p>Automatización de avisos</p>
+        <h1>Notificaciones del Hub</h1>
+        <p>Desde aquí puedes revisar el borrador del correo inicial a todos los invitados activos y lanzar manualmente el envío cuando Microsoft 365 esté listo.</p>
+      </div>
+      <div class="content">
+        <section class="card">
+          <h2>Correo inicial a todo el colectivo</h2>
+          <p class="muted">Este envío reúne de golpe todas las píldoras ya publicadas. Es independiente del aviso diario normal de nuevas publicaciones.</p>
+          <div class="meta" id="meta"></div>
+          <div class="actions">
+            <button class="btn secondary" id="reload-preview">Actualizar borrador</button>
+            <button class="btn" id="send-initial">Enviar correo inicial</button>
+          </div>
+          <div class="status" id="status"></div>
+        </section>
+
+        <section class="card">
+          <h2>Vista previa HTML</h2>
+          <div class="preview-box"><iframe id="preview-frame" title="Vista previa del correo"></iframe></div>
+        </section>
+
+        <section class="card">
+          <h2>Versión texto</h2>
+          <div class="code" id="text-preview">Cargando…</div>
+        </section>
+
+        <section class="card">
+          <h2>Estado y últimos envíos</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Tipo</th>
+                <th>Estado</th>
+                <th>Detalle</th>
+              </tr>
+            </thead>
+            <tbody id="runs-body"></tbody>
+          </table>
+        </section>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      const fetchOptions = { credentials: 'same-origin', cache: 'no-store' };
+      const metaEl = document.getElementById('meta');
+      const statusEl = document.getElementById('status');
+      const frameEl = document.getElementById('preview-frame');
+      const textPreviewEl = document.getElementById('text-preview');
+      const runsBody = document.getElementById('runs-body');
+      const sendBtn = document.getElementById('send-initial');
+      const reloadBtn = document.getElementById('reload-preview');
+      let currentPreview = null;
+
+      function fmtDate(value) {
+        if (!value) return '-';
+        const d = new Date(value);
+        return Number.isNaN(d.getTime()) ? '-' : d.toLocaleString('es-ES');
+      }
+
+      function stat(label, value) {
+        return `<div class="stat"><small>${label}</small><strong>${value}</strong></div>`;
+      }
+
+      async function loadPreview() {
+        const response = await fetch('/api/admin-notifications/preview?kind=initial-hub', fetchOptions);
+        if (!response.ok) throw new Error('preview_failed');
+        const payload = await response.json();
+        currentPreview = payload.preview;
+        metaEl.innerHTML = [
+          stat('Destinatarios activos', currentPreview.recipients.length),
+          stat('Píldoras incluidas', currentPreview.pills.length),
+          stat('Asunto', currentPreview.subject),
+        ].join('');
+        frameEl.srcdoc = currentPreview.html;
+        textPreviewEl.textContent = currentPreview.text;
+      }
+
+      async function loadStatus() {
+        const response = await fetch('/api/admin-notifications/status', fetchOptions);
+        if (!response.ok) throw new Error('status_failed');
+        const payload = await response.json();
+        const status = payload.status || {};
+        const initial = status.initialAnnouncement;
+        if (initial) {
+          statusEl.className = 'status ok';
+          statusEl.textContent = `Último envío inicial: ${fmtDate(initial.at)} · destinatarios ${initial.recipients} · píldoras ${initial.pills}`;
+        } else {
+          statusEl.className = 'status warn';
+          statusEl.textContent = 'El correo inicial aún no ha sido enviado.';
+        }
+
+        runsBody.innerHTML = '';
+        (status.recentRuns || []).forEach((run) => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${fmtDate(run.at)}</td>
+            <td>${run.kind || '-'}</td>
+            <td>${run.status || '-'}</td>
+            <td>${run.detail || '-'}</td>
+          `;
+          runsBody.appendChild(tr);
+        });
+      }
+
+      async function loadAll() {
+        await Promise.all([loadPreview(), loadStatus()]);
+      }
+
+      reloadBtn.addEventListener('click', function () {
+        statusEl.textContent = 'Actualizando borrador…';
+        loadAll()
+          .catch(() => {
+            statusEl.className = 'status warn';
+            statusEl.textContent = 'No se ha podido cargar la información de notificaciones.';
+          });
+      });
+
+      sendBtn.addEventListener('click', async function () {
+        if (!window.confirm('Se enviará el correo inicial a todos los invitados activos. ¿Quieres continuar?')) return;
+        sendBtn.disabled = true;
+        sendBtn.textContent = 'Enviando…';
+        statusEl.className = 'status';
+        statusEl.textContent = 'Lanzando envío…';
+        try {
+          const response = await fetch('/api/admin-notifications/send-initial', {
+            method: 'POST',
+            credentials: 'same-origin',
+            cache: 'no-store',
+          });
+          const payload = await response.json().catch(() => ({}));
+          if (!response.ok) throw new Error(payload.error || 'send_failed');
+          statusEl.className = 'status ok';
+          statusEl.textContent = `Correo inicial enviado. Destinatarios: ${payload.recipients}. Píldoras: ${payload.pills}.`;
+          await loadStatus();
+        } catch (error) {
+          statusEl.className = 'status warn';
+          statusEl.textContent = `No se ha podido enviar el correo: ${error.message}`;
+        } finally {
+          sendBtn.disabled = false;
+          sendBtn.textContent = 'Enviar correo inicial';
+        }
+      });
+
+      document.addEventListener('click', async function (event) {
+        const trigger = event.target.closest('[data-admin-logout]');
+        if (!trigger) return;
+        event.preventDefault();
+        try {
+          await fetch('/api/admin-auth/logout', { method: 'POST', credentials: 'same-origin' });
+        } catch (e) {}
+        window.location.href = '/admin/login/';
+      });
+
+      loadAll().catch(() => {
+        statusEl.className = 'status warn';
+        statusEl.textContent = 'No se ha podido cargar la consola de notificaciones.';
+      });
+    })();
+  </script>
+</body>
+</html>

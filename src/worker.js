@@ -554,6 +554,14 @@ async function handleApi(request, url, store, session, env) {
   if (request.method === "GET" && url.pathname === "/api/admin-notifications/preview") {
     const kind = String(url.searchParams.get("kind") || "").trim().toLowerCase();
     const now = new Date();
+    if (kind === "initial-hub") {
+      const preview = await store.buildInitialHubAnnouncement({
+        now,
+        timeZone: env.NOTIFY_TIMEZONE || NOTIFICATION_TIMEZONE,
+        hubBaseUrl: getHubBaseUrl(env),
+      });
+      return json({ ok: true, kind, preview });
+    }
     if (kind === "daily-pills") {
       const preview = await store.buildDailyPublicationNotifications({
         now,
@@ -571,6 +579,56 @@ async function handleApi(request, url, store, session, env) {
       return json({ ok: true, kind, preview });
     }
     return json({ error: "Invalid kind" }, 400);
+  }
+
+  if (request.method === "GET" && url.pathname === "/api/admin-notifications/status") {
+    const status = await store.getNotificationAdminStatus();
+    return json({ ok: true, status });
+  }
+
+  if (request.method === "POST" && url.pathname === "/api/admin-notifications/send-initial") {
+    const preview = await store.buildInitialHubAnnouncement({
+      now: new Date(),
+      timeZone: env.NOTIFY_TIMEZONE || NOTIFICATION_TIMEZONE,
+      hubBaseUrl: getHubBaseUrl(env),
+    });
+
+    if (!preview.recipients.length) {
+      return json({ error: "No active recipients" }, 400);
+    }
+
+    const result = await sendMailViaGraph({
+      env,
+      senderEmail: cleanEmail(env.NOTIFY_SENDER_EMAIL || "svallejo@isaval.es"),
+      to: [cleanEmail(env.NOTIFY_SENDER_EMAIL || "svallejo@isaval.es")],
+      bcc: preview.recipients,
+      subject: preview.subject,
+      html: preview.html,
+      text: preview.text,
+    });
+
+    if (!result.ok) {
+      await store.logNotificationRun({
+        kind: "initial-hub",
+        status: "error",
+        at: new Date().toISOString(),
+        detail: result.error,
+      });
+      return json({ error: result.error }, 500);
+    }
+
+    await store.markInitialAnnouncementSent({
+      at: new Date().toISOString(),
+      recipients: preview.recipients.length,
+      pills: preview.pills.length,
+    });
+    await store.logNotificationRun({
+      kind: "initial-hub",
+      status: "sent",
+      at: new Date().toISOString(),
+      detail: `Recipients: ${preview.recipients.length}. Pills: ${preview.pills.length}.`,
+    });
+    return json({ ok: true, sent: true, recipients: preview.recipients.length, pills: preview.pills.length });
   }
 
   if (request.method === "POST" && url.pathname === "/api/invited-users") {
@@ -1152,7 +1210,7 @@ export class HubData extends DurableObject {
   }
 
   async getNotificationState() {
-    return (await this.ctx.storage.get("notification-state")) || { notifiedPills: {}, digestedComments: {}, runs: [] };
+    return (await this.ctx.storage.get("notification-state")) || { notifiedPills: {}, digestedComments: {}, runs: [], initialAnnouncement: null };
   }
 
   async saveNotificationState(state) {
@@ -1183,6 +1241,20 @@ export class HubData extends DurableObject {
     runs.unshift({ id: crypto.randomUUID(), ...entry });
     state.runs = runs.slice(0, 100);
     await this.saveNotificationState(state);
+  }
+
+  async markInitialAnnouncementSent(payload) {
+    const state = await this.getNotificationState();
+    state.initialAnnouncement = payload;
+    await this.saveNotificationState(state);
+  }
+
+  async getNotificationAdminStatus() {
+    const state = await this.getNotificationState();
+    return {
+      initialAnnouncement: state.initialAnnouncement || null,
+      recentRuns: Array.isArray(state.runs) ? state.runs.slice(0, 20) : [],
+    };
   }
 
   async getActiveRecipientEmails() {
@@ -1257,6 +1329,122 @@ export class HubData extends DurableObject {
     ];
 
     return { kind: "daily-pills", recipients, pills, subject, html, text: textLines.join("\n") };
+  }
+
+  async buildInitialHubAnnouncement({ now, timeZone, hubBaseUrl }) {
+    const pills = PUBLISHED_PILLS
+      .filter((pill) => pill.lang === "es")
+      .sort((a, b) => {
+        if (a.type !== b.type) return a.type === "executive" ? -1 : 1;
+        return new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime();
+      })
+      .map((pill, index, all) => {
+        const withinTypeIndex = all.filter((candidate) => candidate.type === pill.type && new Date(candidate.publishedAt).getTime() <= new Date(pill.publishedAt).getTime()).length;
+        return {
+          ...pill,
+          publishedLabel: formatDateTime(pill.publishedAt, timeZone),
+          absoluteUrl: `${hubBaseUrl}${pill.urlPath}`,
+          ordinal: withinTypeIndex,
+        };
+      });
+
+    const executive = pills.filter((pill) => pill.type === "executive");
+    const collaborative = pills.filter((pill) => pill.type === "collaborative");
+    const recipients = await this.getActiveRecipientEmails();
+    const subject = "Hub IA Isaval · Píldoras ya publicadas";
+
+    const executiveHtml = executive.map((pill, index) => `
+      <tr>
+        <td style="padding:14px 0;border-top:1px solid #dfe6ed;">
+          <div style="font-family:Arial,sans-serif;font-size:18px;font-weight:700;color:#1f2c3a;">${index + 1}. ${escapeHtml(pill.title)}</div>
+          <div style="font-family:Arial,sans-serif;font-size:14px;line-height:1.6;color:#536271;margin-top:6px;">${escapeHtml(this.getInitialDescription(pill.slug))}</div>
+          <div style="margin-top:8px;"><a href="${escapeHtml(pill.absoluteUrl)}" style="font-family:Arial,sans-serif;font-size:14px;font-weight:600;color:#0f5f94;text-decoration:none;">Abrir en el Hub</a></div>
+        </td>
+      </tr>`).join("");
+
+    const collaborativeHtml = collaborative.map((pill) => `
+      <tr>
+        <td style="padding:14px 0;border-top:1px solid #dfe6ed;">
+          <div style="font-family:Arial,sans-serif;font-size:18px;font-weight:700;color:#1f2c3a;">${escapeHtml(pill.author)} · ${escapeHtml(pill.title)}</div>
+          <div style="font-family:Arial,sans-serif;font-size:14px;line-height:1.6;color:#536271;margin-top:6px;">${escapeHtml(this.getInitialDescription(pill.slug))}</div>
+          <div style="margin-top:8px;"><a href="${escapeHtml(pill.absoluteUrl)}" style="font-family:Arial,sans-serif;font-size:14px;font-weight:600;color:#0f5f94;text-decoration:none;">Abrir en el Hub</a></div>
+        </td>
+      </tr>`).join("");
+
+    const html = `<!doctype html>
+<html lang="es"><body style="margin:0;padding:0;background:#f3f6f9;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f3f6f9;padding:32px 16px;">
+    <tr><td align="center">
+      <table role="presentation" width="720" cellpadding="0" cellspacing="0" style="width:720px;max-width:720px;background:#ffffff;border:1px solid #d8e0e8;border-radius:14px;overflow:hidden;">
+        <tr><td style="padding:28px 32px;background:linear-gradient(110deg,#10314d 0%,#0f5f94 56%,#1577af 100%);color:#ffffff;">
+          <div style="font-family:Arial,sans-serif;font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;opacity:.9;">Hub IA Isaval</div>
+          <div style="font-family:Georgia,serif;font-size:42px;line-height:1.1;font-weight:700;margin-top:10px;">Píldoras ya publicadas</div>
+          <div style="font-family:Arial,sans-serif;font-size:18px;line-height:1.5;margin-top:12px;max-width:560px;opacity:.95;">Reunimos en un solo envío todas las piezas disponibles hasta ahora para que podáis localizarlas y entrar directamente en las que más os interesen.</div>
+        </td></tr>
+        <tr><td style="padding:28px 32px 8px 32px;"><div style="font-family:Arial,sans-serif;font-size:14px;line-height:1.7;color:#425466;">Equipo,<br><br>Comparto en un único envío las píldoras que ya están disponibles en el Hub interno de IA de Isaval.<br><br>La idea es sencilla: que tengáis localizadas, en un solo correo, todas las piezas publicadas hasta ahora y podáis entrar directamente en aquellas que más os interesen.</div></td></tr>
+        <tr><td style="padding:0 32px 24px 32px;">
+          <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;border:1px solid #d6e4ef;background:#f3f8fd;border-radius:10px;">
+            <tr><td style="padding:14px 16px;">
+              <div style="font-family:Arial,sans-serif;font-size:13px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;color:#2e5875;margin-bottom:6px;">Acceso al Hub</div>
+              <div style="font-family:Arial,sans-serif;font-size:15px;line-height:1.6;"><a href="${escapeHtml(hubBaseUrl)}" style="color:#0f5f94;text-decoration:none;font-weight:600;">${escapeHtml(hubBaseUrl.replace(/^https?:\/\//, ""))}</a></div>
+            </td></tr>
+          </table>
+        </td></tr>
+        <tr><td style="padding:0 32px 10px 32px;"><div style="font-family:Arial,sans-serif;font-size:13px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;color:#2e5875;margin-bottom:10px;">Píldoras ejecutivas</div></td></tr>
+        <tr><td style="padding:0 32px 0 32px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">${executiveHtml}</table></td></tr>
+        <tr><td style="padding:26px 32px 10px 32px;"><div style="font-family:Arial,sans-serif;font-size:13px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;color:#2e5875;margin-bottom:10px;">Píldoras colaborativas del equipo</div></td></tr>
+        <tr><td style="padding:0 32px 8px 32px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">${collaborativeHtml}</table></td></tr>
+        <tr><td style="padding:24px 32px 32px 32px;"><div style="font-family:Arial,sans-serif;font-size:14px;line-height:1.7;color:#536271;">A partir de aquí, los siguientes avisos se limitarán a comunicar únicamente las nuevas píldoras que se vayan incorporando al repositorio.<br><br>Un saludo,<br>Santiago Vallejo</div></td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body></html>`;
+
+    const text = [
+      "Equipo,",
+      "",
+      "Comparto en un único envío las píldoras que ya están disponibles en el Hub interno de IA de Isaval.",
+      "",
+      "Acceso al Hub:",
+      hubBaseUrl,
+      "",
+      "Píldoras ejecutivas",
+      ...executive.flatMap((pill, index) => [
+        `${index + 1}. ${pill.title}`,
+        `   ${this.getInitialDescription(pill.slug)}`,
+        `   ${pill.absoluteUrl}`,
+      ]),
+      "",
+      "Píldoras colaborativas del equipo",
+      ...collaborative.flatMap((pill) => [
+        `${pill.author} · ${pill.title}`,
+        `   ${this.getInitialDescription(pill.slug)}`,
+        `   ${pill.absoluteUrl}`,
+      ]),
+      "",
+      "A partir de aquí, los siguientes avisos se limitarán a comunicar únicamente las nuevas píldoras que se vayan incorporando al repositorio.",
+      "",
+      "Un saludo,",
+      "Santiago Vallejo",
+    ].join("\n");
+
+    return { kind: "initial-hub", recipients, pills, subject, html, text };
+  }
+
+  getInitialDescription(slug) {
+    const descriptions = {
+      tenantflow: "Caso práctico de construcción de una aplicación funcional con ayuda de Codex.",
+      "pildora-1": "Punto de partida del proyecto: por qué la IA exige ya una lectura estratégica.",
+      "pildora-2": "La ventaja estructural está en convertir datos propios en decisiones y aprendizaje.",
+      "pildora-3": "Por qué sin dato correcto, cuidado y gobernado no hay IA con valor sostenido.",
+      "pildora-4": "Cómo convertir reflexión propia en una pieza web publicable dentro del Hub.",
+      "pildora-5": "Primer caso real de aplicación operativa de IA en Pinturas Isaval.",
+      "pildora-6": "Por qué el verdadero impacto de la IA no está en redactar mejor, sino en cambiar cómo se trabaja.",
+      "colaborativa-1": "Lectura asistida de licitaciones orientada a oportunidad comercial.",
+      "colaborativa-2": "Uso de IA para transformar documentación financiera en lectura útil para decisión.",
+      "colaborativa-3": "Caso práctico de visualización operativa y mejora de lectura productiva.",
+    };
+    return descriptions[slug] || "";
   }
 
   async buildWeeklyCommentDigests({ now, timeZone, hubBaseUrl }) {
