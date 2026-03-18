@@ -157,6 +157,30 @@
     .podium-name { font-weight: 700; font-size: 1.02rem; margin-bottom: 4px; }
     .podium-score { color: var(--accent); font-weight: 700; margin-bottom: 4px; }
     .podium-meta { color: var(--muted); font-size: 0.9rem; }
+    .searchbar {
+      width: 100%;
+      border: 1px solid #cfd8e1;
+      border-radius: 10px;
+      padding: 11px 13px;
+      font: inherit;
+      color: var(--ink);
+      background: #fff;
+      margin-top: 10px;
+    }
+    .search-note {
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin-top: 8px;
+    }
+    .collab-list {
+      display: grid;
+      gap: 24px;
+    }
+    .author-line {
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin: 2px 0 6px;
+    }
     .highlight strong { color: var(--ok); }
     footer {
       border-top: 1px solid var(--line);
@@ -198,29 +222,44 @@
         <div class="podium-grid" id="collaborative-podium"></div>
       </section>
       <section>
+        <h2>Motor de comentarios útiles</h2>
+        <p>Top 3 de usuarios con más comentarios firmados en el hub. En caso de empate, gana la participación más reciente.</p>
+        <div class="podium-grid" id="comment-motors"></div>
+      </section>
+      <section>
+        <h2>Buscar por autor</h2>
+        <input class="searchbar" id="author-search" placeholder="Escribe un nombre para filtrar colaborativas por autor" />
+        <div class="search-note" id="author-search-note">Mostrando todas las colaborativas publicadas.</div>
+      </section>
+      <div class="collab-list" id="collab-list">
+      <section class="collab-entry" data-author="Luis Merelo">
         <div class="card">
           <span class="tag">Publicada</span>
           <h2 style="margin:0 0 8px;font-size:1.08rem;">Colaborativa 1 · Del pliego al dato útil</h2>
+          <div class="author-line">Autor: Luis Merelo</div>
           <p>Lectura asistida de licitaciones para convertir documentación compleja en una base más clara, comparable y accionable para negocio.</p>
           <a class="openbtn" href="/projects/colaborativa-1/es/">Abrir</a>
         </div>
       </section>
-      <section>
+      <section class="collab-entry" data-author="Javier Valencia">
         <div class="card">
           <span class="tag">Publicada</span>
           <h2 style="margin:0 0 8px;font-size:1.08rem;">Colaborativa 2 · De la factura al criterio de gestión</h2>
+          <div class="author-line">Autor: Javier Valencia</div>
           <p>Análisis energético de suministros para convertir facturas dispersas en lectura útil, comparable y accionable para una red de tiendas.</p>
           <a class="openbtn" href="/projects/colaborativa-2/es/">Abrir</a>
         </div>
       </section>
-      <section>
+      <section class="collab-entry" data-author="Silvia Soriano">
         <div class="card">
           <span class="tag">Publicada</span>
           <h2 style="margin:0 0 8px;font-size:1.08rem;">Colaborativa 3 · De Excel a dashboard OEE</h2>
+          <div class="author-line">Autor: Silvia Soriano</div>
           <p>Transformación de datos de productividad del ERP en un dashboard operativo para leer rendimiento industrial y señalar el reto real: la calidad del dato.</p>
           <a class="openbtn" href="/projects/colaborativa-3/es/">Abrir</a>
         </div>
       </section>
+      </div>
       <section class="highlight">
         <strong>Criterio de publicación:</strong> piezas cortas, útiles y conectadas con procesos reales de trabajo.
       </section>
@@ -230,8 +269,23 @@
   <script>
     (function () {
       const root = document.getElementById('collaborative-podium');
-      if (!root) return;
+      const commentsRoot = document.getElementById('comment-motors');
+      const searchInput = document.getElementById('author-search');
+      const searchNote = document.getElementById('author-search-note');
+      const entries = Array.from(document.querySelectorAll('.collab-entry'));
+      if (!root || !commentsRoot) return;
       const medals = ['gold', 'silver', 'bronze'];
+
+      function renderMotorCard(item, index, label) {
+        return `
+          <article class="podium-card">
+            <div class="podium-place ${medals[index] || 'bronze'}">${index + 1}</div>
+            <div class="podium-name">${item.author || item.name}</div>
+            <div class="podium-score">${item.count} ${label}</div>
+            <div class="podium-meta">Última actividad: ${new Date(item.latestPublishedAt || item.latestCommentAt).toLocaleDateString('es-ES')}</div>
+          </article>
+        `;
+      }
 
       fetch('/api/collaborative-podium?lang=es', {
         credentials: 'same-origin',
@@ -249,10 +303,30 @@
               <div class="podium-meta">Última publicación: ${new Date(item.latestPublishedAt).toLocaleDateString('es-ES')}</div>
             </article>
           `).join('');
+
+          const commentMotors = data.commentMotors || [];
+          commentsRoot.innerHTML = commentMotors.length
+            ? commentMotors.map((item, index) => renderMotorCard(item, index, `comentario${item.count === 1 ? '' : 's'}`)).join('')
+            : '<div class="card">Todavía no hay suficientes comentarios firmados para mostrar ranking.</div>';
         })
         .catch(() => {
           root.innerHTML = '<div class="card">No se ha podido cargar el ranking en este momento.</div>';
+          commentsRoot.innerHTML = '<div class="card">No se ha podido cargar el ranking en este momento.</div>';
         });
+
+      searchInput.addEventListener('input', () => {
+        const q = searchInput.value.trim().toLowerCase();
+        let visible = 0;
+        entries.forEach((entry) => {
+          const author = (entry.dataset.author || '').toLowerCase();
+          const match = !q || author.includes(q);
+          entry.style.display = match ? '' : 'none';
+          if (match) visible += 1;
+        })
+        searchNote.textContent = q
+          ? `Mostrando ${visible} colaborativa${visible === 1 ? '' : 's'} para “${searchInput.value.trim()}”.`
+          : 'Mostrando todas las colaborativas publicadas.';
+      });
     })();
   </script>
 </body>

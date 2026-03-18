@@ -837,7 +837,47 @@ export class HubData extends DurableObject {
       updatedAt: new Date().toISOString(),
       ranking,
       podium: ranking.slice(0, 3),
+      commentMotors: await this.getCommentMotors(),
     };
+  }
+
+  async getCommentMotors() {
+    const entries = await this.ctx.storage.list({ prefix: "comments:" });
+    const byUser = new Map();
+
+    for (const [, comments] of entries) {
+      for (const comment of comments || []) {
+        const email = String(comment.email || "").toLowerCase();
+        if (!email || isTrackingExcludedEmail(email)) continue;
+        const key = comment.userId || email;
+        const current = byUser.get(key) || {
+          userId: comment.userId || null,
+          email,
+          name: comment.name || email,
+          count: 0,
+          latestCommentAt: comment.updatedAt || comment.createdAt || null,
+        };
+        current.count += 1;
+        const currentTime = current.latestCommentAt ? new Date(current.latestCommentAt).getTime() : 0;
+        const commentTime = (comment.updatedAt || comment.createdAt) ? new Date(comment.updatedAt || comment.createdAt).getTime() : 0;
+        if (commentTime >= currentTime) {
+          current.latestCommentAt = comment.updatedAt || comment.createdAt || current.latestCommentAt;
+          current.name = comment.name || current.name;
+          current.email = email || current.email;
+        }
+        byUser.set(key, current);
+      }
+    }
+
+    return Array.from(byUser.values())
+      .sort((a, b) => {
+        if (b.count !== a.count) return b.count - a.count;
+        const at = a.latestCommentAt ? new Date(a.latestCommentAt).getTime() : 0;
+        const bt = b.latestCommentAt ? new Date(b.latestCommentAt).getTime() : 0;
+        if (bt !== at) return bt - at;
+        return a.name.localeCompare(b.name, "es", { sensitivity: "base" });
+      })
+      .slice(0, 3);
   }
 
   async getAccessDashboard() {
