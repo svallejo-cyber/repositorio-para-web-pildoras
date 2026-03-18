@@ -18,6 +18,7 @@ const PUBLISHED_PILLS = [
   { slug: "colaborativa-1", lang: "es", type: "collaborative", title: "Del pliego al dato útil", author: "Luis Merelo", authorEmail: "lmerelo@isaval.es", avatar: "/assets/profile/luis2-360.jpg", publishedAt: "2026-03-14T12:33:48Z", urlPath: "/projects/colaborativa-1/es/" },
   { slug: "colaborativa-2", lang: "es", type: "collaborative", title: "De la factura al criterio de gestión", author: "Javier Valencia", authorEmail: "jvalencia@isaval.es", avatar: "/assets/profile/javi2-360.jpg", publishedAt: "2026-03-17T16:48:17Z", urlPath: "/projects/colaborativa-2/es/" },
   { slug: "colaborativa-3", lang: "es", type: "collaborative", title: "De Excel a dashboard OEE", author: "Silvia Soriano", authorEmail: "ssoriano@isaval.es", avatar: "/assets/profile/silvia-soriano-2-320.jpg", publishedAt: "2026-03-17T17:04:26Z", urlPath: "/projects/colaborativa-3/es/" },
+  { slug: "colaborativa-4", lang: "es", type: "collaborative", title: "De la factura al criterio de control", author: "Juan Carlos Nuñez", authorEmail: "", avatar: "/assets/profile/juan-carlos-nunez.svg", publishedAt: "2026-03-18T20:30:00Z", urlPath: "/projects/colaborativa-4/es/" },
 ];
 const COLLABORATIVE_PILLS = PUBLISHED_PILLS.filter((item) => item.type === "collaborative");
 
@@ -1491,6 +1492,7 @@ export class HubData extends DurableObject {
       "colaborativa-1": "Lectura asistida de licitaciones orientada a oportunidad comercial.",
       "colaborativa-2": "Uso de IA para transformar documentación financiera en lectura útil para decisión.",
       "colaborativa-3": "Caso práctico de visualización operativa y mejora de lectura productiva.",
+      "colaborativa-4": "Revisión de tarifas de transporte para convertir la factura en un criterio de control más útil y escalable.",
     };
     return descriptions[slug] || "";
   }
