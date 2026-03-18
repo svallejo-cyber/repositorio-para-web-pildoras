@@ -7,6 +7,13 @@ const ADMIN_EMAILS = new Set(["svallejoi@icloud.com"]);
 const EXCLUDED_TRACKING_EMAILS = new Set(["svallejo@isaval.es", "svallejoi@icloud.com"]);
 const NOTIFICATION_TIMEZONE = "Europe/Madrid";
 const DEFAULT_HUB_BASE_URL = "https://repositorio-para-web-pildoras.svallejo-351.workers.dev";
+const DEFAULT_INVITED_AVATARS = {
+  "svallejo@isaval.es": "/assets/profile/santiago2-360.jpg",
+  "lmerelo@isaval.es": "/assets/profile/luis2-360.jpg",
+  "jvalencia@isaval.es": "/assets/profile/javi2-360.jpg",
+  "ssoriano@isaval.es": "/assets/profile/silvia-soriano-2-320.jpg",
+  "jcnunez@isaval.es": "/assets/profile/juan-carlos-nunez-360.jpg",
+};
 const PUBLISHED_PILLS = [
   { slug: "tenantflow", lang: "es", type: "executive", title: "TenantFlow", author: "Santiago Vallejo", authorEmail: "svallejo@isaval.es", avatar: "/assets/profile/santiago2-360.jpg", publishedAt: "2026-03-07T23:18:44Z", urlPath: "/projects/tenantflow/es/" },
   { slug: "pildora-1", lang: "es", type: "executive", title: "Algo grande está pasando", author: "Santiago Vallejo", authorEmail: "svallejo@isaval.es", avatar: "/assets/profile/santiago2-360.jpg", publishedAt: "2026-03-11T19:11:50Z", urlPath: "/projects/pildora-1/es/" },
@@ -18,7 +25,7 @@ const PUBLISHED_PILLS = [
   { slug: "colaborativa-1", lang: "es", type: "collaborative", title: "Del pliego al dato útil", author: "Luis Merelo", authorEmail: "lmerelo@isaval.es", avatar: "/assets/profile/luis2-360.jpg", publishedAt: "2026-03-14T12:33:48Z", urlPath: "/projects/colaborativa-1/es/" },
   { slug: "colaborativa-2", lang: "es", type: "collaborative", title: "De la factura al criterio de gestión", author: "Javier Valencia", authorEmail: "jvalencia@isaval.es", avatar: "/assets/profile/javi2-360.jpg", publishedAt: "2026-03-17T16:48:17Z", urlPath: "/projects/colaborativa-2/es/" },
   { slug: "colaborativa-3", lang: "es", type: "collaborative", title: "De Excel a dashboard OEE", author: "Silvia Soriano", authorEmail: "ssoriano@isaval.es", avatar: "/assets/profile/silvia-soriano-2-320.jpg", publishedAt: "2026-03-17T17:04:26Z", urlPath: "/projects/colaborativa-3/es/" },
-  { slug: "colaborativa-4", lang: "es", type: "collaborative", title: "De la factura al criterio de control", author: "Juan Carlos Nuñez", authorEmail: "jcnunez@isaval.es", avatar: "/assets/profile/juan-carlos-nunez.svg", publishedAt: "2026-03-18T20:30:00Z", urlPath: "/projects/colaborativa-4/es/" },
+  { slug: "colaborativa-4", lang: "es", type: "collaborative", title: "De la factura al criterio de control", author: "Juan Carlos Nuñez", authorEmail: "jcnunez@isaval.es", avatar: "/assets/profile/juan-carlos-nunez-360.jpg", publishedAt: "2026-03-18T20:30:00Z", urlPath: "/projects/colaborativa-4/es/" },
 ];
 const COLLABORATIVE_PILLS = PUBLISHED_PILLS.filter((item) => item.type === "collaborative");
 
@@ -87,6 +94,14 @@ function cleanMessage(value) {
     .replace(/\n{3,}/g, "\n\n")
     .trim()
     .slice(0, 1200);
+}
+
+function cleanAvatar(value) {
+  const text = String(value || "").trim();
+  if (!text) return "";
+  if (text.startsWith("data:image/")) return text.slice(0, 500_000);
+  if (text.startsWith("/")) return text.slice(0, 260);
+  return "";
 }
 
 function isValidEmail(value) {
@@ -687,6 +702,7 @@ async function handleApi(request, url, store, session, env) {
     const name = cleanName(payload.name);
     const email = cleanEmail(payload.email);
     const department = cleanDepartment(payload.department || "");
+    const avatar = cleanAvatar(payload.avatar || "");
 
     if (!name || !email) {
       return json({ error: "Missing name or email" }, 400);
@@ -695,7 +711,7 @@ async function handleApi(request, url, store, session, env) {
       return json({ error: "Invalid email" }, 400);
     }
 
-    const user = await store.addInvitedUser({ name, department, email });
+    const user = await store.addInvitedUser({ name, department, email, avatar });
     if (!user.ok) return json({ error: user.error }, 409);
     return json({ ok: true, user: user.user }, 201);
   }
@@ -709,8 +725,9 @@ async function handleApi(request, url, store, session, env) {
       const name = cleanName(item.name || item.displayName || item["Display Name"] || "");
       const email = cleanEmail(item.email || item["E-mail Address"] || item.emailAddress || "");
       const department = cleanDepartment(item.department || "");
+      const avatar = cleanAvatar(item.avatar || "");
       if (!name || !email || !isValidEmail(email)) continue;
-      cleaned.push({ name, email, department });
+      cleaned.push({ name, email, department, avatar });
     }
 
     const result = await store.importInvitedUsers(cleaned);
@@ -727,6 +744,7 @@ async function handleApi(request, url, store, session, env) {
     const name = cleanName(payload.name);
     const email = cleanEmail(payload.email);
     const department = cleanDepartment(payload.department || "");
+    const avatar = cleanAvatar(payload.avatar || "");
 
     if (!name || !email) {
       return json({ error: "Missing name or email" }, 400);
@@ -735,7 +753,7 @@ async function handleApi(request, url, store, session, env) {
       return json({ error: "Invalid email" }, 400);
     }
 
-    const updated = await store.updateInvitedUser({ id: userId, name, department, email });
+    const updated = await store.updateInvitedUser({ id: userId, name, department, email, avatar });
     if (!updated.ok) return json({ error: updated.error }, updated.error === "User not found" ? 404 : 409);
     return json({ ok: true, user: updated.user });
   }
@@ -922,6 +940,7 @@ async function sendMailViaGraph({ env, senderEmail, to = [], bcc = [], subject, 
 }
 
 function ensureUserMetrics(user) {
+  const fallbackAvatar = DEFAULT_INVITED_AVATARS[cleanEmail(user?.email)] || "";
   return {
     accessCount: 0,
     firstAccessAt: null,
@@ -929,6 +948,7 @@ function ensureUserMetrics(user) {
     lastPath: null,
     lastLanguage: null,
     ...user,
+    avatar: cleanAvatar(user?.avatar) || fallbackAvatar,
   };
 }
 
@@ -1021,7 +1041,7 @@ export class HubData extends DurableObject {
     await this.ctx.storage.put("invited-users", users);
   }
 
-  async addInvitedUser({ name, department, email }) {
+  async addInvitedUser({ name, department, email, avatar }) {
     const users = await this.getInvitedUsers();
     const exists = users.some((user) => user.email === email);
     if (exists) return { ok: false, error: "Email already exists" };
@@ -1032,6 +1052,7 @@ export class HubData extends DurableObject {
       name,
       department: department || "",
       email,
+      avatar: cleanAvatar(avatar || ""),
       active: true,
       createdAt: now,
       updatedAt: now,
@@ -1058,6 +1079,7 @@ export class HubData extends DurableObject {
         name: item.name,
         department: item.department || "",
         email: item.email,
+        avatar: cleanAvatar(item.avatar || ""),
         active: true,
         createdAt: now,
         updatedAt: now,
@@ -1071,7 +1093,7 @@ export class HubData extends DurableObject {
     return { added, skipped, total: users.length };
   }
 
-  async updateInvitedUser({ id, name, department, email }) {
+  async updateInvitedUser({ id, name, department, email, avatar }) {
     const users = await this.getInvitedUsers();
     const index = users.findIndex((user) => user.id === id);
     if (index === -1) return { ok: false, error: "User not found" };
@@ -1083,6 +1105,7 @@ export class HubData extends DurableObject {
       name,
       department: department || "",
       email,
+      avatar: cleanAvatar(avatar || ""),
       updatedAt: new Date().toISOString(),
     };
     await this.saveInvitedUsers(users);

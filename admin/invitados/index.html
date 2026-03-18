@@ -25,6 +25,7 @@
     .field { display: grid; gap: 6px; margin-bottom: 12px; }
     .field label { font-size: .9rem; font-weight: 600; color: #304558; }
     .field input { width: 100%; border: 1px solid #cfd8e1; border-radius: 10px; padding: 10px 12px; font: inherit; background: #fff; color: var(--ink); }
+    .field input[type="file"] { padding: 8px; }
     .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
     .btn { border: 1px solid var(--accent); background: var(--accent); color: #fff; border-radius: 10px; padding: 10px 14px; font: inherit; font-weight: 600; cursor: pointer; }
     .btn.secondary { background: #fff; color: var(--accent); }
@@ -47,6 +48,13 @@
     .message { margin-top: 12px; font-size: .92rem; color: var(--muted); }
     .message.error { color: var(--red); }
     .message.ok { color: var(--green); }
+    .avatar-preview { width: 92px; height: 92px; border-radius: 18px; border: 1px solid var(--line); background: linear-gradient(135deg, #eef4f9, #f9fbfd); overflow: hidden; display: grid; place-items: center; color: #6a7a89; font-weight: 700; }
+    .avatar-preview img { width: 100%; height: 100%; object-fit: cover; object-position: center 18%; display: block; }
+    .avatar-inline { display: flex; align-items: center; gap: 12px; }
+    .table-user { display: flex; align-items: center; gap: 12px; min-width: 220px; }
+    .table-avatar { width: 44px; height: 44px; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); background: linear-gradient(135deg, #eef4f9, #f9fbfd); flex: 0 0 auto; display: grid; place-items: center; color: #6a7a89; font-size: .78rem; font-weight: 700; }
+    .table-avatar img { width: 100%; height: 100%; object-fit: cover; object-position: center 18%; display: block; }
+    .hint { font-size: .84rem; color: var(--muted); }
     @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
   </style>
 </head>
@@ -68,6 +76,7 @@
             <h2>Ficha de usuario</h2>
             <form id="invite-form">
               <input type="hidden" id="user-id" />
+              <input type="hidden" id="avatar-data" />
               <div class="field">
                 <label for="name">Nombre</label>
                 <input id="name" name="name" maxlength="60" required />
@@ -75,6 +84,19 @@
               <div class="field">
                 <label for="email">Email</label>
                 <input id="email" name="email" type="email" maxlength="160" required />
+              </div>
+              <div class="field">
+                <label for="avatar-file">Foto de perfil</label>
+                <div class="avatar-inline">
+                  <div class="avatar-preview" id="avatar-preview">Sin foto</div>
+                  <div style="flex:1;">
+                    <input id="avatar-file" type="file" accept="image/*" />
+                    <div class="hint">Se optimiza en el navegador y se guarda lista para publicación.</div>
+                    <div class="actions" style="margin-top:8px;">
+                      <button class="btn secondary" type="button" id="remove-avatar">Quitar foto</button>
+                    </div>
+                  </div>
+                </div>
               </div>
               <div class="actions">
                 <button class="btn" type="submit">Guardar</button>
@@ -128,6 +150,10 @@
       const idInput = document.getElementById('user-id');
       const nameInput = document.getElementById('name');
       const emailInput = document.getElementById('email');
+      const avatarDataInput = document.getElementById('avatar-data');
+      const avatarFileInput = document.getElementById('avatar-file');
+      const avatarPreview = document.getElementById('avatar-preview');
+      const removeAvatarButton = document.getElementById('remove-avatar');
       const formMessage = document.getElementById('form-message');
       const importMessage = document.getElementById('import-message');
       const tableMessage = document.getElementById('table-message');
@@ -155,6 +181,50 @@
       function resetForm() {
         idInput.value = '';
         form.reset();
+        avatarDataInput.value = '';
+        avatarPreview.innerHTML = 'Sin foto';
+      }
+
+      function initialsFor(name) {
+        return String(name || '')
+          .trim()
+          .split(/\s+/)
+          .slice(0, 2)
+          .map((part) => part.charAt(0).toUpperCase())
+          .join('') || 'NF';
+      }
+
+      function renderAvatar(container, avatar, name) {
+        if (avatar) {
+          container.innerHTML = `<img src="${avatar}" alt="${name || 'Foto de perfil'}" />`;
+          return;
+        }
+        container.textContent = initialsFor(name);
+      }
+
+      async function fileToAvatarDataUrl(file) {
+        const dataUrl = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = () => reject(new Error('file_read_failed'));
+          reader.readAsDataURL(file);
+        });
+
+        const image = await new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = () => reject(new Error('image_load_failed'));
+          img.src = dataUrl;
+        });
+
+        const canvas = document.createElement('canvas');
+        const maxSide = 360;
+        const scale = Math.min(1, maxSide / Math.max(image.width, image.height));
+        canvas.width = Math.max(1, Math.round(image.width * scale));
+        canvas.height = Math.max(1, Math.round(image.height * scale));
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+        return canvas.toDataURL('image/jpeg', 0.82);
       }
 
       function csvEscape(value) {
@@ -241,7 +311,7 @@
         filteredUsers.forEach((user) => {
           const tr = document.createElement('tr');
           tr.innerHTML = `
-            <td>${user.name}</td>
+            <td><div class="table-user"><div class="table-avatar" data-avatar-slot="${user.id}"></div><div>${user.name}</div></div></td>
             <td>${user.email}</td>
             <td><span class="status ${user.active ? 'active' : 'inactive'}">${user.active ? 'Activo' : 'Inactivo'}</span></td>
             <td>
@@ -252,6 +322,7 @@
             </td>
           `;
           body.appendChild(tr);
+          renderAvatar(tr.querySelector('[data-avatar-slot]'), user.avatar, user.name);
         });
       }
 
@@ -297,6 +368,7 @@
         const payload = {
           name: nameInput.value.trim(),
           email: emailInput.value.trim(),
+          avatar: avatarDataInput.value.trim(),
         };
         try {
           const wasEditing = Boolean(idInput.value);
@@ -338,6 +410,8 @@
           idInput.value = user.id;
           nameInput.value = user.name;
           emailInput.value = user.email;
+          avatarDataInput.value = user.avatar || '';
+          renderAvatar(avatarPreview, user.avatar, user.name);
           setMessage(formMessage, 'Editando usuario seleccionado.', '');
           form.scrollIntoView({ behavior: 'smooth', block: 'start' });
           return;
@@ -356,6 +430,26 @@
       searchInput.addEventListener('input', render);
       resetButton.addEventListener('click', resetForm);
       exportButton.addEventListener('click', exportCsv);
+      avatarFileInput.addEventListener('change', async () => {
+        const file = avatarFileInput.files && avatarFileInput.files[0];
+        if (!file) return;
+        try {
+          const avatar = await fileToAvatarDataUrl(file);
+          avatarDataInput.value = avatar;
+          renderAvatar(avatarPreview, avatar, nameInput.value.trim());
+          setMessage(formMessage, 'Foto preparada para guardar.', 'ok');
+        } catch (error) {
+          setMessage(formMessage, 'No se ha podido preparar la imagen.', 'error');
+        }
+      });
+      removeAvatarButton.addEventListener('click', () => {
+        avatarDataInput.value = '';
+        avatarFileInput.value = '';
+        renderAvatar(avatarPreview, '', nameInput.value.trim());
+      });
+      nameInput.addEventListener('input', () => {
+        if (!avatarDataInput.value) renderAvatar(avatarPreview, '', nameInput.value.trim());
+      });
 
       document.addEventListener('click', async function (event) {
         const trigger = event.target.closest('[data-admin-logout]');
