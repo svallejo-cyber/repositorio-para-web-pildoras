@@ -18,10 +18,13 @@
       submit: 'Enviar comentario',
       save: 'Guardar cambios',
       edit: 'Editar',
+      remove: 'Eliminar',
       cancel: 'Cancelar',
+      confirmDelete: '¿Quieres eliminar este comentario?',
       sending: 'Enviando...',
       posted: 'Comentario publicado.',
       updated: 'Comentario actualizado.',
+      deleted: 'Comentario eliminado.',
       error: 'No se ha podido guardar el comentario.',
     },
     en: {
@@ -34,10 +37,13 @@
       submit: 'Post comment',
       save: 'Save changes',
       edit: 'Edit',
+      remove: 'Delete',
       cancel: 'Cancel',
+      confirmDelete: 'Do you want to delete this comment?',
       sending: 'Sending...',
       posted: 'Comment posted.',
       updated: 'Comment updated.',
+      deleted: 'Comment deleted.',
       error: 'The comment could not be saved.',
     },
   }[lang];
@@ -66,6 +72,7 @@
     .hub-submit[disabled]{opacity:.65;cursor:wait}
     .hub-status{font-size:.9rem;color:#5c6b79}
     .hub-edit{border:1px solid #d8e0e8;background:#fff;border-radius:8px;padding:5px 9px;font:inherit;font-size:.82rem;font-weight:600;color:#1f2c3a;cursor:pointer}
+    .hub-delete{border-color:#e6c8c8;color:#8d2b2b}
   `;
   document.head.appendChild(style);
 
@@ -144,13 +151,21 @@
       meta.append(name, date);
       head.append(meta);
       if (canEdit(comment)) {
+        const actions = document.createElement('div');
+        actions.className = 'hub-comment-meta';
         const edit = document.createElement('button');
         edit.type = 'button';
         edit.className = 'hub-edit';
         edit.textContent = copy.edit;
         edit.dataset.editComment = comment.id;
         edit.dataset.editMessage = comment.message;
-        head.append(edit);
+        const remove = document.createElement('button');
+        remove.type = 'button';
+        remove.className = 'hub-edit hub-delete';
+        remove.textContent = copy.remove;
+        remove.dataset.deleteComment = comment.id;
+        actions.append(edit, remove);
+        head.append(actions);
       }
       const body = document.createElement('div');
       body.className = 'hub-comment-body';
@@ -233,13 +248,34 @@
 
   listEl.addEventListener('click', (event) => {
     const trigger = event.target.closest('[data-edit-comment]');
-    if (!trigger) return;
-    editingCommentId = trigger.dataset.editComment;
-    messageEl.value = trigger.dataset.editMessage || '';
-    submitEl.textContent = copy.save;
-    cancelEditEl.hidden = false;
-    statusEl.textContent = '';
-    messageEl.focus();
+    if (trigger) {
+      editingCommentId = trigger.dataset.editComment;
+      messageEl.value = trigger.dataset.editMessage || '';
+      submitEl.textContent = copy.save;
+      cancelEditEl.hidden = false;
+      statusEl.textContent = '';
+      messageEl.focus();
+      return;
+    }
+
+    const deleteTrigger = event.target.closest('[data-delete-comment]');
+    if (!deleteTrigger) return;
+    if (!window.confirm(copy.confirmDelete)) return;
+
+    fetch(`/api/comments/${deleteTrigger.dataset.deleteComment}`, {
+      method: 'DELETE',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ slug }),
+    })
+      .then(async (response) => {
+        if (!response.ok) throw new Error('request_failed');
+        if (editingCommentId === deleteTrigger.dataset.deleteComment) resetEditor();
+        statusEl.textContent = copy.deleted;
+        await loadComments();
+      })
+      .catch(() => {
+        statusEl.textContent = copy.error;
+      });
   });
 
   cancelEditEl.addEventListener('click', () => {

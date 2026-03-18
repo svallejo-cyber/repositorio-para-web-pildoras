@@ -493,6 +493,30 @@ async function handleApi(request, url, store, session, env) {
     return json({ ok: true, comment: updated.comment });
   }
 
+  if (request.method === "DELETE" && /^\/api\/comments\/.+/.test(url.pathname)) {
+    const commentId = getCommentIdFromPath(url.pathname);
+    if (!commentId) return json({ error: "Missing comment id" }, 400);
+    const payload = await request.json().catch(() => null);
+    if (!payload) return json({ error: "Invalid JSON" }, 400);
+
+    const slug = normalizeSlug(payload.slug);
+    if (!slug) {
+      return json({ error: "Missing slug" }, 400);
+    }
+
+    const deleted = await store.deleteComment({
+      slug,
+      commentId,
+      userId: session.userId,
+      email: session.email,
+    });
+    if (!deleted.ok) {
+      const status = deleted.error === "Comment not found" ? 404 : deleted.error === "Forbidden" ? 403 : 400;
+      return json({ error: deleted.error }, status);
+    }
+    return json({ ok: true });
+  }
+
   if (request.method === "GET" && url.pathname === "/api/stats") {
     const slug = normalizeSlug(url.searchParams.get("slug"));
     if (!slug) return json({ error: "Missing slug" }, 400);
@@ -845,6 +869,22 @@ export class HubData extends DurableObject {
     };
     await this.ctx.storage.put(key, comments);
     return { ok: true, comment: comments[index] };
+  }
+
+  async deleteComment({ slug, commentId, userId, email }) {
+    const key = `comments:${slug}`;
+    const comments = (await this.ctx.storage.get(key)) || [];
+    const index = comments.findIndex((comment) => comment.id === commentId);
+    if (index === -1) return { ok: false, error: "Comment not found" };
+
+    const target = comments[index];
+    const matchesUserId = target.userId && userId && target.userId === userId;
+    const matchesEmail = target.email && email && String(target.email).toLowerCase() === String(email).toLowerCase();
+    if (!matchesUserId && !matchesEmail) return { ok: false, error: "Forbidden" };
+
+    comments.splice(index, 1);
+    await this.ctx.storage.put(key, comments);
+    return { ok: true };
   }
 
   async getStats(slug) {

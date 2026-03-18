@@ -11,8 +11,9 @@
     :root { --bg:#f4f6f8; --panel:#fff; --ink:#1d2a36; --muted:#5b6a78; --accent:#0f5b8d; --line:#d6dde4; --ok:#1f7a4e; }
     *{box-sizing:border-box} body{margin:0;font-family:"IBM Plex Sans",sans-serif;color:var(--ink);background:radial-gradient(circle at 8% 3%,#dce8f2 0,transparent 22%),radial-gradient(circle at 85% 0%,#e7ecef 0,transparent 20%),var(--bg);line-height:1.55}
     .page{max-width:980px;margin:42px auto;background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:0 14px 42px rgba(15,31,46,.08);overflow:hidden}
-    .top-visual{padding:20px 42px;background:linear-gradient(180deg,#f7fbff 0%,#eef5fb 100%);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:14px}
+    .top-visual{padding:20px 42px;background:linear-gradient(180deg,#f7fbff 0%,#eef5fb 100%);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-start;gap:14px}
     .top-left{display:flex;align-items:center;gap:14px}
+    .top-nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
     .top-visual img{width:min(110px,28vw);height:auto;display:block;filter:drop-shadow(0 8px 20px rgba(15,49,79,.2))}
     .project-name{margin:0;font-size:1rem;letter-spacing:.08em;font-weight:700;text-transform:uppercase;color:#133d59}
     .project-desc{margin:0;font-size:.86rem;color:#335369;max-width:520px}
@@ -41,7 +42,7 @@
           <p class="project-desc">Automatiza la captura, control y comunicación de facturas de suministros para gestión de alquileres.</p>
         </div>
       </div>
-      <div><a class="navbtn" href="/es/">Volver a píldoras</a> <a class="navbtn" href="/">Ir a la principal</a> <a class="navbtn" href="../en/">Read in English</a></div>
+      <div class="top-nav"><a class="navbtn" href="/es/">Volver a píldoras</a> <a class="navbtn" href="/">Ir a la principal</a> <a class="navbtn" href="../en/">Read in English</a></div>
     </div>
     <header>
       <div class="kicker">Documento para comité directivo</div>
