@@ -2,10 +2,18 @@ name = "isaval-ai-executive-hub"
 main = "src/worker.js"
 compatibility_date = "2026-03-13"
 
+[vars]
+NOTIFY_SENDER_EMAIL = "svallejo@isaval.es"
+NOTIFY_TIMEZONE = "Europe/Madrid"
+M365_NOTIFICATIONS_ENABLED = "false"
+
 [assets]
 directory = "."
 binding = "ASSETS"
 run_worker_first = true
+
+[triggers]
+crons = [ "0 * * * *" ]
 
 [[durable_objects.bindings]]
 name = "HUB_DATA"

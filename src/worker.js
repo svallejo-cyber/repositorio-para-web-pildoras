@@ -5,11 +5,21 @@ const ADMIN_SESSION_COOKIE = "admin_session_v1";
 const SESSION_MAX_AGE = 60 * 30;
 const ADMIN_EMAILS = new Set(["svallejoi@icloud.com"]);
 const EXCLUDED_TRACKING_EMAILS = new Set(["svallejo@isaval.es", "svallejoi@icloud.com"]);
-const COLLABORATIVE_PILLS = [
-  { slug: "colaborativa-1", lang: "es", title: "Del pliego al dato útil", author: "Luis Merelo", avatar: "/assets/profile/luis2-360.jpg", publishedAt: "2026-03-14T12:33:48Z" },
-  { slug: "colaborativa-2", lang: "es", title: "De la factura al criterio de gestión", author: "Javier Valencia", avatar: "/assets/profile/javi2-360.jpg", publishedAt: "2026-03-17T16:48:17Z" },
-  { slug: "colaborativa-3", lang: "es", title: "De Excel a dashboard OEE", author: "Silvia Soriano", avatar: "/assets/profile/silvia-soriano-2-320.jpg", publishedAt: "2026-03-17T17:04:26Z" },
+const NOTIFICATION_TIMEZONE = "Europe/Madrid";
+const DEFAULT_HUB_BASE_URL = "https://repositorio-para-web-pildoras.svallejo-351.workers.dev";
+const PUBLISHED_PILLS = [
+  { slug: "tenantflow", lang: "es", type: "executive", title: "TenantFlow", author: "Santiago Vallejo", authorEmail: "svallejo@isaval.es", avatar: "/assets/profile/santiago2-360.jpg", publishedAt: "2026-03-07T23:18:44Z", urlPath: "/projects/tenantflow/es/" },
+  { slug: "pildora-1", lang: "es", type: "executive", title: "Algo grande está pasando", author: "Santiago Vallejo", authorEmail: "svallejo@isaval.es", avatar: "/assets/profile/santiago2-360.jpg", publishedAt: "2026-03-11T19:11:50Z", urlPath: "/projects/pildora-1/es/" },
+  { slug: "pildora-2", lang: "es", type: "executive", title: "La ventaja no es tener IA", author: "Santiago Vallejo", authorEmail: "svallejo@isaval.es", avatar: "/assets/profile/santiago2-360.jpg", publishedAt: "2026-03-11T19:22:12Z", urlPath: "/projects/pildora-2/es/" },
+  { slug: "pildora-3", lang: "es", type: "executive", title: "EL DATO", author: "Santiago Vallejo", authorEmail: "svallejo@isaval.es", avatar: "/assets/profile/santiago2-360.jpg", publishedAt: "2026-03-07T23:07:31Z", urlPath: "/projects/pildora-3/es/" },
+  { slug: "pildora-4", lang: "es", type: "executive", title: "Publicación web", author: "Santiago Vallejo", authorEmail: "svallejo@isaval.es", avatar: "/assets/profile/santiago2-360.jpg", publishedAt: "2026-03-07T23:07:31Z", urlPath: "/projects/pildora-4/es/" },
+  { slug: "pildora-5", lang: "es", type: "executive", title: "IA y control de gastos", author: "Santiago Vallejo", authorEmail: "svallejo@isaval.es", avatar: "/assets/profile/santiago2-360.jpg", publishedAt: "2026-03-11T23:58:07Z", urlPath: "/projects/pildora-5/es/" },
+  { slug: "pildora-6", lang: "es", type: "executive", title: "IA: no va de escribir bonito", author: "Santiago Vallejo", authorEmail: "svallejo@isaval.es", avatar: "/assets/profile/santiago2-360.jpg", publishedAt: "2026-03-17T19:48:13Z", urlPath: "/projects/pildora-6/es/" },
+  { slug: "colaborativa-1", lang: "es", type: "collaborative", title: "Del pliego al dato útil", author: "Luis Merelo", authorEmail: "lmerelo@isaval.es", avatar: "/assets/profile/luis2-360.jpg", publishedAt: "2026-03-14T12:33:48Z", urlPath: "/projects/colaborativa-1/es/" },
+  { slug: "colaborativa-2", lang: "es", type: "collaborative", title: "De la factura al criterio de gestión", author: "Javier Valencia", authorEmail: "jvalencia@isaval.es", avatar: "/assets/profile/javi2-360.jpg", publishedAt: "2026-03-17T16:48:17Z", urlPath: "/projects/colaborativa-2/es/" },
+  { slug: "colaborativa-3", lang: "es", type: "collaborative", title: "De Excel a dashboard OEE", author: "Silvia Soriano", authorEmail: "ssoriano@isaval.es", avatar: "/assets/profile/silvia-soriano-2-320.jpg", publishedAt: "2026-03-17T17:04:26Z", urlPath: "/projects/colaborativa-3/es/" },
 ];
+const COLLABORATIVE_PILLS = PUBLISHED_PILLS.filter((item) => item.type === "collaborative");
 
 function json(data, status = 200, headers = {}) {
   return new Response(JSON.stringify(data), {
@@ -80,6 +90,70 @@ function cleanMessage(value) {
 
 function isValidEmail(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+}
+
+function getHubBaseUrl(env) {
+  return String(env.HUB_BASE_URL || DEFAULT_HUB_BASE_URL).replace(/\/+$/, "");
+}
+
+function formatDateTime(iso, timeZone = NOTIFICATION_TIMEZONE) {
+  if (!iso) return "";
+  return new Intl.DateTimeFormat("es-ES", {
+    timeZone,
+    dateStyle: "short",
+    timeStyle: "short",
+  }).format(new Date(iso));
+}
+
+function getZonedParts(date, timeZone = NOTIFICATION_TIMEZONE) {
+  const formatter = new Intl.DateTimeFormat("en-GB", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+    weekday: "short",
+  });
+  const parts = Object.fromEntries(
+    formatter.formatToParts(date).filter((part) => part.type !== "literal").map((part) => [part.type, part.value]),
+  );
+  return {
+    year: Number(parts.year),
+    month: Number(parts.month),
+    day: Number(parts.day),
+    hour: Number(parts.hour),
+    minute: Number(parts.minute),
+    second: Number(parts.second),
+    weekday: String(parts.weekday || "").toLowerCase(),
+  };
+}
+
+function getLocalDateKey(date, timeZone = NOTIFICATION_TIMEZONE) {
+  const parts = getZonedParts(date, timeZone);
+  return `${parts.year}-${String(parts.month).padStart(2, "0")}-${String(parts.day).padStart(2, "0")}`;
+}
+
+function getLocalWeekStartDateKey(date, timeZone = NOTIFICATION_TIMEZONE) {
+  const parts = getZonedParts(date, timeZone);
+  const weekdayMap = { mon: 0, tue: 1, wed: 2, thu: 3, fri: 4, sat: 5, sun: 6 };
+  const offset = weekdayMap[parts.weekday] ?? 0;
+  return getLocalDateKey(subtractDays(date, offset), timeZone);
+}
+
+function subtractDays(date, days) {
+  return new Date(date.getTime() - days * 24 * 60 * 60 * 1000);
+}
+
+function escapeHtml(value) {
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 
 function getStore(env) {
@@ -169,7 +243,7 @@ function isAdminPath(pathname) {
 }
 
 function isAdminApi(pathname) {
-  return pathname === "/api/access-dashboard" || pathname.startsWith("/api/invited-users");
+  return pathname === "/api/access-dashboard" || pathname.startsWith("/api/invited-users") || pathname.startsWith("/api/admin-notifications");
 }
 
 function isPublicApi(pathname) {
@@ -238,7 +312,7 @@ export default {
         if (isAdminMaintenanceApi(url.pathname)) {
           return handleAdminMaintenanceApi(request, url, store);
         }
-        return handleApi(request, url, store, adminSession);
+        return handleApi(request, url, store, adminSession, env);
       }
       const response = await env.ASSETS.fetch(request);
       return withNoStore(response);
@@ -256,7 +330,7 @@ export default {
 
     if (url.pathname.startsWith("/api/")) {
       if (!session) return json({ error: "Unauthorized" }, 401);
-      return handleApi(request, url, store, session);
+      return handleApi(request, url, store, session, env);
     }
 
     if (isPublicPath(url.pathname)) {
@@ -281,6 +355,10 @@ export default {
     }
 
     return env.ASSETS.fetch(request);
+  },
+
+  async scheduled(controller, env, ctx) {
+    ctx.waitUntil(handleScheduled(controller, env));
   },
 };
 
@@ -360,7 +438,7 @@ async function handlePublicApi(request, url, store) {
   return json({ error: "Not found" }, 404);
 }
 
-async function handleApi(request, url, store, session) {
+async function handleApi(request, url, store, session, env) {
   if (request.method === "GET" && url.pathname === "/api/comments") {
     const slug = normalizeSlug(url.searchParams.get("slug"));
     if (!slug) return json({ error: "Missing slug" }, 400);
@@ -449,6 +527,28 @@ async function handleApi(request, url, store, session) {
     return json(dashboard);
   }
 
+  if (request.method === "GET" && url.pathname === "/api/admin-notifications/preview") {
+    const kind = String(url.searchParams.get("kind") || "").trim().toLowerCase();
+    const now = new Date();
+    if (kind === "daily-pills") {
+      const preview = await store.buildDailyPublicationNotifications({
+        now,
+        timeZone: env.NOTIFY_TIMEZONE || NOTIFICATION_TIMEZONE,
+        hubBaseUrl: getHubBaseUrl(env),
+      });
+      return json({ ok: true, kind, preview });
+    }
+    if (kind === "weekly-comments") {
+      const preview = await store.buildWeeklyCommentDigests({
+        now,
+        timeZone: env.NOTIFY_TIMEZONE || NOTIFICATION_TIMEZONE,
+        hubBaseUrl: getHubBaseUrl(env),
+      });
+      return json({ ok: true, kind, preview });
+    }
+    return json({ error: "Invalid kind" }, 400);
+  }
+
   if (request.method === "POST" && url.pathname === "/api/invited-users") {
     const payload = await request.json().catch(() => null);
     if (!payload) return json({ error: "Invalid JSON" }, 400);
@@ -518,6 +618,176 @@ async function handleApi(request, url, store, session) {
   }
 
   return json({ error: "Not found" }, 404);
+}
+
+async function handleScheduled(controller, env) {
+  const store = getStore(env);
+  const now = new Date(controller.scheduledTime || Date.now());
+  const timeZone = env.NOTIFY_TIMEZONE || NOTIFICATION_TIMEZONE;
+  const parts = getZonedParts(now, timeZone);
+
+  if (parts.minute !== 0 || parts.hour !== 8) {
+    return;
+  }
+
+  if (env.M365_NOTIFICATIONS_ENABLED !== "true") {
+    console.log("Notifications skipped: M365_NOTIFICATIONS_ENABLED is not true");
+    return;
+  }
+
+  const senderEmail = cleanEmail(env.NOTIFY_SENDER_EMAIL || "svallejo@isaval.es");
+  const hubBaseUrl = getHubBaseUrl(env);
+
+  await sendDailyPublicationNotifications({ env, store, now, timeZone, hubBaseUrl, senderEmail });
+
+  if (parts.weekday === "mon") {
+    await sendWeeklyCommentDigests({ env, store, now, timeZone, hubBaseUrl, senderEmail });
+  }
+}
+
+async function sendDailyPublicationNotifications({ env, store, now, timeZone, hubBaseUrl, senderEmail }) {
+  const preview = await store.buildDailyPublicationNotifications({ now, timeZone, hubBaseUrl });
+  if (!preview.recipients.length || !preview.pills.length) {
+    await store.logNotificationRun({
+      kind: "daily-pills",
+      status: "skipped",
+      at: new Date().toISOString(),
+      detail: !preview.pills.length ? "No pending pills" : "No active recipients",
+    });
+    return;
+  }
+
+  const result = await sendMailViaGraph({
+    env,
+    senderEmail,
+    to: [senderEmail],
+    bcc: preview.recipients,
+    subject: preview.subject,
+    html: preview.html,
+    text: preview.text,
+  });
+
+  if (!result.ok) {
+    await store.logNotificationRun({
+      kind: "daily-pills",
+      status: "error",
+      at: new Date().toISOString(),
+      detail: result.error,
+    });
+    throw new Error(result.error);
+  }
+
+  await store.markPillsNotified(preview.pills.map((pill) => pill.notificationKey));
+  await store.logNotificationRun({
+    kind: "daily-pills",
+    status: "sent",
+    at: new Date().toISOString(),
+    detail: `Recipients: ${preview.recipients.length}. Pills: ${preview.pills.length}.`,
+  });
+}
+
+async function sendWeeklyCommentDigests({ env, store, now, timeZone, hubBaseUrl, senderEmail }) {
+  const digests = await store.buildWeeklyCommentDigests({ now, timeZone, hubBaseUrl });
+  if (!digests.length) {
+    await store.logNotificationRun({
+      kind: "weekly-comments",
+      status: "skipped",
+      at: new Date().toISOString(),
+      detail: "No pending comment digests",
+    });
+    return;
+  }
+
+  const sentCommentIds = [];
+  for (const digest of digests) {
+    const result = await sendMailViaGraph({
+      env,
+      senderEmail,
+      to: [digest.authorEmail],
+      subject: digest.subject,
+      html: digest.html,
+      text: digest.text,
+    });
+
+    if (!result.ok) {
+      await store.logNotificationRun({
+        kind: "weekly-comments",
+        status: "error",
+        at: new Date().toISOString(),
+        detail: `${digest.authorEmail}: ${result.error}`,
+      });
+      throw new Error(result.error);
+    }
+
+    sentCommentIds.push(...digest.commentIds);
+  }
+
+  await store.markCommentsDigested(sentCommentIds);
+  await store.logNotificationRun({
+    kind: "weekly-comments",
+    status: "sent",
+    at: new Date().toISOString(),
+    detail: `Authors: ${digests.length}. Comments: ${sentCommentIds.length}.`,
+  });
+}
+
+async function sendMailViaGraph({ env, senderEmail, to = [], bcc = [], subject, html, text }) {
+  const tenantId = env.M365_TENANT_ID;
+  const clientId = env.M365_CLIENT_ID;
+  const clientSecret = env.M365_CLIENT_SECRET;
+
+  if (!tenantId || !clientId || !clientSecret) {
+    return { ok: false, error: "Missing Microsoft 365 Graph credentials" };
+  }
+
+  const tokenResponse = await fetch(`https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`, {
+    method: "POST",
+    headers: { "content-type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      client_id: clientId,
+      client_secret: clientSecret,
+      grant_type: "client_credentials",
+      scope: "https://graph.microsoft.com/.default",
+    }),
+  });
+
+  if (!tokenResponse.ok) {
+    const detail = await tokenResponse.text();
+    return { ok: false, error: `Graph token request failed (${tokenResponse.status}): ${detail}` };
+  }
+
+  const tokenData = await tokenResponse.json();
+  const accessToken = tokenData.access_token;
+  if (!accessToken) {
+    return { ok: false, error: "Graph token response did not include access_token" };
+  }
+
+  const response = await fetch(`https://graph.microsoft.com/v1.0/users/${encodeURIComponent(senderEmail)}/sendMail`, {
+    method: "POST",
+    headers: {
+      authorization: `Bearer ${accessToken}`,
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      message: {
+        subject,
+        body: {
+          contentType: "HTML",
+          content: html,
+        },
+        toRecipients: to.map((email) => ({ emailAddress: { address: email } })),
+        bccRecipients: bcc.map((email) => ({ emailAddress: { address: email } })),
+      },
+      saveToSentItems: true,
+    }),
+  });
+
+  if (response.status !== 202) {
+    const detail = await response.text();
+    return { ok: false, error: `Graph sendMail failed (${response.status}): ${detail}` };
+  }
+
+  return { ok: true };
 }
 
 function ensureUserMetrics(user) {
@@ -839,6 +1109,219 @@ export class HubData extends DurableObject {
       podium: ranking.slice(0, 3),
       commentMotors: await this.getCommentMotors(),
     };
+  }
+
+  async getNotificationState() {
+    return (await this.ctx.storage.get("notification-state")) || { notifiedPills: {}, digestedComments: {}, runs: [] };
+  }
+
+  async saveNotificationState(state) {
+    await this.ctx.storage.put("notification-state", state);
+  }
+
+  async markPillsNotified(keys) {
+    const state = await this.getNotificationState();
+    const now = new Date().toISOString();
+    for (const key of keys) {
+      state.notifiedPills[key] = now;
+    }
+    await this.saveNotificationState(state);
+  }
+
+  async markCommentsDigested(commentIds) {
+    const state = await this.getNotificationState();
+    const now = new Date().toISOString();
+    for (const commentId of commentIds) {
+      state.digestedComments[commentId] = now;
+    }
+    await this.saveNotificationState(state);
+  }
+
+  async logNotificationRun(entry) {
+    const state = await this.getNotificationState();
+    const runs = Array.isArray(state.runs) ? state.runs : [];
+    runs.unshift({ id: crypto.randomUUID(), ...entry });
+    state.runs = runs.slice(0, 100);
+    await this.saveNotificationState(state);
+  }
+
+  async getActiveRecipientEmails() {
+    const users = await this.getInvitedUsers();
+    return users
+      .filter((user) => user.active)
+      .map((user) => cleanEmail(user.email))
+      .filter(Boolean)
+      .filter((email, index, all) => all.indexOf(email) === index);
+  }
+
+  async buildDailyPublicationNotifications({ now, timeZone, hubBaseUrl }) {
+    const state = await this.getNotificationState();
+    const todayKey = getLocalDateKey(now, timeZone);
+    const pills = PUBLISHED_PILLS.filter((pill) => {
+      if (pill.lang !== "es") return false;
+      const publishedDate = new Date(pill.publishedAt);
+      const publishedKey = getLocalDateKey(publishedDate, timeZone);
+      const notificationKey = `${pill.slug}:${pill.lang}`;
+      return publishedKey < todayKey && !state.notifiedPills[notificationKey];
+    })
+      .sort((a, b) => new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime())
+      .map((pill) => ({
+        ...pill,
+        notificationKey: `${pill.slug}:${pill.lang}`,
+        publishedLabel: formatDateTime(pill.publishedAt, timeZone),
+        absoluteUrl: `${hubBaseUrl}${pill.urlPath}`,
+      }));
+
+    const recipients = await this.getActiveRecipientEmails();
+    const subject = pills.length === 1
+      ? `Nueva píldora en el Hub IA Isaval · ${pills[0].title}`
+      : `Nuevas píldoras en el Hub IA Isaval · ${pills.length} publicaciones`;
+
+    const htmlItems = pills.map((pill) => `
+      <tr>
+        <td style="padding:14px 0;border-bottom:1px solid #d9e3ec;">
+          <div style="font:600 15px Arial,sans-serif;color:#1f2c3a;">${escapeHtml(pill.title)}</div>
+          <div style="font:13px Arial,sans-serif;color:#5c6b79;margin-top:4px;">${escapeHtml(pill.author)} · ${pill.type === "collaborative" ? "Píldora colaborativa" : "Píldora ejecutiva"} · Publicada el ${escapeHtml(pill.publishedLabel)}</div>
+          <div style="margin-top:8px;"><a href="${escapeHtml(pill.absoluteUrl)}" style="color:#0f5f94;font:600 13px Arial,sans-serif;text-decoration:none;">Abrir en el Hub</a></div>
+        </td>
+      </tr>`).join("");
+
+    const html = `
+      <div style="background:#f4f7fa;padding:32px 20px;">
+        <table role="presentation" style="max-width:720px;width:100%;margin:0 auto;background:#ffffff;border:1px solid #d8e0e8;border-radius:14px;padding:0;border-collapse:separate;">
+          <tr><td style="padding:26px 28px;background:linear-gradient(110deg,#10314d 0%,#0f5f94 56%,#1577af 100%);color:#ffffff;border-radius:14px 14px 0 0;">
+            <div style="font:700 12px Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;opacity:.9;">Hub IA Isaval</div>
+            <div style="font:700 34px Georgia,serif;line-height:1.15;margin-top:8px;">Nueva publicación interna</div>
+            <div style="font:400 17px Arial,sans-serif;line-height:1.5;margin-top:10px;opacity:.95;">Se han incorporado nuevas piezas al repositorio interno de píldoras sobre IA.</div>
+          </td></tr>
+          <tr><td style="padding:26px 28px;">
+            <table role="presentation" style="width:100%;border-collapse:collapse;">${htmlItems}</table>
+            <p style="font:14px Arial,sans-serif;color:#5c6b79;line-height:1.6;margin:18px 0 0;">Acceso directo al Hub: <a href="${escapeHtml(hubBaseUrl)}" style="color:#0f5f94;text-decoration:none;">${escapeHtml(hubBaseUrl)}</a></p>
+            <p style="font:14px Arial,sans-serif;color:#5c6b79;line-height:1.6;margin:12px 0 0;">Este aviso se genera automáticamente a las 08:00 del día siguiente a cada publicación.</p>
+          </td></tr>
+        </table>
+      </div>`;
+
+    const textLines = [
+      "Equipo,",
+      "",
+      "Se han incorporado nuevas piezas al Hub IA Isaval:",
+      "",
+      ...pills.flatMap((pill) => [
+        `- ${pill.title}`,
+        `  ${pill.author} · ${pill.type === "collaborative" ? "Píldora colaborativa" : "Píldora ejecutiva"} · ${pill.publishedLabel}`,
+        `  ${pill.absoluteUrl}`,
+      ]),
+      "",
+      `Acceso al Hub: ${hubBaseUrl}`,
+    ];
+
+    return { kind: "daily-pills", recipients, pills, subject, html, text: textLines.join("\n") };
+  }
+
+  async buildWeeklyCommentDigests({ now, timeZone, hubBaseUrl }) {
+    const state = await this.getNotificationState();
+    const currentWeekStartKey = getLocalWeekStartDateKey(now, timeZone);
+    const entries = await this.ctx.storage.list({ prefix: "comments:" });
+    const byAuthor = new Map();
+
+    for (const [key, comments] of entries) {
+      const slug = String(key).replace(/^comments:/, "");
+      const pill = PUBLISHED_PILLS.find((item) => item.slug === slug && item.lang === "es");
+      if (!pill?.authorEmail) continue;
+
+      for (const comment of comments || []) {
+        if (!comment?.id || state.digestedComments[comment.id]) continue;
+        const createdAt = comment.createdAt ? new Date(comment.createdAt) : null;
+        if (!createdAt) continue;
+        if (getLocalDateKey(createdAt, timeZone) >= currentWeekStartKey) continue;
+
+        const authorKey = cleanEmail(pill.authorEmail);
+        const bucket = byAuthor.get(authorKey) || {
+          author: pill.author,
+          authorEmail: authorKey,
+          items: [],
+          commentIds: [],
+        };
+        bucket.items.push({
+          slug,
+          pillTitle: pill.title,
+          pillUrl: `${hubBaseUrl}${pill.urlPath}`,
+          commenterName: comment.name || comment.email || "Comentario sin firma",
+          commenterEmail: comment.email || null,
+          message: comment.message || "",
+          createdAt: comment.createdAt,
+          createdLabel: formatDateTime(comment.createdAt, timeZone),
+        });
+        bucket.commentIds.push(comment.id);
+        byAuthor.set(authorKey, bucket);
+      }
+    }
+
+    return Array.from(byAuthor.values())
+      .map((digest) => {
+        digest.items.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+        const grouped = digest.items.reduce((acc, item) => {
+          const group = acc.get(item.slug) || { title: item.pillTitle, url: item.pillUrl, comments: [] };
+          group.comments.push(item);
+          acc.set(item.slug, group);
+          return acc;
+        }, new Map());
+
+        const groups = Array.from(grouped.values());
+        const htmlGroups = groups.map((group) => {
+          const commentsHtml = group.comments.map((item) => `
+            <li style="margin:0 0 12px 0;">
+              <div style="font:600 14px Arial,sans-serif;color:#1f2c3a;">${escapeHtml(item.commenterName)} · ${escapeHtml(item.createdLabel)}</div>
+              <div style="font:14px Arial,sans-serif;color:#455463;line-height:1.6;margin-top:4px;">${escapeHtml(item.message)}</div>
+            </li>`).join("");
+          return `
+            <div style="margin:0 0 18px 0;padding:16px;border:1px solid #d8e0e8;border-radius:12px;background:#fbfdff;">
+              <div style="font:700 16px Arial,sans-serif;color:#1f2c3a;">${escapeHtml(group.title)}</div>
+              <div style="margin-top:6px;"><a href="${escapeHtml(group.url)}" style="color:#0f5f94;font:600 13px Arial,sans-serif;text-decoration:none;">Abrir píldora</a></div>
+              <ul style="padding-left:18px;margin:14px 0 0;">${commentsHtml}</ul>
+            </div>`;
+        }).join("");
+
+        const html = `
+          <div style="background:#f4f7fa;padding:32px 20px;">
+            <table role="presentation" style="max-width:720px;width:100%;margin:0 auto;background:#ffffff;border:1px solid #d8e0e8;border-radius:14px;border-collapse:separate;">
+              <tr><td style="padding:26px 28px;background:linear-gradient(110deg,#10314d 0%,#0f5f94 56%,#1577af 100%);color:#ffffff;border-radius:14px 14px 0 0;">
+                <div style="font:700 12px Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;opacity:.9;">Hub IA Isaval</div>
+                <div style="font:700 34px Georgia,serif;line-height:1.15;margin-top:8px;">Resumen semanal de comentarios</div>
+                <div style="font:400 17px Arial,sans-serif;line-height:1.5;margin-top:10px;opacity:.95;">Comentarios nuevos registrados en tus píldoras durante la semana cerrada.</div>
+              </td></tr>
+              <tr><td style="padding:26px 28px;">${htmlGroups}
+                <p style="font:14px Arial,sans-serif;color:#5c6b79;line-height:1.6;margin:18px 0 0;">Acceso al Hub: <a href="${escapeHtml(hubBaseUrl)}" style="color:#0f5f94;text-decoration:none;">${escapeHtml(hubBaseUrl)}</a></p>
+              </td></tr>
+            </table>
+          </div>`;
+
+        const text = [
+          `${digest.author},`,
+          "",
+          "Estos son los comentarios nuevos registrados en tus píldoras:",
+          "",
+          ...groups.flatMap((group) => [
+            group.title,
+            ...group.comments.flatMap((item) => [
+              `- ${item.commenterName} · ${item.createdLabel}`,
+              `  ${item.message}`,
+            ]),
+            `  ${group.url}`,
+            "",
+          ]),
+          `Acceso al Hub: ${hubBaseUrl}`,
+        ].join("\n");
+
+        return {
+          ...digest,
+          subject: `Resumen semanal · Comentarios en tus píldoras del Hub IA`,
+          html,
+          text,
+        };
+      })
+      .sort((a, b) => a.author.localeCompare(b.author, "es", { sensitivity: "base" }));
   }
 
   async getCommentMotors() {
