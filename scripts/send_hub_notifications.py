@@ -54,10 +54,12 @@ def login_admin(client, admin_email):
         raise RuntimeError("Admin login failed")
 
 
-def fetch_preview(client, kind, force_latest=False):
+def fetch_preview(client, kind, force_latest=False, slugs=None):
     path = f"/api/admin-notifications/preview?kind={kind}"
     if force_latest:
         path += "&force_latest=1"
+    if slugs:
+        path += "&slugs=" + ",".join(slugs)
     response = client.request_json("GET", path)
     if not response.get("ok"):
         raise RuntimeError(f"Preview failed for {kind}")
@@ -143,8 +145,8 @@ def send_initial(client, sender, password, dry_run, override_to=None):
     print(f"initial-hub: recipients={len(effective_recipients)} pills={len(pills)} dry_run={dry_run} override_to={override_to or '-'}")
 
 
-def send_daily(client, sender, password, dry_run, override_to=None, force_latest=False):
-    preview = fetch_preview(client, "daily-pills", force_latest=force_latest)
+def send_daily(client, sender, password, dry_run, override_to=None, force_latest=False, slugs=None):
+    preview = fetch_preview(client, "daily-pills", force_latest=force_latest, slugs=slugs)
     recipients = preview.get("recipients", [])
     pills = preview.get("pills", [])
     if not recipients or not pills:
@@ -166,7 +168,8 @@ def send_daily(client, sender, password, dry_run, override_to=None, force_latest
                 "kind": "daily-pills",
                 "notificationKeys": [pill["notificationKey"] for pill in pills],
             })
-    print(f"daily-pills: recipients={len(effective_recipients)} pills={len(pills)} dry_run={dry_run} override_to={override_to or '-'} force_latest={force_latest}")
+    slug_info = ",".join(slugs or [])
+    print(f"daily-pills: recipients={len(effective_recipients)} pills={len(pills)} dry_run={dry_run} override_to={override_to or '-'} force_latest={force_latest} slugs={slug_info or '-'}")
 
 
 def send_weekly(client, sender, password, dry_run, override_to=None):
@@ -205,6 +208,7 @@ def main():
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--override-to")
     parser.add_argument("--force-latest", action="store_true")
+    parser.add_argument("--slugs", help="Comma-separated list of slugs to notify explicitly")
     args = parser.parse_args()
 
     password = get_password(args.sender_email, dry_run=args.dry_run)
@@ -216,7 +220,8 @@ def main():
         if args.kind == "initial-hub":
             send_initial(client, args.sender_email, password, args.dry_run, args.override_to)
         elif args.kind == "daily-pills":
-            send_daily(client, args.sender_email, password, args.dry_run, args.override_to, args.force_latest)
+            slugs = [item.strip() for item in (args.slugs or "").split(",") if item.strip()]
+            send_daily(client, args.sender_email, password, args.dry_run, args.override_to, args.force_latest, slugs)
         else:
             send_weekly(client, args.sender_email, password, args.dry_run, args.override_to)
         return 0

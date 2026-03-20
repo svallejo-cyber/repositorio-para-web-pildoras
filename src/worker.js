@@ -71,6 +71,13 @@ function normalizeSlug(value) {
     .replace(/[^a-z0-9-]/g, "");
 }
 
+function parseSlugList(raw) {
+  return String(raw || "")
+    .split(",")
+    .map((item) => normalizeSlug(item))
+    .filter(Boolean);
+}
+
 function cleanName(value) {
   return String(value || "")
     .replace(/\s+/g, " ")
@@ -581,6 +588,7 @@ async function handleApi(request, url, store, session, env) {
   if (request.method === "GET" && url.pathname === "/api/admin-notifications/preview") {
     const kind = String(url.searchParams.get("kind") || "").trim().toLowerCase();
     const forceLatest = url.searchParams.get("force_latest") === "1";
+    const slugs = parseSlugList(url.searchParams.get("slugs"));
     const now = new Date();
     if (kind === "initial-hub") {
       const preview = await store.buildInitialHubAnnouncement({
@@ -596,6 +604,7 @@ async function handleApi(request, url, store, session, env) {
         timeZone: env.NOTIFY_TIMEZONE || NOTIFICATION_TIMEZONE,
         hubBaseUrl: getHubBaseUrl(env),
         forceLatest,
+        slugs,
       });
       return json({ ok: true, kind, preview });
     }
@@ -1351,10 +1360,11 @@ export class HubData extends DurableObject {
       .filter((email, index, all) => all.indexOf(email) === index);
   }
 
-  async buildDailyPublicationNotifications({ now, timeZone, hubBaseUrl, forceLatest = false }) {
+  async buildDailyPublicationNotifications({ now, timeZone, hubBaseUrl, forceLatest = false, slugs = [] }) {
     const state = await this.getNotificationState();
     const todayKey = getLocalDateKey(now, timeZone);
     const publishedEsPills = PUBLISHED_PILLS.filter((pill) => pill.lang === "es");
+    const slugSet = new Set((slugs || []).map((item) => normalizeSlug(item)).filter(Boolean));
     const pendingPills = publishedEsPills.filter((pill) => {
       if (pill.lang !== "es") return false;
       const publishedDate = new Date(pill.publishedAt);
@@ -1362,9 +1372,12 @@ export class HubData extends DurableObject {
       const notificationKey = `${pill.slug}:${pill.lang}`;
       return publishedKey < todayKey && !state.notifiedPills[notificationKey];
     });
-    const pills = (forceLatest
-      ? publishedEsPills.slice().sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()).slice(0, 1)
-      : pendingPills)
+    const selectedPills = slugSet.size
+      ? publishedEsPills.filter((pill) => slugSet.has(pill.slug))
+      : (forceLatest
+        ? publishedEsPills.slice().sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()).slice(0, 1)
+        : pendingPills);
+    const pills = selectedPills
       .sort((a, b) => new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime())
       .map((pill) => ({
         ...pill,
