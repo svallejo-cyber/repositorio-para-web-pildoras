@@ -1351,7 +1351,7 @@ export class HubData extends DurableObject {
       const notificationKey = `${pill.slug}:${pill.lang}`;
       return publishedKey < todayKey && !state.notifiedPills[notificationKey];
     });
-    const pills = (forceLatest && !pendingPills.length
+    const pills = (forceLatest
       ? publishedEsPills.slice().sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()).slice(0, 1)
       : pendingPills)
       .sort((a, b) => new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime())
