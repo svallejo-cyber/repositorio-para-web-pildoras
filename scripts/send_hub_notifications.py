@@ -8,6 +8,12 @@ import subprocess
 import sys
 import tempfile
 from email.message import EmailMessage
+
+try:
+    import certifi
+except Exception:
+    certifi = None
+
 SMTP_HOST = "smtp.mail.me.com"
 SMTP_PORT = 587
 
@@ -47,8 +53,11 @@ def login_admin(client, admin_email):
         raise RuntimeError("Admin login failed")
 
 
-def fetch_preview(client, kind):
-    response = client.request_json("GET", f"/api/admin-notifications/preview?kind={kind}")
+def fetch_preview(client, kind, force_latest=False):
+    path = f"/api/admin-notifications/preview?kind={kind}"
+    if force_latest:
+        path += "&force_latest=1"
+    response = client.request_json("GET", path)
     if not response.get("ok"):
         raise RuntimeError(f"Preview failed for {kind}")
     return response["preview"]
@@ -73,7 +82,7 @@ def build_message(sender, to_list, bcc_list, subject, html, text):
 
 
 def smtp_send(sender, password, msg):
-    context = ssl.create_default_context()
+    context = ssl.create_default_context(cafile=certifi.where()) if certifi else ssl.create_default_context()
     with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=30) as server:
         server.ehlo()
         server.starttls(context=context)
@@ -109,8 +118,8 @@ def send_initial(client, sender, password, dry_run, override_to=None):
     print(f"initial-hub: recipients={len(effective_recipients)} pills={len(pills)} dry_run={dry_run} override_to={override_to or '-'}")
 
 
-def send_daily(client, sender, password, dry_run, override_to=None):
-    preview = fetch_preview(client, "daily-pills")
+def send_daily(client, sender, password, dry_run, override_to=None, force_latest=False):
+    preview = fetch_preview(client, "daily-pills", force_latest=force_latest)
     recipients = preview.get("recipients", [])
     pills = preview.get("pills", [])
     if not recipients or not pills:
@@ -132,7 +141,7 @@ def send_daily(client, sender, password, dry_run, override_to=None):
                 "kind": "daily-pills",
                 "notificationKeys": [pill["notificationKey"] for pill in pills],
             })
-    print(f"daily-pills: recipients={len(effective_recipients)} pills={len(pills)} dry_run={dry_run} override_to={override_to or '-'}")
+    print(f"daily-pills: recipients={len(effective_recipients)} pills={len(pills)} dry_run={dry_run} override_to={override_to or '-'} force_latest={force_latest}")
 
 
 def send_weekly(client, sender, password, dry_run, override_to=None):
@@ -170,6 +179,7 @@ def main():
     parser.add_argument("--sender-email", default="svallejoi@icloud.com")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--override-to")
+    parser.add_argument("--force-latest", action="store_true")
     args = parser.parse_args()
 
     password = os.environ.get("ICLOUD_APP_PASSWORD")
@@ -184,7 +194,7 @@ def main():
         if args.kind == "initial-hub":
             send_initial(client, args.sender_email, password, args.dry_run, args.override_to)
         elif args.kind == "daily-pills":
-            send_daily(client, args.sender_email, password, args.dry_run, args.override_to)
+            send_daily(client, args.sender_email, password, args.dry_run, args.override_to, args.force_latest)
         else:
             send_weekly(client, args.sender_email, password, args.dry_run, args.override_to)
         return 0

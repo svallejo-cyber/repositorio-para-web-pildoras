@@ -569,6 +569,7 @@ async function handleApi(request, url, store, session, env) {
 
   if (request.method === "GET" && url.pathname === "/api/admin-notifications/preview") {
     const kind = String(url.searchParams.get("kind") || "").trim().toLowerCase();
+    const forceLatest = url.searchParams.get("force_latest") === "1";
     const now = new Date();
     if (kind === "initial-hub") {
       const preview = await store.buildInitialHubAnnouncement({
@@ -583,6 +584,7 @@ async function handleApi(request, url, store, session, env) {
         now,
         timeZone: env.NOTIFY_TIMEZONE || NOTIFICATION_TIMEZONE,
         hubBaseUrl: getHubBaseUrl(env),
+        forceLatest,
       });
       return json({ ok: true, kind, preview });
     }
@@ -1338,16 +1340,20 @@ export class HubData extends DurableObject {
       .filter((email, index, all) => all.indexOf(email) === index);
   }
 
-  async buildDailyPublicationNotifications({ now, timeZone, hubBaseUrl }) {
+  async buildDailyPublicationNotifications({ now, timeZone, hubBaseUrl, forceLatest = false }) {
     const state = await this.getNotificationState();
     const todayKey = getLocalDateKey(now, timeZone);
-    const pills = PUBLISHED_PILLS.filter((pill) => {
+    const publishedEsPills = PUBLISHED_PILLS.filter((pill) => pill.lang === "es");
+    const pendingPills = publishedEsPills.filter((pill) => {
       if (pill.lang !== "es") return false;
       const publishedDate = new Date(pill.publishedAt);
       const publishedKey = getLocalDateKey(publishedDate, timeZone);
       const notificationKey = `${pill.slug}:${pill.lang}`;
       return publishedKey < todayKey && !state.notifiedPills[notificationKey];
-    })
+    });
+    const pills = (forceLatest && !pendingPills.length
+      ? publishedEsPills.slice().sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()).slice(0, 1)
+      : pendingPills)
       .sort((a, b) => new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime())
       .map((pill) => ({
         ...pill,
