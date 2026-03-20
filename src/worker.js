@@ -455,6 +455,13 @@ async function handlePublicApi(request, url, store) {
 }
 
 async function handleApi(request, url, store, session, env) {
+  if (request.method === "GET" && url.pathname === "/api/recent-comments") {
+    const lang = url.searchParams.get("lang") === "en" ? "en" : "es";
+    const limit = Math.min(100, Math.max(1, Number(url.searchParams.get("limit") || 40)));
+    const comments = await store.getRecentComments({ lang, limit, hubBaseUrl: getHubBaseUrl(env) });
+    return json({ lang, comments });
+  }
+
   if (request.method === "GET" && url.pathname === "/api/comments") {
     const slug = normalizeSlug(url.searchParams.get("slug"));
     if (!slug) return json({ error: "Missing slug" }, 400);
@@ -1668,6 +1675,41 @@ export class HubData extends DurableObject {
         return a.name.localeCompare(b.name, "es", { sensitivity: "base" });
       })
       .slice(0, 3);
+  }
+
+  async getRecentComments({ lang = "es", limit = 40, hubBaseUrl }) {
+    const entries = await this.ctx.storage.list({ prefix: "comments:" });
+    const pillsBySlug = new Map(PUBLISHED_PILLS.filter((pill) => pill.lang === "es").map((pill) => [pill.slug, pill]));
+    const items = [];
+
+    for (const [key, comments] of entries) {
+      const slug = String(key).replace(/^comments:/, "");
+      const pill = pillsBySlug.get(slug);
+      if (!pill) continue;
+
+      for (const comment of comments || []) {
+        const timestamp = comment.updatedAt || comment.createdAt || null;
+        if (!timestamp) continue;
+        items.push({
+          id: comment.id,
+          slug,
+          pillTitle: pill.title,
+          pillType: pill.type,
+          pillAuthor: pill.author,
+          pillUrl: `${hubBaseUrl}/projects/${slug}/${lang}/`,
+          commenterName: comment.name || comment.email || "Comentario sin firma",
+          commenterEmail: comment.email || null,
+          message: comment.message || "",
+          createdAt: comment.createdAt || null,
+          updatedAt: comment.updatedAt || null,
+          timestamp,
+        });
+      }
+    }
+
+    return items
+      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+      .slice(0, limit);
   }
 
   async getAccessDashboard() {

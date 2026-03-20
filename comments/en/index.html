@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recent comments · Isaval AI Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Lora:wght@600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root { --bg:#eef3f7; --panel:#fff; --ink:#17212c; --muted:#5f6d7c; --line:#d6dee8; --accent:#0f5f94; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:"IBM Plex Sans",sans-serif; color:var(--ink); background:radial-gradient(circle at 8% 4%,#dce9f4 0,transparent 22%), radial-gradient(circle at 90% 0%,#e8eef3 0,transparent 24%), var(--bg); line-height:1.55; }
+    .page { max-width:1000px; margin:34px auto; background:var(--panel); border:1px solid var(--line); border-radius:16px; overflow:hidden; box-shadow:0 14px 34px rgba(17,34,52,.08); }
+    header { padding:24px 36px 30px; color:#fff; background:linear-gradient(112deg,#12314c 0%,#0f5f94 56%,#1782b6 100%); }
+    .topnav { display:flex; justify-content:space-between; gap:10px; margin-bottom:10px; flex-wrap:wrap; }
+    .navgroup { display:flex; gap:10px; flex-wrap:wrap; }
+    .navbtn { text-decoration:none; background:rgba(255,255,255,.15); color:#fff; border:1px solid rgba(255,255,255,.4); padding:7px 10px; border-radius:8px; font-size:.85rem; font-weight:600; }
+    .kicker { text-transform:uppercase; letter-spacing:.09em; font-size:.76rem; opacity:.9; font-weight:600; }
+    h1 { margin:8px 0 10px; font-family:"Lora",serif; font-size:clamp(1.85rem,2.9vw,2.35rem); line-height:1.18; }
+    .sub { max-width:760px; font-size:.98rem; opacity:.95; }
+    main { padding:26px 36px 34px; }
+    .toolbar { display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-bottom:18px; }
+    .search { min-width:280px; flex:1; border:1px solid #cfd8e1; border-radius:10px; padding:10px 12px; font:inherit; }
+    .note { color:#5f6d7c; font-size:.92rem; }
+    .list { display:grid; gap:14px; }
+    .item { border:1px solid var(--line); border-radius:12px; padding:16px; background:#fbfdff; }
+    .meta { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:8px; color:#5f6d7c; font-size:.9rem; }
+    .pill { font-weight:700; color:#0f5f94; text-decoration:none; }
+    .type { display:inline-block; padding:4px 8px; border-radius:999px; background:#eef5fb; color:#2e5875; font-size:.76rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; }
+    .body { white-space:pre-wrap; color:#233242; line-height:1.55; margin:8px 0 0; }
+    .empty { color:#5f6d7c; padding:20px 0; }
+    footer { border-top:1px solid var(--line); padding:14px 36px 20px; color:var(--muted); font-size:.86rem; background:#fafcfe; }
+    @media (max-width:760px){ header,main,footer{padding-left:18px;padding-right:18px;} }
+  </style>
+</head>
+<body>
+  <article class="page">
+    <header>
+      <div class="topnav">
+        <div class="navgroup">
+          <a class="navbtn" href="/en/">Back to hub</a>
+          <a class="navbtn" href="/projects/pildoras-colaborativas/en/">Collaborative pills</a>
+        </div>
+        <div class="navgroup">
+          <a class="navbtn" href="../es/">Leer en español</a>
+          <a class="navbtn" href="#" data-logout>Sign out</a>
+        </div>
+      </div>
+      <div class="kicker">AI Hub · Recent conversation</div>
+      <h1>Recent comments</h1>
+      <p class="sub">A fast way to read the latest conversation across the repository without opening each pill one by one.</p>
+    </header>
+    <main>
+      <div class="toolbar">
+        <input class="search" id="search" placeholder="Search by pill, author, or comment text" />
+        <div class="note" id="count-note">Loading comments...</div>
+      </div>
+      <section class="list" id="comment-list"></section>
+      <p class="empty" id="empty" hidden>There are no recent comments to show.</p>
+    </main>
+    <footer>Cross-repository comment view for the Isaval AI Hub.</footer>
+  </article>
+  <script>
+    (function () {
+      const listEl = document.getElementById('comment-list');
+      const emptyEl = document.getElementById('empty');
+      const searchEl = document.getElementById('search');
+      const countNoteEl = document.getElementById('count-note');
+      let comments = [];
+
+      function formatDate(value) {
+        const date = new Date(value);
+        return Number.isNaN(date.getTime()) ? '' : date.toLocaleString('en-GB');
+      }
+
+      function render() {
+        const q = searchEl.value.trim().toLowerCase();
+        const filtered = comments.filter((item) => {
+          const haystack = [
+            item.pillTitle,
+            item.pillAuthor,
+            item.commenterName,
+            item.commenterEmail,
+            item.message,
+          ].join(' ').toLowerCase();
+          return !q || haystack.includes(q);
+        });
+
+        listEl.innerHTML = '';
+        emptyEl.hidden = filtered.length !== 0;
+        countNoteEl.textContent = q
+          ? `${filtered.length} comment${filtered.length === 1 ? '' : 's'} found.`
+          : `${comments.length} recent comment${comments.length === 1 ? '' : 's'}.`;
+
+        filtered.forEach((item) => {
+          const article = document.createElement('article');
+          article.className = 'item';
+          article.innerHTML = `
+            <div class="meta">
+              <div>
+                <a class="pill" href="${item.pillUrl}">${item.pillTitle}</a>
+                <span class="type">${item.pillType === 'collaborative' ? 'Collaborative' : 'Executive'}</span>
+              </div>
+              <div>${formatDate(item.updatedAt || item.createdAt)}</div>
+            </div>
+            <div class="meta">
+              <div><strong>${item.commenterName}</strong>${item.commenterEmail ? ` · ${item.commenterEmail}` : ''}</div>
+              <div>Pill author: ${item.pillAuthor}</div>
+            </div>
+            <div class="body">${item.message}</div>
+          `;
+          listEl.appendChild(article);
+        });
+      }
+
+      fetch('/api/recent-comments?lang=en&limit=60', {
+        credentials: 'same-origin',
+        cache: 'no-store',
+      })
+        .then((response) => response.ok ? response.json() : Promise.reject(new Error('load_failed')))
+        .then((payload) => {
+          comments = payload.comments || [];
+          render();
+        })
+        .catch(() => {
+          countNoteEl.textContent = 'Recent conversation could not be loaded.';
+          emptyEl.hidden = false;
+        });
+
+      searchEl.addEventListener('input', render);
+
+      document.addEventListener('click', async function(event) {
+        const trigger = event.target.closest('[data-logout]');
+        if (!trigger) return;
+        event.preventDefault();
+        try {
+          await fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' });
+        } catch (e) {}
+        window.location.href = '/login/';
+      });
+    })();
+  </script>
+</body>
+</html>
