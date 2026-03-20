@@ -1373,7 +1373,7 @@ export class HubData extends DurableObject {
     const html = `
       <div style="background:#f4f7fa;padding:32px 20px;">
         <table role="presentation" style="max-width:720px;width:100%;margin:0 auto;background:#ffffff;border:1px solid #d8e0e8;border-radius:14px;padding:0;border-collapse:separate;">
-          <tr><td style="padding:26px 28px;background:linear-gradient(110deg,#10314d 0%,#0f5f94 56%,#1577af 100%);color:#ffffff;border-radius:14px 14px 0 0;">
+          <tr><td bgcolor="#10314d" style="padding:26px 28px;background-color:#10314d;background-image:linear-gradient(110deg,#10314d 0%,#0f5f94 56%,#1577af 100%);color:#ffffff;border-radius:14px 14px 0 0;">
             <div style="font:700 12px Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;opacity:.9;">Hub IA Isaval</div>
             <div style="font:700 34px Georgia,serif;line-height:1.15;margin-top:8px;">Nueva publicación interna</div>
             <div style="font:400 17px Arial,sans-serif;line-height:1.5;margin-top:10px;opacity:.95;">Se han incorporado nuevas piezas al repositorio interno de píldoras sobre IA.</div>
@@ -1448,7 +1448,7 @@ export class HubData extends DurableObject {
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f3f6f9;padding:32px 16px;">
     <tr><td align="center">
       <table role="presentation" width="720" cellpadding="0" cellspacing="0" style="width:720px;max-width:720px;background:#ffffff;border:1px solid #d8e0e8;border-radius:14px;overflow:hidden;">
-        <tr><td style="padding:28px 32px;background:linear-gradient(110deg,#10314d 0%,#0f5f94 56%,#1577af 100%);color:#ffffff;">
+        <tr><td bgcolor="#10314d" style="padding:28px 32px;background-color:#10314d;background-image:linear-gradient(110deg,#10314d 0%,#0f5f94 56%,#1577af 100%);color:#ffffff;">
           <div style="font-family:Arial,sans-serif;font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;opacity:.9;">Hub IA Isaval</div>
           <div style="font-family:Georgia,serif;font-size:42px;line-height:1.1;font-weight:700;margin-top:10px;">Píldoras ya publicadas</div>
           <div style="font-family:Arial,sans-serif;font-size:18px;line-height:1.5;margin-top:12px;max-width:560px;opacity:.95;">Reunimos en un solo envío todas las piezas disponibles hasta ahora para que podáis localizarlas y entrar directamente en las que más os interesen.</div>
@@ -1587,7 +1587,7 @@ export class HubData extends DurableObject {
         const html = `
           <div style="background:#f4f7fa;padding:32px 20px;">
             <table role="presentation" style="max-width:720px;width:100%;margin:0 auto;background:#ffffff;border:1px solid #d8e0e8;border-radius:14px;border-collapse:separate;">
-              <tr><td style="padding:26px 28px;background:linear-gradient(110deg,#10314d 0%,#0f5f94 56%,#1577af 100%);color:#ffffff;border-radius:14px 14px 0 0;">
+              <tr><td bgcolor="#10314d" style="padding:26px 28px;background-color:#10314d;background-image:linear-gradient(110deg,#10314d 0%,#0f5f94 56%,#1577af 100%);color:#ffffff;border-radius:14px 14px 0 0;">
                 <div style="font:700 12px Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;opacity:.9;">Hub IA Isaval</div>
                 <div style="font:700 34px Georgia,serif;line-height:1.15;margin-top:8px;">Resumen semanal de comentarios</div>
                 <div style="font:400 17px Arial,sans-serif;line-height:1.5;margin-top:10px;opacity:.95;">Comentarios nuevos registrados en tus píldoras durante la semana cerrada.</div>
