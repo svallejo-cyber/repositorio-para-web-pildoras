@@ -16,6 +16,7 @@ except Exception:
 
 SMTP_HOST = "smtp.mail.me.com"
 SMTP_PORT = 587
+KEYCHAIN_SERVICE = "codex-hub-icloud-smtp"
 
 
 class HubClient:
@@ -89,6 +90,30 @@ def smtp_send(sender, password, msg):
         server.ehlo()
         server.login(sender, password)
         server.send_message(msg)
+
+
+def get_password(sender, dry_run=False):
+    password = os.environ.get("ICLOUD_APP_PASSWORD")
+    if password:
+        return password
+    cmd = [
+        "security",
+        "find-generic-password",
+        "-a",
+        sender,
+        "-s",
+        KEYCHAIN_SERVICE,
+        "-w",
+    ]
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    if result.returncode == 0:
+        return result.stdout.strip()
+    if dry_run:
+        return None
+    raise RuntimeError(
+        "Missing ICLOUD_APP_PASSWORD and no keychain item found. "
+        f"Store it with: security add-generic-password -a '{sender}' -s '{KEYCHAIN_SERVICE}' -w '<APP_PASSWORD>' -U"
+    )
 
 
 def send_initial(client, sender, password, dry_run, override_to=None):
@@ -182,10 +207,7 @@ def main():
     parser.add_argument("--force-latest", action="store_true")
     args = parser.parse_args()
 
-    password = os.environ.get("ICLOUD_APP_PASSWORD")
-    if not args.dry_run and not password:
-        print("Missing ICLOUD_APP_PASSWORD in environment", file=sys.stderr)
-        return 1
+    password = get_password(args.sender_email, dry_run=args.dry_run)
 
     client = HubClient(args.base_url)
     try:
