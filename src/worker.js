@@ -15,6 +15,7 @@ const DEFAULT_INVITED_AVATARS = {
   "jcnunez@isaval.es": "/assets/profile/juan-carlos-nunez-360.jpg",
   "eprieto@isaval.es": "/assets/profile/eva-prieto-360.jpg",
   "mvillaverde@isaval.es": "/assets/profile/marcos-villaverde-360.jpg",
+  "dvillafranca@isaval.es": "/assets/profile/david-villafranca-360.jpg",
 };
 const PUBLISHED_PILLS = [
   { slug: "tenantflow", lang: "es", type: "executive", title: "TenantFlow", author: "Santiago Vallejo", authorEmail: "svallejo@isaval.es", avatar: "/assets/profile/santiago2-360.jpg", publishedAt: "2026-03-07T23:18:44Z", urlPath: "/projects/tenantflow/es/" },
@@ -30,6 +31,7 @@ const PUBLISHED_PILLS = [
   { slug: "colaborativa-4", lang: "es", type: "collaborative", title: "De la factura al criterio de control", author: "Juan Carlos Nuñez", authorEmail: "jcnunez@isaval.es", avatar: "/assets/profile/juan-carlos-nunez-360.jpg", publishedAt: "2026-03-18T20:30:00Z", urlPath: "/projects/colaborativa-4/es/" },
   { slug: "colaborativa-5", lang: "es", type: "collaborative", title: "Del proyecto a la evidencia", author: "Eva Prieto Martínez", authorEmail: "eprieto@isaval.es", avatar: "/assets/profile/eva-prieto-360.jpg", publishedAt: "2026-03-20T18:00:00Z", urlPath: "/projects/colaborativa-5/es/" },
   { slug: "colaborativa-6", lang: "es", type: "collaborative", title: "De la visión manual al pulso diario", author: "Marcos Villaverde Fontán", authorEmail: "mvillaverde@isaval.es", avatar: "/assets/profile/marcos-villaverde-360.jpg", publishedAt: "2026-03-20T19:00:00Z", urlPath: "/projects/colaborativa-6/es/" },
+  { slug: "colaborativa-7", lang: "es", type: "collaborative", title: "Del monitoreo a la inteligencia sectorial", author: "David Villafranca Gayo", authorEmail: "dvillafranca@isaval.es", avatar: "/assets/profile/david-villafranca-360.jpg", publishedAt: "2026-03-21T10:00:00Z", urlPath: "/projects/colaborativa-7/es/" },
 ];
 const COLLABORATIVE_PILLS = PUBLISHED_PILLS.filter((item) => item.type === "collaborative");
 
@@ -1548,6 +1550,7 @@ export class HubData extends DurableObject {
       "colaborativa-4": "Revisión de tarifas de transporte para convertir la factura en un criterio de control más útil y escalable.",
       "colaborativa-5": "Repositorio vivo de casos de éxito para convertir la experiencia acumulada en marketing, ventas y conocimiento reutilizable.",
       "colaborativa-6": "Cuadro de mando operativo para leer carga, rendimiento, ocupación y capacidad diaria en almacén con mayor anticipación.",
+      "colaborativa-7": "Sistema de clipping estructurado para convertir actualidad sectorial en inteligencia útil para dirección y activación comercial.",
     };
     return descriptions[slug] || "";
   }
