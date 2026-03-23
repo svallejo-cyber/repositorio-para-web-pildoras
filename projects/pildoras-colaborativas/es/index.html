@@ -130,6 +130,8 @@
       background: linear-gradient(180deg, #ffffff 0%, #f8fcf9 100%);
       text-align: center;
     }
+    .podium-card.podium-link { cursor: pointer; transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
+    .podium-card.podium-link:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(18, 37, 54, 0.10); border-color: #bdd7c8; }
     .podium-place {
       width: 42px;
       height: 42px;
@@ -162,6 +164,7 @@
     .podium-name { font-weight: 700; font-size: 1.02rem; margin-bottom: 4px; }
     .podium-score { color: var(--accent); font-weight: 700; margin-bottom: 4px; }
     .podium-meta { color: var(--muted); font-size: 0.9rem; }
+    .podium-action { margin-top: 8px; font-size: 0.82rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: .04em; }
     .searchbar {
       width: 100%;
       border: 1px solid #cfd8e1;
@@ -346,12 +349,13 @@
         .then((data) => {
           const podium = data.podium || [];
           root.innerHTML = podium.map((item, index) => `
-            <article class="podium-card">
+            <article class="podium-card podium-link" data-author-filter="${item.author}">
               <div class="podium-place ${medals[index] || 'bronze'}">${index + 1}</div>
               <div class="podium-avatar"><img src="${item.avatar}" alt="${item.author}" loading="lazy" decoding="async" /></div>
               <div class="podium-name">${item.author}</div>
               <div class="podium-score">${item.count} píldora${item.count === 1 ? '' : 's'}</div>
               <div class="podium-meta">Última publicación: ${new Date(item.latestPublishedAt).toLocaleDateString('es-ES')}</div>
+              <div class="podium-action">Ver sus píldoras</div>
             </article>
           `).join('');
 
@@ -365,18 +369,29 @@
           commentsRoot.innerHTML = '<div class="card">No se ha podido cargar el ranking en este momento.</div>';
         });
 
-      searchInput.addEventListener('input', () => {
-        const q = searchInput.value.trim().toLowerCase();
+      function applyAuthorFilter(rawValue) {
+        const q = String(rawValue || '').trim().toLowerCase();
         let visible = 0;
         entries.forEach((entry) => {
           const author = (entry.dataset.author || '').toLowerCase();
           const match = !q || author.includes(q);
           entry.style.display = match ? '' : 'none';
           if (match) visible += 1;
-        })
+        });
         searchNote.textContent = q
-          ? `Mostrando ${visible} colaborativa${visible === 1 ? '' : 's'} para “${searchInput.value.trim()}”.`
+          ? `Mostrando ${visible} colaborativa${visible === 1 ? '' : 's'} para “${String(rawValue || '').trim()}”.`
           : 'Mostrando todas las colaborativas publicadas.';
+      }
+
+      searchInput.addEventListener('input', () => applyAuthorFilter(searchInput.value));
+
+      root.addEventListener('click', (event) => {
+        const card = event.target.closest('[data-author-filter]');
+        if (!card) return;
+        const author = card.getAttribute('data-author-filter') || '';
+        searchInput.value = author;
+        applyAuthorFilter(author);
+        document.getElementById('collab-list').scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
     })();
   </script>

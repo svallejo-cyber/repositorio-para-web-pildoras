@@ -1746,13 +1746,51 @@ export class HubData extends DurableObject {
       const bd = b.lastAccessAt ? new Date(b.lastAccessAt).getTime() : 0;
       return bd - ad;
     });
+    const totalUsers = users.length;
+    const usersWithAccess = users.filter((user) => (user.accessCount || 0) > 0).length;
+    const usersWithoutAccess = Math.max(totalUsers - usersWithAccess, 0);
+    const accessBuckets = [
+      { key: "0", label: "0 accesos", count: users.filter((user) => (user.accessCount || 0) === 0).length },
+      { key: "1", label: "1 acceso", count: users.filter((user) => (user.accessCount || 0) === 1).length },
+      { key: "2-3", label: "2-3 accesos", count: users.filter((user) => (user.accessCount || 0) >= 2 && (user.accessCount || 0) <= 3).length },
+      { key: "4-7", label: "4-7 accesos", count: users.filter((user) => (user.accessCount || 0) >= 4 && (user.accessCount || 0) <= 7).length },
+      { key: "8+", label: "8 o más", count: users.filter((user) => (user.accessCount || 0) >= 8).length },
+    ].map((bucket) => ({
+      ...bucket,
+      percentage: totalUsers ? Number(((bucket.count / totalUsers) * 100).toFixed(1)) : 0,
+    }));
+
+    const eventsByDayMap = new Map();
+    const pageViewCount = events.filter((event) => event.type === "page-view").length;
+    const pdfOpenCount = events.filter((event) => event.type === "pdf-open").length;
+    const loginCount = events.filter((event) => event.type === "login").length;
+    for (let offset = 13; offset >= 0; offset -= 1) {
+      const date = subtractDays(new Date(), offset);
+      const key = getLocalDateKey(date, NOTIFICATION_TIMEZONE);
+      eventsByDayMap.set(key, { dateKey: key, label: key.slice(5), count: 0 });
+    }
+    for (const event of events) {
+      const key = getLocalDateKey(new Date(event.at || Date.now()), NOTIFICATION_TIMEZONE);
+      if (eventsByDayMap.has(key)) {
+        eventsByDayMap.get(key).count += 1;
+      }
+    }
+
     return {
       summary: {
-        totalUsers: users.length,
+        totalUsers,
         activeUsers: users.filter((user) => user.active).length,
-        usersWithAccess: users.filter((user) => (user.accessCount || 0) > 0).length,
+        usersWithAccess,
+        usersWithoutAccess,
         totalAccesses: users.reduce((sum, user) => sum + (user.accessCount || 0), 0),
+        adoptionRate: totalUsers ? Number(((usersWithAccess / totalUsers) * 100).toFixed(1)) : 0,
+        inactivityRate: totalUsers ? Number(((usersWithoutAccess / totalUsers) * 100).toFixed(1)) : 0,
+        pageViewCount,
+        pdfOpenCount,
+        loginCount,
       },
+      accessBuckets,
+      activityByDay: Array.from(eventsByDayMap.values()),
       users: sorted,
       recentEvents: events.slice(0, 80),
     };
