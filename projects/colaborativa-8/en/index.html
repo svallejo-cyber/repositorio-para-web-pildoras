@@ -36,6 +36,10 @@
     .linkbox { border: 1px solid #cddff0; background: #f3f8fd; border-radius: 10px; padding: 12px; word-break: break-word; }
     .pdf-link { display: inline-block; margin-top: 10px; text-decoration: none; background: var(--accent); color: #fff; border: 1px solid #0f5a8c; border-radius: 8px; padding: 8px 12px; font-size: 0.9rem; font-weight: 600; }
     .linkbox a.pdf-link, .linkbox a.pdf-link:visited, .linkbox a.pdf-link:hover, .linkbox a.pdf-link:focus { color: #fff; }
+    .media-grid { display: grid; gap: 12px; margin-top: 10px; }
+    .media-card { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: #fff; }
+    .media-card img { width: 100%; height: auto; display: block; }
+    .media-card figcaption { padding: 10px 12px; font-size: 0.9rem; color: var(--muted); background: #fafcfe; }
     footer { border-top: 1px solid var(--line); color: var(--muted); font-size: 0.87rem; padding: 14px 38px 22px; background: #fafcfe; }
     @media (max-width: 760px) { header, main, footer { padding-left: 18px; padding-right: 18px; } .hero { grid-template-columns: 1fr; } .grid { grid-template-columns: 1fr; } }
   </style>
@@ -75,6 +79,23 @@
           <div class="card"><span class="tag">Global view</span><p>It turns dispersed market knowledge into a complete comparable picture that is easy to explore.</p></div>
           <div class="card"><span class="tag">Replicability</span><p>It opens a reusable model for other strategic questions with heterogeneous sources and expensive analysis.</p></div>
           <div class="card"><span class="tag">Judgment</span><p>It does not replace executive judgment; it strengthens it by preparing the reading and contrast of information better.</p></div>
+        </div>
+      </section>
+      <section>
+        <h2>Tool screenshots</h2>
+        <div class="media-grid">
+          <figure class="media-card">
+            <img src="./maria-source-000.jpg" alt="Interactive map comparing the store network with competitors" loading="lazy" decoding="async" />
+            <figcaption>Interactive map to read geographic footprint and competitive radius by area.</figcaption>
+          </figure>
+          <figure class="media-card">
+            <img src="./maria-source-001.png" alt="Consolidated view of commercial positioning by store network" loading="lazy" decoding="async" />
+            <figcaption>Consolidated view for answering territorial questions with immediate visual reading.</figcaption>
+          </figure>
+          <figure class="media-card">
+            <img src="./maria-source-002.png" alt="Opening-hours comparison against competitors" loading="lazy" decoding="async" />
+            <figcaption>Opening-hours comparison to identify meaningful gaps against nearby competitors.</figcaption>
+          </figure>
         </div>
       </section>
       <section>
