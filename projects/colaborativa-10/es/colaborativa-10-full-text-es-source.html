@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Colaborativa 10 · Texto completo</title>
+  <style>
+    body { font-family: Arial, sans-serif; color: #1f2c3a; margin: 0; padding: 24px; line-height: 1.58; }
+    h1, h2 { color: #10314d; }
+    h1 { font-size: 26px; margin: 0 0 18px; }
+    h2 { font-size: 18px; margin: 22px 0 10px; }
+    p { margin: 0 0 12px; }
+    ul { margin: 10px 0 12px 22px; }
+    li { margin: 6px 0; }
+    .reflection-title { font-weight: 700; color: #10314d; margin-top: 14px; }
+  </style>
+</head>
+<body>
+  <h1>Del pedido disperso al flujo integrado: cómo automatizar la entrada de pedidos y la generación documental en exportación</h1>
+  <p>Este proyecto nace de una necesidad operativa muy concreta dentro del departamento de exportación: transformar la recepción de pedidos, hoy fragmentada y manual, en un flujo estructurado capaz de alimentar el ERP de forma automática y generar después la documentación comercial y logística asociada sin rehacer información varias veces.</p>
+  <p>En la situación actual, los pedidos llegan por múltiples vías y en formatos distintos. A veces aparecen como texto dentro de un correo electrónico. Otras veces llegan como PDF adjunto, como hoja Excel o incluso como PDF preparado por el cliente utilizando ya nuestros códigos de ERP. A partir de ahí, el equipo tiene que interpretar cada pedido, introducirlo manualmente en el sistema y, una vez generado el albarán, confeccionar también la factura y el packing list mediante hojas Excel separadas. En el caso del packing list, además, ni siquiera se alimenta directamente del albarán del ERP, sino de una hoja que transmite el departamento de logística.</p>
+  <p>El problema, por tanto, no es la falta de información. El problema real es que la información existe, pero aparece repartida entre correos, adjuntos, documentos con estructuras distintas, ficheros de logística y tratamientos manuales posteriores. Esa dispersión obliga a reintroducir datos varias veces, genera dependencia de personas concretas, multiplica el riesgo de error y dificulta construir un proceso estable, trazable y escalable.</p>
+
+  <h2>Solución propuesta</h2>
+  <p>La solución consiste en diseñar una capa de automatización documental conectada al correo, a los archivos recibidos y al ERP, capaz de convertir cualquier pedido entrante en una entrada estructurada de sistema, validada y lista para continuar el flujo administrativo y logístico.</p>
+  <p>La idea no es solo leer documentos, sino construir una cadena útil y consistente. Primero se capturan los pedidos desde los distintos canales de entrada. Después se interpretan y se estructuran los datos relevantes. A continuación se validan contra la lógica del ERP y, finalmente, se activan dentro del circuito operativo: creación de pedido, generación de albarán y emisión posterior de factura y packing list.</p>
+  <p>Lo relevante no es solo la automatización. Lo importante es que esa automatización convierte una recepción dispersa en un flujo ordenado, con menos fricción, menos retrabajo y menor coste de interpretación operativa.</p>
+
+  <h2>Modelo de funcionamiento</h2>
+  <p class="reflection-title">1. Captura</p>
+  <p>La primera capa es la recepción automática de pedidos desde las distintas fuentes de entrada: correo electrónico con pedido en texto libre, correo con PDF adjunto, correo con Excel adjunto, PDF estructurado con nuestros propios códigos de ERP y otros formatos recurrentes de clientes habituales.</p>
+  <p>En esta fase, el sistema identifica el mensaje, el cliente, los adjuntos y el tipo de documento recibido. La clave aquí es no obligar al cliente a cambiar su forma de pedir desde el primer día, sino adaptar la captura al modo real en que hoy llegan los pedidos.</p>
+  <p class="reflection-title">2. Interpretación y estructuración</p>
+  <p>La segunda capa consiste en extraer del pedido la información operativa que el ERP necesita para crear la entrada: cliente, referencia o código ERP, descripción, cantidad, unidad, formato o envase, condiciones comerciales relevantes, observaciones, destino, fecha requerida y posibles instrucciones especiales.</p>
+  <p>Cuando el documento venga con nuestros códigos de ERP, la automatización será mucho más directa. Cuando el pedido llegue en texto libre o en formatos menos estructurados, el sistema deberá apoyarse en reglas, plantillas por cliente y capacidades de lectura documental para proponer una interpretación fiable.</p>
+  <p>Aquí aparece un aprendizaje importante: la IA puede multiplicar el valor del dato, pero no sustituye la necesidad de estructura. Sin una base de correspondencias, validaciones y criterios por cliente, la automatización no será robusta.</p>
+  <p class="reflection-title">3. Validación y entrada en ERP</p>
+  <p>Una vez extraídos los datos, el sistema debe validarlos antes de generar automáticamente el pedido en ERP. Por ejemplo: comprobar que el cliente existe, validar códigos de artículo, detectar cantidades incoherentes, revisar unidades de medida, identificar duplicados, comprobar condiciones mínimas obligatorias y marcar excepciones para revisión humana.</p>
+  <p>La automatización no debe eliminar el control, sino desplazarlo hacia donde realmente aporta valor: supervisar excepciones en lugar de teclear pedidos completos.</p>
+  <p class="reflection-title">4. Activación documental</p>
+  <p>Una vez creado el pedido y emitido el albarán desde ERP, el sistema debe aprovechar esa misma información para generar automáticamente la factura y el packing list, evitando reconstruirlos en Excel.</p>
+  <p>Aquí hay dos niveles de mejora. El primero es automatizar la factura comercial a partir del albarán y de las condiciones del pedido, generando un documento estandarizado en formato corporativo. El segundo, más importante, es rediseñar el flujo del packing list para que deje de depender de una hoja Excel paralela enviada por logística y pase a generarse a partir de datos estructurados de expedición: bultos, peso bruto, peso neto, dimensiones, paletización, unidades por bulto y composición logística final.</p>
+  <p>En otras palabras, no se trata solo de automatizar documentos, sino de conectar comercial, administración y logística en un mismo recorrido de datos.</p>
+
+  <h2>Valor para la organización</h2>
+  <p>Desde una perspectiva de dirección y de eficiencia operativa, el valor de esta herramienta está en reducir fricción, aumentar claridad y eliminar reprocesos.</p>
+  <p>Hoy un mismo pedido puede pasar por varias manos y varias reconstrucciones: se recibe, se interpreta, se teclea en ERP, se genera albarán, se rehace la factura en Excel y se confecciona el packing list a partir de otra fuente distinta. Eso consume tiempo, introduce riesgo y fragmenta la trazabilidad.</p>
+  <p>Con una solución integrada, el mismo dato de origen puede alimentar todo el proceso. El pedido deja de ser un correo o un adjunto aislado y pasa a convertirse en una entrada estructurada de negocio, reutilizable a lo largo de toda la cadena administrativa y logística.</p>
+  <p>Esto no sustituye el criterio del equipo. Lo fortalece. El equipo dedica menos tiempo a transcribir y recomponer documentos, y más tiempo a revisar incidencias, controlar calidad de pedido, atender al cliente y gestionar excepciones.</p>
+
+  <h2>Impacto organizativo</h2>
+  <p>El sistema no solo agiliza. También genera memoria, trazabilidad y consistencia. Cada pedido procesado deja histórico de canal de entrada, documento original, datos extraídos, validaciones realizadas, correcciones manuales, documento ERP generado, factura emitida y packing list asociado.</p>
+  <p>Con el tiempo, eso permite construir un conocimiento acumulativo valioso: patrones por cliente, errores recurrentes, formatos más fiables, referencias conflictivas y oportunidades de mejora comercial y logística.</p>
+  <p>Además, una misma base puede activarse en distintos planos: exportación, customer service, administración, logística y dirección.</p>
+
+  <h2>Aprendizajes clave para que funcione</h2>
+  <p>La simplicidad importa. Si el sistema requiere demasiadas excepciones o configuraciones complejas desde el inicio, no escalará bien. La adopción depende de que el flujo sea claro y de que el número de casos manuales vaya bajando progresivamente.</p>
+  <p>No todos los clientes deben tratarse igual. Lo más eficaz suele ser empezar por tipologías: clientes que mandan Excel estructurado, clientes que usan nuestros códigos ERP, clientes con PDFs repetitivos y clientes con texto libre más complejo.</p>
+  <p>La estructura importa más que la herramienta. Antes de elegir tecnología, hay que definir bien qué datos se capturan, qué validaciones se aplican, qué excepciones bloquean y cómo se relacionan pedido, albarán, factura y packing list.</p>
+  <p>El packing list no debería seguir siendo un documento externo al flujo principal. Mientras dependa de una hoja aparte de logística, seguirá habiendo una ruptura de proceso. La mejora real pasa por integrar también los datos logísticos dentro del modelo.</p>
+
+  <h2>Requisitos funcionales mínimos</h2>
+  <ul>
+    <li>Captura automática de correos y adjuntos en buzón de pedidos.</li>
+    <li>Clasificación por cliente, formato y tipo de documento.</li>
+    <li>Extracción de datos de pedido desde texto, PDF y Excel.</li>
+    <li>Tabla de equivalencias cliente-producto-código ERP.</li>
+    <li>Motor de validaciones antes de crear pedido.</li>
+    <li>Creación automática o semiautomática del pedido en ERP.</li>
+    <li>Generación posterior de factura a partir del albarán.</li>
+    <li>Integración del dato logístico para generar packing list.</li>
+    <li>Histórico de documentos originales y documentos generados.</li>
+    <li>Panel de excepciones para revisión manual.</li>
+  </ul>
+
+  <h2>Arquitectura práctica recomendada</h2>
+  <p>La opción más realista suele ser un módulo externo conectado al correo y al ERP. Ese módulo actuaría como una capa intermedia: recibe el pedido, lo interpreta, extrae y valida datos, propone o crea el pedido en ERP, recupera el albarán y genera factura y packing list.</p>
+  <p>Esto permite evolucionar más rápido, entrenar reglas por cliente y mantener la lógica documental sin depender completamente del proveedor del ERP.</p>
+
+  <h2>Fases del proyecto</h2>
+  <p class="reflection-title">Fase 1. Mapeo del proceso actual</p>
+  <ul>
+    <li>identificar todos los canales de entrada,</li>
+    <li>clasificar tipologías de pedidos,</li>
+    <li>medir volumen por formato,</li>
+    <li>revisar cómo se genera hoy factura y packing list.</li>
+  </ul>
+  <p class="reflection-title">Fase 2. Estandarización de datos</p>
+  <ul>
+    <li>definir campos mínimos obligatorios,</li>
+    <li>crear tablas de equivalencia,</li>
+    <li>definir reglas por cliente,</li>
+    <li>decidir qué excepciones requieren revisión humana.</li>
+  </ul>
+  <p class="reflection-title">Fase 3. Automatización de entrada de pedidos</p>
+  <ul>
+    <li>captura de correo y adjuntos,</li>
+    <li>lectura de documentos,</li>
+    <li>extracción de datos,</li>
+    <li>integración con ERP.</li>
+  </ul>
+  <p class="reflection-title">Fase 4. Automatización documental posterior</p>
+  <ul>
+    <li>generación automática de factura,</li>
+    <li>rediseño del flujo de packing list,</li>
+    <li>conexión con datos logísticos reales.</li>
+  </ul>
+  <p class="reflection-title">Fase 5. Despliegue progresivo</p>
+  <ul>
+    <li>empezar por los clientes más estructurados,</li>
+    <li>ampliar por oleadas,</li>
+    <li>medir tasa de acierto y ahorro de tiempo,</li>
+    <li>ajustar reglas y plantillas.</li>
+  </ul>
+
+  <h2>Evolución futura</h2>
+  <ul>
+    <li>portal de clientes para pedidos normalizados,</li>
+    <li>validación automática de stock o fecha de entrega,</li>
+    <li>alertas por incoherencias comerciales,</li>
+    <li>cuadros de mando de tiempos y errores,</li>
+    <li>aprendizaje por cliente y por formato,</li>
+    <li>integración con trazabilidad logística y documental de exportación.</li>
+  </ul>
+  <p>Pero incluso en una primera fase, ya introduciría un cambio importante: dejar de tratar cada pedido como un documento aislado y empezar a gestionarlo como un flujo estructurado de datos con continuidad hasta la expedición.</p>
+
+  <h2>Conclusión</h2>
+  <p>Este proyecto no pretende solo automatizar la lectura de pedidos o ahorrar tecleo. Pretende ayudar a que un proceso hoy disperso, manual y muy dependiente de formatos heterogéneos pase a comportarse como una capacidad operativa integrada, trazable y escalable.</p>
+  <p>Hoy el valor ya existe: está en los correos, en los PDFs, en los Excels, en el ERP, en el albarán y en la información logística. Lo que falta es un sistema que permita recoger ese valor una sola vez, estructurarlo correctamente y hacerlo circular hasta el final del proceso sin rehacerlo en cada etapa.</p>
+  <p>En definitiva, no se trata solo de automatizar documentos. Se trata de convertir la recepción del pedido y la generación documental posterior en un flujo único de negocio.</p>
+</body>
+</html>

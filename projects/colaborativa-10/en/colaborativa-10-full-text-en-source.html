@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Collaborative 10 · Full text</title>
+  <style>
+    body { font-family: Arial, sans-serif; color: #1f2c3a; margin: 0; padding: 24px; line-height: 1.58; }
+    h1, h2 { color: #10314d; }
+    h1 { font-size: 26px; margin: 0 0 18px; }
+    h2 { font-size: 18px; margin: 22px 0 10px; }
+    p { margin: 0 0 12px; }
+    ul { margin: 10px 0 12px 22px; }
+    li { margin: 6px 0; }
+    .reflection-title { font-weight: 700; color: #10314d; margin-top: 14px; }
+  </style>
+</head>
+<body>
+  <h1>From scattered order to integrated flow: how to automate order intake and document generation in export</h1>
+  <p>This project starts from a very specific operational need within the export department: turning order reception, which is currently fragmented and manual, into a structured flow able to feed the ERP automatically and then generate the associated commercial and logistics documentation without rebuilding information several times.</p>
+  <p>Today orders arrive through multiple channels and in different formats. Sometimes they come as text inside an email. At other times they arrive as an attached PDF, as an Excel sheet or even as a PDF prepared by the customer already using our ERP codes. From there, the team has to interpret each order, enter it manually into the system and, once the delivery note is generated, also prepare the invoice and the packing list through separate Excel sheets. In the case of the packing list, it is not even fed directly from the ERP delivery note, but from a sheet sent by the logistics department.</p>
+  <p>The problem, therefore, is not lack of information. The real problem is that the information exists, but appears scattered across emails, attachments, documents with different structures, logistics files and subsequent manual handling. This dispersion forces the same data to be re-entered several times, creates dependence on specific people, multiplies the risk of error and makes it difficult to build a stable, traceable and scalable process.</p>
+
+  <h2>Proposed solution</h2>
+  <p>The solution is to design a document-automation layer connected to email, incoming files and the ERP, capable of turning any incoming order into a structured system entry, validated and ready to continue the administrative and logistics flow.</p>
+  <p>The idea is not only to read documents, but to build a useful and consistent chain. First, orders are captured from the different input channels. Then the relevant data is interpreted and structured. Next, it is validated against ERP logic and finally activated within the operating circuit: order creation, delivery note generation and subsequent invoice and packing list issuance.</p>
+  <p>The key point is not only automation itself. What matters is that this automation turns a scattered intake into an ordered flow, with less friction, less rework and lower operational interpretation cost.</p>
+
+  <h2>Operating model</h2>
+  <p class="reflection-title">1. Capture</p>
+  <p>The first layer is the automatic reception of orders from the different entry sources: email with order in free text, email with attached PDF, email with attached Excel, structured PDF with our own ERP codes, and other recurring formats from habitual customers.</p>
+  <p>At this stage, the system identifies the message, the customer, the attachments and the type of document received. The key here is not to force the customer to change how they place orders on day one, but to adapt capture to the way orders actually arrive today.</p>
+  <p class="reflection-title">2. Interpretation and structuring</p>
+  <p>The second layer consists of extracting from the order the operational information the ERP needs to create the entry: customer, reference or ERP code, description, quantity, unit, format or packaging, relevant commercial conditions, observations, destination, required date and possible special instructions.</p>
+  <p>When the document already includes our ERP codes, automation becomes much more direct. When the order arrives in free text or in less structured formats, the system must rely on rules, customer templates and document-reading capabilities to propose a reliable interpretation.</p>
+  <p>An important lesson appears here: AI can multiply the value of the data, but it does not replace the need for structure. Without a base of correspondences, validations and customer criteria, the automation will not be robust.</p>
+  <p class="reflection-title">3. Validation and ERP entry</p>
+  <p>Once the data has been extracted, the system must validate it before automatically generating the ERP order. For example: checking that the customer exists, validating item codes, detecting inconsistent quantities, reviewing units of measure, identifying duplicates, checking minimum mandatory conditions and marking exceptions for human review.</p>
+  <p>Automation should not remove control, but shift it toward where it truly adds value: supervising exceptions instead of typing complete orders.</p>
+  <p class="reflection-title">4. Document activation</p>
+  <p>Once the order has been created and the delivery note issued from the ERP, the system must leverage that same information to generate the invoice and the packing list automatically, avoiding the need to reconstruct them in Excel.</p>
+  <p>There are two levels of improvement here. The first is automating the commercial invoice from the delivery note and order conditions, generating a standardized corporate document. The second, even more important, is redesigning the packing list flow so that it no longer depends on a parallel Excel sheet sent by logistics and instead is generated from structured shipment data: packages, gross weight, net weight, dimensions, palletization, units per package and final logistics composition.</p>
+  <p>In other words, this is not only about automating documents, but about connecting commercial, administration and logistics in the same data journey.</p>
+
+  <h2>Value for the organization</h2>
+  <p>From a management and operational-efficiency perspective, the value of this tool lies in reducing friction, increasing clarity and eliminating reprocessing.</p>
+  <p>Today the same order may pass through several hands and several reconstructions: it is received, interpreted, typed into ERP, converted into a delivery note, then the invoice is rebuilt in Excel and the packing list is prepared from a different source. This consumes time, introduces risk and fragments traceability.</p>
+  <p>With an integrated solution, the same source data can feed the entire process. The order stops being an isolated email or attachment and becomes a structured business entry, reusable along the full administrative and logistics chain.</p>
+  <p>This does not replace the team’s judgment. It strengthens it. The team spends less time transcribing and recomposing documents, and more time reviewing incidents, controlling order quality, serving the customer and handling exceptions.</p>
+
+  <h2>Organizational impact</h2>
+  <p>The system does not only speed things up. It also creates memory, traceability and consistency. Each processed order leaves a history of entry channel, original document, extracted data, validations performed, manual corrections, ERP document generated, invoice issued and associated packing list.</p>
+  <p>Over time, this makes it possible to build highly valuable accumulated knowledge: customer patterns, recurring errors, more reliable formats, problematic references and opportunities for commercial and logistics improvement.</p>
+  <p>In addition, the same base can be activated in different layers: export, customer service, administration, logistics and management.</p>
+
+  <h2>Main lessons for it to work</h2>
+  <p>Simplicity matters. If the system requires too many exceptions or overly complex configurations from the start, it will not scale well. Adoption depends on the flow being clear and on the number of manual cases decreasing progressively.</p>
+  <p>Not all customers should be treated the same. The most effective approach is usually to start with typologies: customers who send fairly structured Excel files, customers who use our ERP codes, customers with repetitive PDFs, and customers with more complex free text.</p>
+  <p>Structure matters more than the tool. Before choosing technology, it is necessary to define what data is captured, what validations apply, which exceptions block the process, and how order, delivery note, invoice and packing list relate to each other.</p>
+  <p>The packing list should not remain an external document to the main flow. As long as it depends on a separate logistics sheet, the process will remain broken. The real improvement lies in integrating logistics data into the model as well.</p>
+
+  <h2>Minimum functional requirements</h2>
+  <ul>
+    <li>Automatic capture of emails and attachments in the order mailbox.</li>
+    <li>Classification by customer, format and document type.</li>
+    <li>Extraction of order data from text, PDF and Excel.</li>
+    <li>Customer-product-ERP code equivalence table.</li>
+    <li>Validation engine before creating the order.</li>
+    <li>Automatic or semi-automatic order creation in ERP.</li>
+    <li>Subsequent invoice generation from the delivery note.</li>
+    <li>Integration of logistics data to generate the packing list.</li>
+    <li>History of original documents and generated documents.</li>
+    <li>Exception panel for manual review.</li>
+  </ul>
+
+  <h2>Recommended practical architecture</h2>
+  <p>The most realistic option is usually an external module connected to email and the ERP. That module would act as an intermediate layer: it receives the order, interprets it, extracts and validates data, proposes or creates the ERP order, retrieves the delivery note, and generates the invoice and packing list.</p>
+  <p>This makes it possible to evolve faster, train rules by customer and maintain documentary logic without depending completely on the ERP provider.</p>
+
+  <h2>Project phases</h2>
+  <p class="reflection-title">Phase 1. Mapping the current process</p>
+  <ul>
+    <li>identify all input channels,</li>
+    <li>classify order typologies,</li>
+    <li>measure volume by format,</li>
+    <li>review how invoice and packing list are generated today.</li>
+  </ul>
+  <p class="reflection-title">Phase 2. Data standardization</p>
+  <ul>
+    <li>define minimum mandatory fields,</li>
+    <li>create equivalence tables,</li>
+    <li>define customer rules,</li>
+    <li>decide which exceptions require human review.</li>
+  </ul>
+  <p class="reflection-title">Phase 3. Order intake automation</p>
+  <ul>
+    <li>email and attachment capture,</li>
+    <li>document reading,</li>
+    <li>data extraction,</li>
+    <li>ERP integration.</li>
+  </ul>
+  <p class="reflection-title">Phase 4. Subsequent document automation</p>
+  <ul>
+    <li>automatic invoice generation,</li>
+    <li>packing list flow redesign,</li>
+    <li>connection with real logistics data.</li>
+  </ul>
+  <p class="reflection-title">Phase 5. Progressive rollout</p>
+  <ul>
+    <li>start with the most structured customers,</li>
+    <li>expand in waves,</li>
+    <li>measure accuracy rate and time saved,</li>
+    <li>adjust rules and templates.</li>
+  </ul>
+
+  <h2>Future evolution</h2>
+  <ul>
+    <li>customer portal for normalized orders,</li>
+    <li>automatic validation of stock or delivery date,</li>
+    <li>alerts for commercial inconsistencies,</li>
+    <li>time and error dashboards,</li>
+    <li>learning by customer and by format,</li>
+    <li>integration with export logistics and documentary traceability.</li>
+  </ul>
+  <p>But even in a first phase, this would already introduce an important change: stop treating each order as an isolated document and start managing it as a structured data flow with continuity until shipment.</p>
+
+  <h2>Conclusion</h2>
+  <p>This project does not aim only to automate order reading or save typing. It aims to help a process that is currently scattered, manual and highly dependent on heterogeneous formats behave as an integrated, traceable and scalable operational capability.</p>
+  <p>Today the value already exists: it is in the emails, the PDFs, the Excels, the ERP, the delivery note and the logistics information. What is missing is a system that allows that value to be captured once, structured correctly and made to circulate until the end of the process without rebuilding it at each step.</p>
+  <p>Ultimately, this is not only about automating documents. It is about turning order reception and subsequent document generation into a single business flow.</p>
+</body>
+</html>

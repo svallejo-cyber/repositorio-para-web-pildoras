@@ -36,6 +36,7 @@ const PUBLISHED_PILLS = [
   { slug: "colaborativa-7", lang: "es", type: "collaborative", title: "Del monitoreo a la inteligencia sectorial", author: "David Villafranca Gayo", authorEmail: "dvillafranca@isaval.es", avatar: "/assets/profile/david-villafranca-360.jpg", publishedAt: "2026-03-21T10:00:00Z", urlPath: "/projects/colaborativa-7/es/" },
   { slug: "colaborativa-8", lang: "es", type: "collaborative", title: "De la pregunta estratégica a la respuesta con datos", author: "María Vallejo", authorEmail: "mvallejo@isaval.es", avatar: "/assets/profile/maria-vallejo-360.jpg", publishedAt: "2026-03-23T08:00:00Z", urlPath: "/projects/colaborativa-8/es/" },
   { slug: "colaborativa-9", lang: "es", type: "collaborative", title: "De la ficha de seguridad al documento de transporte", author: "José Carlos Garrigós", authorEmail: "jcgarrigos@isaval.es", avatar: "/assets/profile/jose-carlos-garrigos-360.jpg", publishedAt: "2026-03-24T12:00:00Z", urlPath: "/projects/colaborativa-9/es/" },
+  { slug: "colaborativa-10", lang: "es", type: "collaborative", title: "Del pedido disperso al flujo integrado", author: "José Carlos Garrigós", authorEmail: "jcgarrigos@isaval.es", avatar: "/assets/profile/jose-carlos-garrigos-360.jpg", publishedAt: "2026-03-25T08:00:00Z", urlPath: "/projects/colaborativa-10/es/" },
 ];
 const COLLABORATIVE_PILLS = PUBLISHED_PILLS.filter((item) => item.type === "collaborative");
 
@@ -1557,6 +1558,7 @@ export class HubData extends DurableObject {
       "colaborativa-7": "Sistema de clipping estructurado para convertir actualidad sectorial en inteligencia útil para dirección y activación comercial.",
       "colaborativa-8": "Herramientas navegables para responder preguntas estratégicas con datos consolidados sobre red comercial y competencia.",
       "colaborativa-9": "Automatización documental para convertir datos regulatorios de fichas de seguridad en documentos de transporte marítimo y aéreo desde el ERP.",
+      "colaborativa-10": "Automatización del flujo de exportación para transformar pedidos heterogéneos en entradas ERP y documentos comerciales y logísticos conectados.",
     };
     return descriptions[slug] || "";
   }
