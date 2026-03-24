@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Collaborative 9 · Full text</title>
+  <style>
+    body { font-family: Arial, sans-serif; color: #1f2c3a; margin: 0; padding: 24px; line-height: 1.58; }
+    h1, h2 { color: #10314d; }
+    h1 { font-size: 26px; margin: 0 0 18px; }
+    h2 { font-size: 18px; margin: 22px 0 10px; }
+    p { margin: 0 0 12px; }
+    ul { margin: 10px 0 12px 22px; }
+    li { margin: 6px 0; }
+    .reflection-title { font-weight: 700; color: #10314d; margin-top: 14px; }
+  </style>
+</head>
+<body>
+  <h1>From safety data sheet to transport document: how to automate IMO and IATA documentation from the ERP</h1>
+  <p>This project starts from a very specific operational need: generating sea and air transport documentation for dangerous products automatically from information that already exists inside the organization, avoiding manual dependence, transcription mistakes and partial treatment of regulation.</p>
+  <p>Today the ERP can produce ADR documentation for road transport, but it does not natively generate the equivalent documents for sea and air transport. However, that information already exists in product safety data sheets, where the regulatory data applicable to road, sea and air transport is differentiated.</p>
+  <p>The problem, therefore, is not lack of information. The real problem is that the information is available, but not automatically connected to the ERP documentation flow. This forces people to consult safety data sheets manually, review regulation and prepare documents one by one, with the resulting loss of time, risk of error and poor scalability when the volume of shipments or references grows.</p>
+  <p>The opportunity is clear: turn existing and dispersed information into an automated, reliable and reusable flow able to generate, from the ERP itself, the transport documents corresponding to each logistics mode.</p>
+
+  <h2>Proposed solution</h2>
+  <p>The solution is to develop a functional layer connected to the ERP that can read or associate to each product reference the transport regulatory fields contained in the safety data sheet and, from them, automatically generate the applicable document depending on the shipment type:</p>
+  <ul>
+    <li>ADR for road transport</li>
+    <li>IMO / IMDG for sea transport</li>
+    <li>IATA / ICAO for air transport</li>
+  </ul>
+  <p>The system should not have to interpret each case manually on every shipment. It should rely on a data structure already defined by product and by transport mode.</p>
+  <p class="reflection-title">1. Data capture and structuring</p>
+  <p>For each product or reference, the database should contain the key transport fields extracted from the safety data sheet, differentiated by modality. Among them: UN number, proper shipping name, hazard class, packing group, applicable labels, marine hazard, marine pollutant, special provisions, packing instructions, limited or excepted quantities, EmS code for maritime transport and specific air restrictions.</p>
+  <p>The key here is that the structure matters more than the document. The value lies not only in automation, but in defining correctly what information is stored, how it is classified and how it is later activated.</p>
+  <p class="reflection-title">2. Rule engine</p>
+  <p>Once the data is structured, the system must apply a rule engine determining which template to use according to the transport mode, which fields are mandatory in each case, which regulatory texts must appear and which validations must be passed before issuing the document.</p>
+  <p>For example, a product may be regulated for one mode but not for another, or it may require different wording in IMO versus IATA even if it shares the same UN number. The system should resolve that automatically through parameterized rules, not through manual intervention.</p>
+  <p class="reflection-title">3. Document generation from the ERP</p>
+  <p>With data and rules already consolidated, the ERP could automatically generate the final document when creating the order, shipment or logistics instruction depending on the selected transport type.</p>
+  <p>The result should be a document ready to print or send as PDF, with corporate formatting and traceability of shipped product, batch or logistics reference, issue date, transport mode and regulatory data version used.</p>
+
+  <h2>Value for the organization</h2>
+  <p>From an operational perspective, the main value lies in reducing friction, administrative time and regulatory risk.</p>
+  <p>Today the process depends on reviewing safety data sheets and manually moving information into the corresponding document. With an integrated solution, regulatory knowledge stops being locked inside a technical PDF and becomes part of an operational business capability.</p>
+  <p>The clearest benefits would be:</p>
+  <ul>
+    <li>lower risk of error in dangerous-goods documentation,</li>
+    <li>greater speed in shipment preparation,</li>
+    <li>less dependence on specific individuals,</li>
+    <li>document traceability,</li>
+    <li>greater homogeneity across branches, subsidiaries or teams,</li>
+    <li>better audit and internal-control capability.</li>
+  </ul>
+
+  <h2>Main lessons for the project to work</h2>
+  <p>The first idea is that output quality will depend on database quality. If regulatory fields are not structured homogeneously by product, automation will not be reliable.</p>
+  <p>The second is that the system must clearly distinguish between documentary source and operational data. The safety data sheet will remain the technical reference document, but the ERP needs structured fields, not free text.</p>
+  <p>The third is that it is worth separating regulatory logic from documentary logic: the rules that determine what applies on one side and the template that builds the final document on the other.</p>
+  <p>The fourth is that the solution must be maintainable. Regulation changes, products evolve and safety data sheets are updated. Therefore, the system must allow regulatory data to be updated without rebuilding the development.</p>
+
+  <h2>Minimum functional requirements</h2>
+  <ul>
+    <li>Product master with transport-specific fields by mode.</li>
+    <li>Link between product, safety data sheet and active regulatory data.</li>
+    <li>Transport-mode selector in shipment: road, sea or air.</li>
+    <li>Pre-validation engine before issuing the document.</li>
+    <li>Automatic generation in PDF or printable format.</li>
+    <li>History of generated documents.</li>
+    <li>Version control for regulatory data.</li>
+    <li>Automatic exclusion when a product is not subject to a given mode.</li>
+  </ul>
+
+  <h2>Recommended practical architecture</h2>
+  <p>The cleanest option from the user perspective would be development inside the ERP, but this depends heavily on ERP flexibility and on the provider.</p>
+  <p>The most realistic route for a first deployment is usually an external module connected to the ERP: the ERP sends shipment data and the module returns the generated document. That gives more flexibility to start and to maintain regulatory or format changes.</p>
+
+  <h2>Project phases</h2>
+  <p class="reflection-title">Phase 1. Analysis</p>
+  <ul>
+    <li>Identify the exact documents to be issued for sea and air transport.</li>
+    <li>Review which ERP fields already exist.</li>
+    <li>Review which fields are in the safety data sheet but not in the ERP.</li>
+    <li>Define the mandatory-data matrix by mode.</li>
+  </ul>
+  <p class="reflection-title">Phase 2. Data structuring</p>
+  <ul>
+    <li>Create the transport master table by product.</li>
+    <li>Load or migrate the data from safety data sheets.</li>
+    <li>Validate with quality, regulatory and logistics teams.</li>
+  </ul>
+  <p class="reflection-title">Phase 3. Development</p>
+  <ul>
+    <li>Create the rule engine.</li>
+    <li>Create documentary templates.</li>
+    <li>Connect to ERP shipment flows.</li>
+  </ul>
+  <p class="reflection-title">Phase 4. Testing</p>
+  <ul>
+    <li>Tests with regulated and non-regulated references.</li>
+    <li>Tests by transport mode.</li>
+    <li>Document validation with real cases.</li>
+  </ul>
+  <p class="reflection-title">Phase 5. Rollout</p>
+  <ul>
+    <li>Training for traffic, export, customer service and quality teams.</li>
+    <li>Data-maintenance procedure.</li>
+  </ul>
+
+  <h2>Future evolution</h2>
+  <ul>
+    <li>automatic alerts when a safety data sheet changes and affects transport,</li>
+    <li>blocking shipments with incomplete regulatory data,</li>
+    <li>integration with labeling and packing list,</li>
+    <li>multilingual document generation,</li>
+    <li>dashboard for dangerous-goods shipments,</li>
+    <li>connection with document manager to preserve regulatory evidence.</li>
+  </ul>
+
+  <h2>Conclusion</h2>
+  <p>This project is not only about generating one more document from the ERP. It is about turning existing technical information into a reliable, traceable and scalable operational capability.</p>
+  <p>Today the company already has the regulatory knowledge inside its safety data sheets. What is missing is structuring and activating it inside the logistics flow so that it behaves as an operational asset rather than as a manual consultation every time there is a shipment.</p>
+  <p>In other words: the value already exists, but it still does not circulate automatically.</p>
+</body>
+</html>

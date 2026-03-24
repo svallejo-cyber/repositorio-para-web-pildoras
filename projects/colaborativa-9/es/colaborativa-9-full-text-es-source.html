@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Colaborativa 9 · Texto completo</title>
+  <style>
+    body { font-family: Arial, sans-serif; color: #1f2c3a; margin: 0; padding: 24px; line-height: 1.58; }
+    h1, h2 { color: #10314d; }
+    h1 { font-size: 26px; margin: 0 0 18px; }
+    h2 { font-size: 18px; margin: 22px 0 10px; }
+    p { margin: 0 0 12px; }
+    ul { margin: 10px 0 12px 22px; }
+    li { margin: 6px 0; }
+    .reflection-title { font-weight: 700; color: #10314d; margin-top: 14px; }
+  </style>
+</head>
+<body>
+  <h1>De la ficha de seguridad al documento de transporte: cómo automatizar la generación de documentación IMO e IATA desde el ERP</h1>
+  <p>Este proyecto nace de una necesidad operativa muy concreta: poder generar de forma automática la documentación de transporte marítimo y aéreo de nuestros productos peligrosos a partir de la información ya existente en la organización, evitando dependencias manuales, errores de transcripción y tratamientos parciales de la normativa.</p>
+  <p>En la situación actual, el ERP permite obtener la documentación ADR para transporte terrestre, pero no genera de forma nativa la documentación equivalente para transporte marítimo y aéreo. Sin embargo, esa información ya existe en las fichas de seguridad de los productos, donde se recogen de forma diferenciada los datos regulatorios aplicables al transporte terrestre, marítimo y aéreo.</p>
+  <p>El problema, por tanto, no es la falta de información. El problema real es que esa información está disponible, pero no conectada de manera automática con el proceso documental del ERP. Eso obliga a recurrir a consultas manuales de fichas de seguridad, revisión normativa y confección individual de documentos, con la consiguiente pérdida de tiempo, riesgo de error y dificultad para escalar el proceso cuando aumenta el volumen de expediciones o referencias.</p>
+  <p>La oportunidad es clara: transformar una información ya existente y dispersa en un flujo automatizado, fiable y reutilizable que permita generar, desde el propio ERP, los documentos de transporte correspondientes a cada modo logístico.</p>
+
+  <h2>Solución propuesta</h2>
+  <p>La solución consiste en desarrollar una capa funcional conectada al ERP que permita leer o asociar a cada referencia de producto los campos regulatorios de transporte incluidos en la ficha de seguridad y, a partir de ellos, generar automáticamente el documento aplicable según el tipo de expedición:</p>
+  <ul>
+    <li>ADR para transporte terrestre</li>
+    <li>IMO / IMDG para transporte marítimo</li>
+    <li>IATA / ICAO para transporte aéreo</li>
+  </ul>
+  <p>El sistema no tendría que interpretar manualmente cada caso en cada expedición, sino apoyarse en una estructura de datos previamente definida por producto y por modo de transporte.</p>
+  <p class="reflection-title">1. Captura y estructuración de datos</p>
+  <p>Para cada producto o referencia, sería necesario disponer en base de datos de los campos clave de transporte extraídos de la ficha de seguridad, diferenciados por modalidad. Entre ellos: número ONU, designación oficial de transporte, clase de peligro, grupo de embalaje, etiquetas aplicables, peligro para el medio marino, contaminante marino, disposiciones especiales, instrucciones de embalaje, cantidades limitadas o exceptuadas, código EmS en marítimo y restricciones específicas en aéreo.</p>
+  <p>La clave aquí es que la estructura importa más que el documento. El valor no está solo en automatizar, sino en definir correctamente qué información se recoge, cómo se clasifica y cómo se activa después.</p>
+  <p class="reflection-title">2. Motor de reglas</p>
+  <p>Una vez estructurados los datos, el sistema debe aplicar un motor de reglas que determine qué plantilla usar según el modo de transporte, qué campos son obligatorios en cada caso, qué textos normativos deben aparecer y qué validaciones deben cumplirse antes de emitir el documento.</p>
+  <p>Por ejemplo, un producto puede no estar regulado para un modo y sí para otro, o puede requerir una redacción distinta en IMO frente a IATA aunque comparta número ONU. El sistema debe resolver eso automáticamente a partir de reglas parametrizadas y no por intervención manual.</p>
+  <p class="reflection-title">3. Generación documental desde el ERP</p>
+  <p>Con los datos y las reglas ya consolidadas, el ERP podría generar automáticamente el documento final al crear el pedido, la expedición o la orden logística, en función del tipo de envío seleccionado.</p>
+  <p>El resultado debería ser un documento listo para imprimir o enviar en PDF, con formato corporativo y con trazabilidad de producto expedido, lote o referencia logística, fecha de emisión, modalidad de transporte y versión de datos regulatorios utilizada.</p>
+
+  <h2>Valor para la organización</h2>
+  <p>Desde una perspectiva operativa, el valor principal está en reducir fricción, tiempo administrativo y riesgo regulatorio.</p>
+  <p>Hoy el proceso depende de revisar fichas de seguridad y trasladar manualmente la información al documento correspondiente. Con una solución integrada, el conocimiento regulatorio deja de estar encerrado en un PDF técnico y pasa a formar parte de una capacidad operativa del negocio.</p>
+  <p>Los beneficios más claros serían:</p>
+  <ul>
+    <li>menor riesgo de error en documentación de mercancías peligrosas,</li>
+    <li>mayor rapidez en preparación de expediciones,</li>
+    <li>menor dependencia de personas concretas,</li>
+    <li>trazabilidad documental,</li>
+    <li>homogeneidad entre delegaciones, filiales o equipos,</li>
+    <li>mejor capacidad de auditoría y control interno.</li>
+  </ul>
+
+  <h2>Aprendizajes clave para que el proyecto funcione</h2>
+  <p>La primera idea es que la calidad del resultado dependerá de la calidad de la base de datos. Si los campos regulatorios no están estructurados de forma homogénea por producto, la automatización no será fiable.</p>
+  <p>La segunda es que el sistema debe diferenciar claramente entre fuente documental y dato operativo. La ficha de seguridad seguirá siendo el documento técnico de referencia, pero el ERP necesita trabajar con campos estructurados, no con texto libre.</p>
+  <p>La tercera es que conviene separar la lógica normativa de la lógica documental: por un lado las reglas que determinan qué aplica y por otro la plantilla que construye el documento final.</p>
+  <p>La cuarta es que la solución debe ser mantenible. La normativa cambia, los productos evolucionan y las fichas de seguridad se actualizan. Por tanto, el sistema debe permitir actualizar los datos regulatorios sin tener que rehacer el desarrollo.</p>
+
+  <h2>Requisitos funcionales mínimos</h2>
+  <ul>
+    <li>Maestro de productos con campos específicos de transporte por modo.</li>
+    <li>Vinculación entre producto, ficha de seguridad y datos regulatorios activos.</li>
+    <li>Selector de modo de transporte en expedición: terrestre, marítimo o aéreo.</li>
+    <li>Motor de validación previa antes de emitir documento.</li>
+    <li>Generación automática en PDF o formato imprimible.</li>
+    <li>Histórico de documentos generados.</li>
+    <li>Control de versiones de datos regulatorios.</li>
+    <li>Posibilidad de exclusión automática cuando un producto no esté sujeto a una modalidad concreta.</li>
+  </ul>
+
+  <h2>Arquitectura práctica recomendada</h2>
+  <p>La opción más limpia a nivel de usuario sería un desarrollo dentro del ERP, pero depende mucho de la flexibilidad del sistema y del proveedor.</p>
+  <p>La vía más realista para un primer despliegue suele ser un módulo externo conectado al ERP: el ERP envía los datos de expedición y el módulo devuelve el documento generado. Eso da más flexibilidad para arrancar y para mantener cambios normativos o de formato.</p>
+
+  <h2>Fases del proyecto</h2>
+  <p class="reflection-title">Fase 1. Análisis</p>
+  <ul>
+    <li>Identificar qué documentos exactos se quieren emitir en marítimo y en aéreo.</li>
+    <li>Revisar qué campos del ERP existen ya.</li>
+    <li>Revisar qué campos están en la ficha de seguridad y no en ERP.</li>
+    <li>Definir la matriz de datos obligatorios por modo.</li>
+  </ul>
+  <p class="reflection-title">Fase 2. Estructuración de datos</p>
+  <ul>
+    <li>Crear tabla maestra de transporte por producto.</li>
+    <li>Cargar o migrar los datos desde fichas de seguridad.</li>
+    <li>Validar con calidad, regulatory y logística.</li>
+  </ul>
+  <p class="reflection-title">Fase 3. Desarrollo</p>
+  <ul>
+    <li>Crear motor de reglas.</li>
+    <li>Crear plantillas documentales.</li>
+    <li>Conectar con expediciones del ERP.</li>
+  </ul>
+  <p class="reflection-title">Fase 4. Pruebas</p>
+  <ul>
+    <li>Test con referencias reguladas y no reguladas.</li>
+    <li>Test por modo de transporte.</li>
+    <li>Validación documental con casos reales.</li>
+  </ul>
+  <p class="reflection-title">Fase 5. Puesta en marcha</p>
+  <ul>
+    <li>Formación a tráfico, exportación, customer service y calidad.</li>
+    <li>Procedimiento de mantenimiento de datos.</li>
+  </ul>
+
+  <h2>Evolución futura</h2>
+  <ul>
+    <li>alertas automáticas cuando una ficha de seguridad cambie y afecte al transporte,</li>
+    <li>bloqueo de expediciones con datos regulatorios incompletos,</li>
+    <li>integración con etiquetado y packing list,</li>
+    <li>generación multilingüe de documentos,</li>
+    <li>cuadro de mando de expediciones de mercancía peligrosa,</li>
+    <li>conexión con gestor documental para conservar evidencia regulatoria.</li>
+  </ul>
+
+  <h2>Conclusión</h2>
+  <p>Este proyecto no consiste solo en sacar un documento más desde el ERP. Consiste en convertir una información técnica ya existente en una capacidad operativa fiable, trazable y escalable.</p>
+  <p>Hoy la compañía ya dispone del conocimiento regulatorio en sus fichas de seguridad. Lo que falta es estructurarlo y activarlo dentro del flujo logístico para que pueda comportarse como un activo operativo y no como una consulta manual cada vez que hay una expedición.</p>
+  <p>En otras palabras: el valor ya existe, pero todavía no circula de forma automática.</p>
+</body>
+</html>

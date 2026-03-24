@@ -17,6 +17,7 @@ const DEFAULT_INVITED_AVATARS = {
   "mvillaverde@isaval.es": "/assets/profile/marcos-villaverde-360.jpg",
   "dvillafranca@isaval.es": "/assets/profile/david-villafranca-360.jpg",
   "mvallejo@isaval.es": "/assets/profile/maria-vallejo-360.jpg",
+  "jcgarrigos@isaval.es": "/assets/profile/jose-carlos-garrigos-360.jpg",
 };
 const PUBLISHED_PILLS = [
   { slug: "tenantflow", lang: "es", type: "executive", title: "TenantFlow", author: "Santiago Vallejo", authorEmail: "svallejo@isaval.es", avatar: "/assets/profile/santiago2-360.jpg", publishedAt: "2026-03-07T23:18:44Z", urlPath: "/projects/tenantflow/es/" },
@@ -34,6 +35,7 @@ const PUBLISHED_PILLS = [
   { slug: "colaborativa-6", lang: "es", type: "collaborative", title: "De la visión manual al pulso diario", author: "Marcos Villaverde Fontán", authorEmail: "mvillaverde@isaval.es", avatar: "/assets/profile/marcos-villaverde-360.jpg", publishedAt: "2026-03-20T19:00:00Z", urlPath: "/projects/colaborativa-6/es/" },
   { slug: "colaborativa-7", lang: "es", type: "collaborative", title: "Del monitoreo a la inteligencia sectorial", author: "David Villafranca Gayo", authorEmail: "dvillafranca@isaval.es", avatar: "/assets/profile/david-villafranca-360.jpg", publishedAt: "2026-03-21T10:00:00Z", urlPath: "/projects/colaborativa-7/es/" },
   { slug: "colaborativa-8", lang: "es", type: "collaborative", title: "De la pregunta estratégica a la respuesta con datos", author: "María Vallejo", authorEmail: "mvallejo@isaval.es", avatar: "/assets/profile/maria-vallejo-360.jpg", publishedAt: "2026-03-23T08:00:00Z", urlPath: "/projects/colaborativa-8/es/" },
+  { slug: "colaborativa-9", lang: "es", type: "collaborative", title: "De la ficha de seguridad al documento de transporte", author: "José Carlos Garrigós", authorEmail: "jcgarrigos@isaval.es", avatar: "/assets/profile/jose-carlos-garrigos-360.jpg", publishedAt: "2026-03-24T12:00:00Z", urlPath: "/projects/colaborativa-9/es/" },
 ];
 const COLLABORATIVE_PILLS = PUBLISHED_PILLS.filter((item) => item.type === "collaborative");
 
@@ -1554,6 +1556,7 @@ export class HubData extends DurableObject {
       "colaborativa-6": "Cuadro de mando operativo para leer carga, rendimiento, ocupación y capacidad diaria en almacén con mayor anticipación.",
       "colaborativa-7": "Sistema de clipping estructurado para convertir actualidad sectorial en inteligencia útil para dirección y activación comercial.",
       "colaborativa-8": "Herramientas navegables para responder preguntas estratégicas con datos consolidados sobre red comercial y competencia.",
+      "colaborativa-9": "Automatización documental para convertir datos regulatorios de fichas de seguridad en documentos de transporte marítimo y aéreo desde el ERP.",
     };
     return descriptions[slug] || "";
   }
