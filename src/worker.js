@@ -23,6 +23,7 @@ const DEFAULT_INVITED_AVATARS = {
   "bgonzalez@isaval.es": "/assets/profile/beatriz-gonzalez-360.jpg",
   "jruano@isaval.es": "/assets/profile/jorge-ruano-360.jpg",
   "dsevilla@isaval.es": "/assets/profile/david-sevilla-360.jpg",
+  "shuertas@isaval.es": "/assets/profile/sergio-huertas-360.jpg",
 };
 const PUBLISHED_PILLS = [
   { slug: "tenantflow", lang: "es", type: "executive", title: "TenantFlow", author: "Santiago Vallejo", authorEmail: "svallejo@isaval.es", avatar: "/assets/profile/santiago2-360.jpg", publishedAt: "2026-03-07T23:18:44Z", urlPath: "/projects/tenantflow/es/" },
@@ -47,6 +48,7 @@ const PUBLISHED_PILLS = [
   { slug: "colaborativa-13", lang: "es", type: "collaborative", title: "De la incidencia dispersa al SAT con memoria y anticipación", author: "Beatriz González", authorEmail: "bgonzalez@isaval.es", avatar: "/assets/profile/beatriz-gonzalez-360.jpg", publishedAt: "2026-03-26T10:00:00Z", urlPath: "/projects/colaborativa-13/es/" },
   { slug: "colaborativa-14", lang: "es", type: "collaborative", title: "Del ajuste por memoria al ayudante de control de calidad", author: "Jorge Ruano", authorEmail: "jruano@isaval.es", avatar: "/assets/profile/jorge-ruano-360.jpg", publishedAt: "2026-03-26T15:00:00Z", urlPath: "/projects/colaborativa-14/es/" },
   { slug: "colaborativa-15", lang: "es", type: "collaborative", title: "De la coordinación verbal al envasado planificado con inteligencia operativa", author: "David Sevilla", authorEmail: "dsevilla@isaval.es", avatar: "/assets/profile/david-sevilla-360.jpg", publishedAt: "2026-03-26T16:30:00Z", urlPath: "/projects/colaborativa-15/es/" },
+  { slug: "colaborativa-16", lang: "es", type: "collaborative", title: "De la evolución de costes al criterio técnico con alertas", author: "Sergio Huertas", authorEmail: "shuertas@isaval.es", avatar: "/assets/profile/sergio-huertas-360.jpg", publishedAt: "2026-03-26T17:15:00Z", urlPath: "/projects/colaborativa-16/es/" },
 ];
 const COLLABORATIVE_PILLS = PUBLISHED_PILLS.filter((item) => item.type === "collaborative");
 
@@ -1574,6 +1576,7 @@ export class HubData extends DurableObject {
       "colaborativa-13": "Digitalización del SAT para estructurar incidencias, ganar trazabilidad y preparar una capa de IA orientada a alertas, patrones y respuesta técnica homogénea.",
       "colaborativa-14": "Ayudante de control de calidad para convertir histórico de fabricaciones en recomendaciones de ajuste más rápidas, homogéneas y fiables.",
       "colaborativa-15": "Planificación operativa inteligente para ordenar lotes, tareas y prioridades de envasado a partir de datos reales de planta y aprendizaje progresivo.",
+      "colaborativa-16": "Aplicación de evolución de costes para formular con más trazabilidad, detectar desviaciones antes y convertir histórico técnico en criterio económico usable.",
     };
     return descriptions[slug] || "";
   }
