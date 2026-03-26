@@ -24,6 +24,7 @@ const DEFAULT_INVITED_AVATARS = {
   "jruano@isaval.es": "/assets/profile/jorge-ruano-360.jpg",
   "dsevilla@isaval.es": "/assets/profile/david-sevilla-360.jpg",
   "shuertas@isaval.es": "/assets/profile/sergio-huertas-360.jpg",
+  "josemartinez@isaval.es": "/assets/profile/jose-martinez-360.jpg",
 };
 const PUBLISHED_PILLS = [
   { slug: "tenantflow", lang: "es", type: "executive", title: "TenantFlow", author: "Santiago Vallejo", authorEmail: "svallejo@isaval.es", avatar: "/assets/profile/santiago2-360.jpg", publishedAt: "2026-03-07T23:18:44Z", urlPath: "/projects/tenantflow/es/" },
@@ -49,6 +50,7 @@ const PUBLISHED_PILLS = [
   { slug: "colaborativa-14", lang: "es", type: "collaborative", title: "Del ajuste por memoria al ayudante de control de calidad", author: "Jorge Ruano", authorEmail: "jruano@isaval.es", avatar: "/assets/profile/jorge-ruano-360.jpg", publishedAt: "2026-03-26T15:00:00Z", urlPath: "/projects/colaborativa-14/es/" },
   { slug: "colaborativa-15", lang: "es", type: "collaborative", title: "De la coordinación verbal al envasado planificado con inteligencia operativa", author: "David Sevilla", authorEmail: "dsevilla@isaval.es", avatar: "/assets/profile/david-sevilla-360.jpg", publishedAt: "2026-03-26T16:30:00Z", urlPath: "/projects/colaborativa-15/es/" },
   { slug: "colaborativa-16", lang: "es", type: "collaborative", title: "De la evolución de costes al criterio técnico con alertas", author: "Sergio Huertas", authorEmail: "shuertas@isaval.es", avatar: "/assets/profile/sergio-huertas-360.jpg", publishedAt: "2026-03-26T17:15:00Z", urlPath: "/projects/colaborativa-16/es/" },
+  { slug: "colaborativa-17", lang: "es", type: "collaborative", title: "Del descuento discrecional al control comercial trazable", author: "José Martínez", authorEmail: "josemartinez@isaval.es", avatar: "/assets/profile/jose-martinez-360.jpg", publishedAt: "2026-03-26T23:55:00Z", urlPath: "/projects/colaborativa-17/es/" },
 ];
 const COLLABORATIVE_PILLS = PUBLISHED_PILLS.filter((item) => item.type === "collaborative");
 
@@ -1577,6 +1579,7 @@ export class HubData extends DurableObject {
       "colaborativa-14": "Ayudante de control de calidad para convertir histórico de fabricaciones en recomendaciones de ajuste más rápidas, homogéneas y fiables.",
       "colaborativa-15": "Planificación operativa inteligente para ordenar lotes, tareas y prioridades de envasado a partir de datos reales de planta y aprendizaje progresivo.",
       "colaborativa-16": "Aplicación de evolución de costes para formular con más trazabilidad, detectar desviaciones antes y convertir histórico técnico en criterio económico usable.",
+      "colaborativa-17": "Control automático de descuentos en apertura de clientes para proteger margen, homogeneizar criterio comercial y dejar trazabilidad auditable por tipología.",
     };
     return descriptions[slug] || "";
   }
