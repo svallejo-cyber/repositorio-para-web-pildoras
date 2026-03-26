@@ -19,6 +19,7 @@ const DEFAULT_INVITED_AVATARS = {
   "mvallejo@isaval.es": "/assets/profile/maria-vallejo-360.jpg",
   "jcgarrigos@isaval.es": "/assets/profile/jose-carlos-garrigos-360.jpg",
   "lmestre@isaval.es": "/assets/profile/laura-mestre-360.jpg",
+  "lcatraux@isaval.es": "/assets/profile/luc-catraux-360.jpg",
 };
 const PUBLISHED_PILLS = [
   { slug: "tenantflow", lang: "es", type: "executive", title: "TenantFlow", author: "Santiago Vallejo", authorEmail: "svallejo@isaval.es", avatar: "/assets/profile/santiago2-360.jpg", publishedAt: "2026-03-07T23:18:44Z", urlPath: "/projects/tenantflow/es/" },
@@ -39,6 +40,7 @@ const PUBLISHED_PILLS = [
   { slug: "colaborativa-9", lang: "es", type: "collaborative", title: "De la ficha de seguridad al documento de transporte", author: "José Carlos Garrigós", authorEmail: "jcgarrigos@isaval.es", avatar: "/assets/profile/jose-carlos-garrigos-360.jpg", publishedAt: "2026-03-24T12:00:00Z", urlPath: "/projects/colaborativa-9/es/" },
   { slug: "colaborativa-10", lang: "es", type: "collaborative", title: "Del pedido disperso al flujo integrado", author: "José Carlos Garrigós", authorEmail: "jcgarrigos@isaval.es", avatar: "/assets/profile/jose-carlos-garrigos-360.jpg", publishedAt: "2026-03-25T08:00:00Z", urlPath: "/projects/colaborativa-10/es/" },
   { slug: "colaborativa-11", lang: "es", type: "collaborative", title: "Del onboarding puntual a una incorporación que permanece", author: "Laura Mestre", authorEmail: "lmestre@isaval.es", avatar: "/assets/profile/laura-mestre-360.jpg", publishedAt: "2026-03-25T09:00:00Z", urlPath: "/projects/colaborativa-11/es/" },
+  { slug: "colaborativa-12", lang: "es", type: "collaborative", title: "De la misión comercial a la prospección inteligente de mercados", author: "Luc Catraux", authorEmail: "lcatraux@isaval.es", avatar: "/assets/profile/luc-catraux-360.jpg", publishedAt: "2026-03-26T09:00:00Z", urlPath: "/projects/colaborativa-12/es/" },
 ];
 const COLLABORATIVE_PILLS = PUBLISHED_PILLS.filter((item) => item.type === "collaborative");
 
@@ -1562,6 +1564,7 @@ export class HubData extends DurableObject {
       "colaborativa-9": "Automatización documental para convertir datos regulatorios de fichas de seguridad en documentos de transporte marítimo y aéreo desde el ERP.",
       "colaborativa-10": "Automatización del flujo de exportación para transformar pedidos heterogéneos en entradas ERP y documentos comerciales y logísticos conectados.",
       "colaborativa-11": "Onboarding estructurado para convertir información dispersa de incorporación en una experiencia homogénea, accesible y mantenible en el tiempo.",
+      "colaborativa-12": "Herramienta de inteligencia de mercado para seleccionar países objetivo con mejor base comparativa antes de activar misiones y prospección internacional.",
     };
     return descriptions[slug] || "";
   }
