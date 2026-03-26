@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Píldora colaborativa 13 · De la incidencia dispersa al SAT con memoria y anticipación</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Lora:wght@600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root { --bg: #f3f6f9; --panel: #ffffff; --ink: #1f2c3a; --muted: #5c6b79; --accent: #0f5f94; --accent-dark: #10314d; --line: #d8e0e8; --soft: #edf5fb; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "IBM Plex Sans", sans-serif; color: var(--ink); line-height: 1.56; background: radial-gradient(circle at 8% 5%, #d9e8f4 0, transparent 22%), radial-gradient(circle at 90% 0%, #e9eef3 0, transparent 24%), var(--bg); }
+    .sheet { max-width: 980px; margin: 36px auto; border: 1px solid var(--line); border-radius: 16px; background: var(--panel); overflow: hidden; box-shadow: 0 14px 36px rgba(18, 37, 54, 0.08); }
+    header { padding: 22px 38px 30px; color: #fff; background: linear-gradient(110deg, var(--accent-dark) 0%, var(--accent) 56%, #1577af 100%); }
+    .topnav { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+    .navbtn { text-decoration: none; background: rgba(255, 255, 255, 0.15); color: #fff; border: 1px solid rgba(255, 255, 255, 0.4); padding: 7px 10px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; }
+    .hero { display: grid; grid-template-columns: 120px 1fr; gap: 18px; align-items: center; margin-top: 8px; }
+    .avatar { width: 120px; height: 120px; border-radius: 22px; overflow: hidden; border: 3px solid rgba(255,255,255,.25); box-shadow: 0 10px 24px rgba(0,0,0,.15); background: linear-gradient(135deg, rgba(255,255,255,.28), rgba(255,255,255,.08)); }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; object-position: center 18%; display: block; }
+    .kicker { font-size: 0.76rem; letter-spacing: 0.09em; text-transform: uppercase; opacity: 0.92; font-weight: 600; }
+    h1 { margin: 8px 0 10px; font-family: "Lora", serif; font-size: clamp(1.85rem, 2.8vw, 2.3rem); line-height: 1.2; }
+    .meta { font-size: 0.95rem; opacity: 0.94; }
+    main { padding: 30px 38px 34px; }
+    section + section { margin-top: 24px; }
+    h2 { margin: 0 0 10px; font-size: 1.12rem; color: var(--accent); }
+    p { margin: 0 0 10px; }
+    .quote { border-left: 4px solid #95c1de; background: var(--soft); color: #24445c; padding: 12px 14px; border-radius: 0 10px 10px 0; font-weight: 500; margin-top: 10px; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 10px; }
+    .card { border: 1px solid var(--line); border-radius: 11px; padding: 12px; background: #fbfdff; }
+    .tag { display: inline-block; text-transform: uppercase; letter-spacing: 0.07em; font-size: 0.74rem; color: #2d536f; font-weight: 700; margin-bottom: 6px; }
+    ul { margin: 8px 0 0; padding-left: 18px; }
+    li { margin: 6px 0; }
+    .highlight { border: 1px solid #cddff0; background: #f3f8fd; border-radius: 11px; padding: 14px; margin-top: 10px; }
+    .highlight strong { color: var(--accent); }
+    .linkbox { border: 1px solid #cddff0; background: #f3f8fd; border-radius: 10px; padding: 12px; word-break: break-word; }
+    .pdf-link { display: inline-block; margin-top: 10px; text-decoration: none; background: var(--accent); color: #fff; border: 1px solid #0f5a8c; border-radius: 8px; padding: 8px 12px; font-size: 0.9rem; font-weight: 600; }
+    .linkbox a.pdf-link, .linkbox a.pdf-link:visited, .linkbox a.pdf-link:hover, .linkbox a.pdf-link:focus { color: #fff; }
+    footer { border-top: 1px solid var(--line); color: var(--muted); font-size: 0.87rem; padding: 14px 38px 22px; background: #fafcfe; }
+    @media (max-width: 760px) { header, main, footer { padding-left: 18px; padding-right: 18px; } .hero { grid-template-columns: 1fr; } .grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <article class="sheet">
+    <header>
+      <div class="topnav">
+        <a class="navbtn" href="/projects/pildoras-colaborativas/es/">Volver a colaborativas</a>
+        <a class="navbtn" href="/">Ir a la principal</a>
+        <a class="navbtn" href="../en/">Read in English</a>
+      </div>
+      <div class="hero">
+        <div class="avatar" aria-label="Beatriz González"><img src="/assets/profile/beatriz-gonzalez-360.jpg" alt="Beatriz González" width="120" height="120" loading="eager" decoding="async" /></div>
+        <div>
+          <div class="kicker">Píldora colaborativa · Equipo Isaval</div>
+          <h1>De la incidencia dispersa al SAT con memoria y anticipación</h1>
+          <div class="meta">Beatriz González · Decimotercera aportación colaborativa del hub sobre digitalización del SAT, trazabilidad operativa y uso futuro de IA para anticipar y homogeneizar la respuesta técnica</div>
+        </div>
+      </div>
+    </header>
+    <main>
+      <section>
+        <h2>El problema</h2>
+        <p>El equipo de Servicio de Asistencia Técnica dedica hoy una parte significativa de su tiempo a registrar consultas, consolidar información desde canales dispersos y trabajar con datos poco estructurados. Eso reduce tiempo útil para gestionar incidencias, atender al cliente y aprender de lo ya ocurrido.</p>
+        <div class="quote">El cuello de botella no es solo tecnológico. Es operativo: demasiada energía en burocracia y muy poca visibilidad consolidada para decidir, comparar y anticipar.</div>
+      </section>
+      <section>
+        <h2>Qué propone esta iniciativa</h2>
+        <p>La propuesta plantea una secuencia correcta: primero digitalizar la captura y gestión de incidencias, después estructurar el dato y, solo sobre esa base, activar una capa de inteligencia artificial que ayude a detectar recurrencias, generar alertas y sugerir respuestas.</p>
+        <p>No se trata de poner IA sobre un proceso roto. Se trata de transformar SAT desde un esquema manual a un sistema con trazabilidad, memoria y capacidad de mejora continua.</p>
+      </section>
+      <section>
+        <h2>Qué aportaría al negocio</h2>
+        <div class="grid">
+          <div class="card"><span class="tag">Eficiencia</span><p>Menos tiempo dedicado a burocracia y consolidación manual, y más tiempo eficaz en gestión técnica de incidencias.</p></div>
+          <div class="card"><span class="tag">Trazabilidad</span><p>Registro único del caso, histórico por cliente y producto, estados claros y documentación centralizada.</p></div>
+          <div class="card"><span class="tag">Calidad</span><p>Respuestas más homogéneas y soporte más consistente al cliente y al equipo comercial.</p></div>
+          <div class="card"><span class="tag">Anticipación</span><p>Detección de patrones, alertas tempranas y capacidad progresiva de predicción sobre incidencias y desviaciones.</p></div>
+        </div>
+      </section>
+      <section>
+        <h2>Aprendizajes clave</h2>
+        <ul>
+          <li>La IA solo aporta valor real cuando la información nace bien capturada y normalizada.</li>
+          <li>El primer salto no es predictivo: es salir de la gestión fragmentada y del Excel como soporte principal.</li>
+          <li>Un SAT con memoria estructurada mejora no solo la eficiencia, sino también la capacidad de aprender de su propia operativa.</li>
+          <li>La secuencia correcta es Manual → Digital → Inteligente, no al revés.</li>
+        </ul>
+      </section>
+      <section class="highlight">
+        <strong>Conclusión colaborativa:</strong> digitalizar SAT no es solo registrar mejor. Es construir una base operativa que permita responder con más calidad, dedicar más tiempo al cliente y preparar una capa de IA útil para anticipar, recomendar y mejorar el servicio de forma continua.
+      </section>
+      <section>
+        <h2>Acceso al contenido completo</h2>
+        <div class="linkbox">
+          Texto completo de la píldora colaborativa:<br />
+          <a class="pdf-link" href="./colaborativa-13-full-text-es.pdf" target="_blank" rel="noopener noreferrer">Ver texto completo en PDF</a>
+        </div>
+      </section>
+    </main>
+    <footer>Píldora colaborativa 13 · Documento interno Isaval.</footer>
+  </article>
+  <script src="/assets/js/hub-interactions.js" defer></script>
+</body>
+</html>
