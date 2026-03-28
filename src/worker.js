@@ -58,6 +58,7 @@ const PUBLISHED_PILLS = [
   { slug: "colaborativa-20", lang: "es", type: "collaborative", title: "Del descuento estándar al acceso controlado a coste real", author: "José Carlos Garrigós", authorEmail: "jcgarrigos@isaval.es", avatar: "/assets/profile/jose-carlos-garrigos-360.jpg", publishedAt: "2026-03-28T10:22:00Z", urlPath: "/projects/colaborativa-20/es/" },
   { slug: "colaborativa-21", lang: "es", type: "collaborative", title: "De la saturación de muelles a la cita logística planificada", author: "Marcos Villaverde Fontán", authorEmail: "mvillaverde@isaval.es", avatar: "/assets/profile/marcos-villaverde-360.jpg", publishedAt: "2026-03-28T10:24:00Z", urlPath: "/projects/colaborativa-21/es/" },
   { slug: "colaborativa-22", lang: "es", type: "collaborative", title: "De la devolución opaca al material bloqueado con trazabilidad", author: "Celia López González", authorEmail: "clopez@isaval.es", avatar: "/assets/profile/celia-lopez-360.jpg", publishedAt: "2026-03-28T10:35:00Z", urlPath: "/projects/colaborativa-22/es/" },
+  { slug: "colaborativa-23", lang: "es", type: "collaborative", title: "De la burocracia SCRAP al expediente IMPLICA preparado para automatizarse", author: "Sergio Huertas", authorEmail: "shuertas@isaval.es", avatar: "/assets/profile/sergio-huertas-360.jpg", publishedAt: "2026-03-28T11:15:00Z", urlPath: "/projects/colaborativa-23/es/" },
 ];
 const COLLABORATIVE_PILLS = PUBLISHED_PILLS.filter((item) => item.type === "collaborative");
 
@@ -1592,6 +1593,7 @@ export class HubData extends DurableObject {
       "colaborativa-20": "Acceso controlado a costes reales para determinados perfiles directivos con el fin de decidir mejor en operaciones especiales sin perder confidencialidad ni rentabilidad.",
       "colaborativa-21": "Sistema de citas en muelles para planificar cargas y descargas con 24 horas de antelación, reducir saturación y mejorar la trazabilidad logística.",
       "colaborativa-22": "Gestión trazable de devoluciones y material bloqueado para reducir stock inmovilizado, ordenar destinos finales y preparar una capa predictiva sobre incidencias y retornos.",
+      "colaborativa-23": "Agente OCR para reagrupar expedientes documentales del SCRAP, reducir carga administrativa y preparar la integración automática con IMPLICA y su trazabilidad operativa.",
     };
     return descriptions[slug] || "";
   }

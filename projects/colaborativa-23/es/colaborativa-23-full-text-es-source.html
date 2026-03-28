@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Colaborativa 23 · Texto completo</title>
+  <style>
+    body { font-family: Arial, sans-serif; color: #1f2c3a; margin: 0; padding: 24px; line-height: 1.58; }
+    h1, h2 { color: #10314d; }
+    h1 { font-size: 26px; margin: 0 0 18px; }
+    h2 { font-size: 18px; margin: 22px 0 10px; }
+    p { margin: 0 0 12px; }
+    ul { margin: 8px 0 12px 22px; }
+    li { margin: 6px 0; }
+  </style>
+</head>
+<body>
+  <h1>Agente OCR IMPLICA para la gestión documental del SCRAP</h1>
+  <h2>Contexto</h2>
+  <p>En la gestión de residuos a través del SCRAP IMPLICA, cada solicitud exige reunir tres documentos distintos relacionados entre sí, pero con pocos elementos que los conecten claramente. Esa búsqueda manual ralentiza el proceso, carga a Bea con trabajo administrativo repetitivo y reduce el tiempo disponible para tareas de mayor valor añadido.</p>
+  <h2>Qué se ha desarrollado ya</h2>
+  <p>La solución construida por Sergio actúa como un OCR documental capaz de identificar campos comunes en los tres documentos del expediente y asociarlos automáticamente en carpetas diferenciadas por número de DCS.</p>
+  <p>Según la bitácora del proyecto, el sistema ya realiza:</p>
+  <ul>
+    <li>Escaneo de carpetas DCS, NOTIFICACIÓN TRASLADO y GESTORES.</li>
+    <li>OCR con preprocesado para extracción de campos clave.</li>
+    <li>Agrupación por DCS con regla de trío documental.</li>
+    <li>Generación de carpetas de expediente y <code>metadata.json</code>.</li>
+    <li>Generación de un dashboard inicial de kilos por residuo.</li>
+  </ul>
+  <h2>Qué problema resuelve ya</h2>
+  <p>El sistema reduce la búsqueda uno a uno de documentos, ordena los expedientes desde el origen y crea una base estructurada para que el proceso deje de depender de reconstrucciones manuales cada vez que hay que tramitar una solicitud.</p>
+  <h2>Siguiente fase natural</h2>
+  <p>El siguiente paso planteado es que el programa no solo agrupe y prepare expedientes, sino que sea capaz de realizar directamente la gestión administrativa en la plataforma IMPLICA sin intervención manual constante.</p>
+  <p>La bitácora define esa fase como una integración progresiva con capacidades de:</p>
+  <ul>
+    <li>detección de expediente completo,</li>
+    <li>preparación automática del paquete documental,</li>
+    <li>alta automática en IMPLICA,</li>
+    <li>confirmación de estado, errores y reintentos,</li>
+    <li>trazabilidad completa del envío.</li>
+  </ul>
+  <h2>Qué aportaría al negocio</h2>
+  <ul>
+    <li>Menos carga administrativa sobre perfiles técnicos con capacidad limitada.</li>
+    <li>Mayor velocidad y consistencia en la gestión documental del SCRAP.</li>
+    <li>Mejor trazabilidad y control de expedientes.</li>
+    <li>Capacidad de medir kilos gestionados, tipos de residuo y tiempos de proceso.</li>
+    <li>Base real para pasar de una solución operativa puntual a una integración estable.</li>
+  </ul>
+  <h2>Conclusión</h2>
+  <p>La propuesta no se limita a leer documentos: convierte una burocracia tediosa en un flujo documental estructurado y deja preparada la base para automatizar la relación con IMPLICA, liberar tiempo de gestión y ganar control sobre la operativa de residuos.</p>
+</body>
+</html>
