@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Píldora colaborativa 21 · De la saturación de muelles a la cita logística planificada</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Lora:wght@600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root { --bg: #f3f6f9; --panel: #ffffff; --ink: #1f2c3a; --muted: #5c6b79; --accent: #0f5f94; --accent-dark: #10314d; --line: #d8e0e8; --soft: #edf5fb; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "IBM Plex Sans", sans-serif; color: var(--ink); line-height: 1.56; background: radial-gradient(circle at 8% 5%, #d9e8f4 0, transparent 22%), radial-gradient(circle at 90% 0%, #e9eef3 0, transparent 24%), var(--bg); }
+    .sheet { max-width: 980px; margin: 36px auto; border: 1px solid var(--line); border-radius: 16px; background: var(--panel); overflow: hidden; box-shadow: 0 14px 36px rgba(18, 37, 54, 0.08); }
+    header { padding: 22px 38px 30px; color: #fff; background: linear-gradient(110deg, var(--accent-dark) 0%, var(--accent) 56%, #1577af 100%); }
+    .topnav { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+    .navbtn { text-decoration: none; background: rgba(255, 255, 255, 0.15); color: #fff; border: 1px solid rgba(255, 255, 255, 0.4); padding: 7px 10px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; }
+    .hero { display: grid; grid-template-columns: 120px 1fr; gap: 18px; align-items: center; margin-top: 8px; }
+    .avatar { width: 120px; height: 120px; border-radius: 22px; overflow: hidden; border: 3px solid rgba(255,255,255,.25); box-shadow: 0 10px 24px rgba(0,0,0,.15); background: linear-gradient(135deg, rgba(255,255,255,.28), rgba(255,255,255,.08)); }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; object-position: center 20%; display: block; }
+    .kicker { font-size: 0.76rem; letter-spacing: 0.09em; text-transform: uppercase; opacity: 0.92; font-weight: 600; }
+    h1 { margin: 8px 0 10px; font-family: "Lora", serif; font-size: clamp(1.85rem, 2.8vw, 2.3rem); line-height: 1.2; }
+    .meta { font-size: 0.95rem; opacity: 0.94; }
+    main { padding: 30px 38px 34px; }
+    section + section { margin-top: 24px; }
+    h2 { margin: 0 0 10px; font-size: 1.12rem; color: var(--accent); }
+    p { margin: 0 0 10px; }
+    .quote { border-left: 4px solid #95c1de; background: var(--soft); color: #24445c; padding: 12px 14px; border-radius: 0 10px 10px 0; font-weight: 500; margin-top: 10px; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 10px; }
+    .card { border: 1px solid var(--line); border-radius: 11px; padding: 12px; background: #fbfdff; }
+    .tag { display: inline-block; text-transform: uppercase; letter-spacing: 0.07em; font-size: 0.74rem; color: #2d536f; font-weight: 700; margin-bottom: 6px; }
+    .pdf-link { display: inline-block; margin-top: 10px; text-decoration: none; background: var(--accent); color: #fff; border: 1px solid #0f5a8c; border-radius: 8px; padding: 8px 12px; font-size: 0.9rem; font-weight: 600; }
+    .linkbox, .highlight { border: 1px solid #cddff0; background: #f3f8fd; border-radius: 11px; padding: 14px; }
+    footer { border-top: 1px solid var(--line); color: var(--muted); font-size: 0.87rem; padding: 14px 38px 22px; background: #fafcfe; }
+    @media (max-width: 760px) { header, main, footer { padding-left: 18px; padding-right: 18px; } .hero, .grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <article class="sheet">
+    <header>
+      <div class="topnav">
+        <a class="navbtn" href="/projects/pildoras-colaborativas/es/">Volver a colaborativas</a>
+        <a class="navbtn" href="/">Ir a la principal</a>
+        <a class="navbtn" href="../en/">Read in English</a>
+      </div>
+      <div class="hero">
+        <div class="avatar" aria-label="Marcos Villaverde"><img src="/assets/profile/marcos-villaverde-360.jpg" alt="Marcos Villaverde" width="120" height="120" loading="eager" decoding="async" /></div>
+        <div>
+          <div class="kicker">Píldora colaborativa · Equipo Isaval</div>
+          <h1>De la saturación de muelles a la cita logística planificada</h1>
+          <div class="meta">Marcos Villaverde Fontán · Nueva aportación colaborativa sobre gestión de citas en muelles, planificación con ventana horaria y equilibrio operativo en carga y descarga</div>
+        </div>
+      </div>
+    </header>
+    <main>
+      <section>
+        <h2>El problema</h2>
+        <p>La operativa logística sufre hoy picos muy concentrados, especialmente entre las 17:00 y las 19:00 en cargas de agencias. A eso se suman descargas de mercancía voluminosa que, cuando coinciden, bloquean playas de preparación y dificultan el trabajo diario.</p>
+        <div class="quote">La propuesta no consiste en una agenda más. Consiste en convertir la gestión de muelles en un sistema de planificación compartido, con reserva anticipada, visibilidad de capacidad y menos fricción operativa.</div>
+      </section>
+      <section>
+        <h2>Qué propone esta iniciativa</h2>
+        <p>Marcos plantea una app de gestión de citas en muelles, accesible interna y externamente, que permita reservar ventanas horarias disponibles para carga o descarga. Según proveedor y tipo de operación, el sistema asignaría automáticamente el tiempo de ocupación necesario.</p>
+        <p>La lógica central es sencilla: pedir reserva con 24 horas de antelación para poder preparar recursos, pedidos y reorganizar imprevistos sin caer en cambios de última hora y saturaciones evitables.</p>
+      </section>
+      <section>
+        <h2>Qué aportaría al negocio</h2>
+        <div class="grid">
+          <div class="card"><span class="tag">Orden</span><p>Una única fuente de verdad para ver franjas disponibles, evitar solapamientos y distribuir mejor las entradas y salidas.</p></div>
+          <div class="card"><span class="tag">Eficiencia</span><p>Menos gestión manual del equipo logístico y menos correos o llamadas para coordinar reservas.</p></div>
+          <div class="card"><span class="tag">Preparación</span><p>Capacidad para asignar personal, preparar mercancía y reducir estancia de camiones antes de que lleguen.</p></div>
+          <div class="card"><span class="tag">Datos</span><p>Trazabilidad de puntualidad, duración real de operaciones, horas pico y saturaciones para seguir optimizando.</p></div>
+        </div>
+      </section>
+      <section>
+        <h2>Aprendizajes clave</h2>
+        <p>No es solo una herramienta tecnológica. Es un cambio de modelo operativo hacia planificación inteligente, anticipación y mayor autonomía de proveedores dentro de un marco controlado.</p>
+        <p>La propuesta además abre la puerta a automatizaciones como confirmaciones, recordatorios y alertas por retrasos o incidencias.</p>
+      </section>
+      <section class="highlight">
+        <strong>Conclusión colaborativa:</strong> la propuesta de Marcos Villaverde convierte la gestión de muelles en una capa de planificación activa, con reserva anticipada, mejor equilibrio de carga y una base de datos operativa útil para seguir mejorando.
+      </section>
+      <section>
+        <h2>Acceso al contenido completo</h2>
+        <div class="linkbox">
+          Texto completo de la píldora colaborativa:<br />
+          <a class="pdf-link" href="./colaborativa-21-full-text-es.pdf" target="_blank" rel="noopener noreferrer">Ver texto completo en PDF</a>
+        </div>
+      </section>
+    </main>
+    <footer>Píldora colaborativa 21 · Documento interno Isaval.</footer>
+  </article>
+  <script src="/assets/js/hub-interactions.js" defer></script>
+</body>
+</html>
