@@ -93,6 +93,16 @@ function withNoStore(response) {
   });
 }
 
+function withHeader(response, name, value) {
+  const headers = new Headers(response.headers);
+  headers.set(name, value);
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
+}
+
 function normalizeSlug(value) {
   return String(value || "")
     .trim()
@@ -263,6 +273,10 @@ function isPublicPath(pathname) {
   return pathname === "/login" || pathname === "/login/" || pathname === "/login/index.html";
 }
 
+function isDemoPath(pathname) {
+  return pathname === "/demo" || pathname.startsWith("/demo/");
+}
+
 function isAdminPublicPath(pathname) {
   return pathname === "/admin/login" || pathname === "/admin/login/" || pathname === "/admin/login/index.html";
 }
@@ -326,6 +340,24 @@ async function getAdminAuthenticatedSession(request, store) {
   const token = cookies[ADMIN_SESSION_COOKIE];
   if (!token) return null;
   return store.getAdminSession(token);
+}
+
+async function fetchAssetAtPath(request, env, pathname) {
+  const url = new URL(request.url);
+  url.pathname = pathname;
+  return env.ASSETS.fetch(new Request(url.toString(), request));
+}
+
+async function serveDemoAsset(request, env) {
+  const url = new URL(request.url);
+  const demoPath = url.pathname === "/demo" ? "/demo/" : url.pathname;
+  const demoResponse = await fetchAssetAtPath(request, env, demoPath);
+  if (demoResponse.status !== 404) {
+    return withNoStore(withHeader(demoResponse, "x-hub-variant", "demo"));
+  }
+  const livePath = demoPath.replace(/^\/demo/, "") || "/";
+  const liveResponse = await fetchAssetAtPath(request, env, livePath);
+  return withNoStore(withHeader(liveResponse, "x-hub-variant", "demo-fallback"));
 }
 
 export default {
@@ -398,6 +430,10 @@ export default {
     if (!session) {
       const next = encodeURIComponent(url.pathname + url.search);
       return redirect(`/login/?next=${next}`);
+    }
+
+    if (isDemoPath(url.pathname)) {
+      return serveDemoAsset(request, env);
     }
 
     if (request.method === "GET" && isTrackablePath(url.pathname)) {

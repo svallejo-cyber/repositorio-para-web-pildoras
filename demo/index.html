@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hub IA Isaval · Demo</title>
+  <style>
+    :root {
+      --bg: #f3f6f9;
+      --panel: #ffffff;
+      --ink: #1f2c3a;
+      --muted: #5c6b79;
+      --accent: #0f5f94;
+      --accent-dark: #10314d;
+      --line: #d8e0e8;
+      --soft: #edf5fb;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 10% 10%, #d9e8f4 0, transparent 20%),
+        radial-gradient(circle at 90% 0%, #e8eef4 0, transparent 24%),
+        var(--bg);
+    }
+    .shell {
+      max-width: 960px;
+      margin: 32px auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 14px 36px rgba(18, 37, 54, 0.08);
+    }
+    header {
+      padding: 28px 34px;
+      color: #fff;
+      background: linear-gradient(110deg, var(--accent-dark) 0%, var(--accent) 56%, #1577af 100%);
+    }
+    .eyebrow {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.92;
+    }
+    h1 {
+      margin: 10px 0 8px;
+      font-size: 34px;
+      line-height: 1.15;
+    }
+    .sub {
+      max-width: 720px;
+      font-size: 16px;
+      line-height: 1.55;
+      opacity: 0.94;
+    }
+    main { padding: 28px 34px 34px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin: 18px 0 24px;
+    }
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 16px;
+      background: #fbfdff;
+    }
+    .card h2 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      color: var(--accent);
+    }
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+    .btn {
+      text-decoration: none;
+      border-radius: 10px;
+      padding: 11px 14px;
+      font-size: 14px;
+      font-weight: 700;
+      border: 1px solid #0f5a8c;
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn.secondary {
+      background: #fff;
+      color: var(--accent-dark);
+      border-color: #c8d7e5;
+    }
+    .note {
+      margin-top: 20px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid #cddff0;
+      background: var(--soft);
+      color: #24445c;
+      line-height: 1.55;
+    }
+    code {
+      background: rgba(16, 49, 77, 0.08);
+      padding: 1px 5px;
+      border-radius: 6px;
+    }
+    @media (max-width: 760px) {
+      .shell { margin: 16px; }
+      header, main { padding-left: 18px; padding-right: 18px; }
+      .grid { grid-template-columns: 1fr; }
+      h1 { font-size: 28px; }
+    }
+  </style>
+</head>
+<body>
+  <article class="shell">
+    <header>
+      <div class="eyebrow">Entorno paralelo</div>
+      <h1>Hub IA Isaval · DEMO</h1>
+      <div class="sub">
+        Esta ruta está separada de la web activa. La regla es simple: cualquier archivo que exista bajo <code>/demo/</code>
+        manda sobre producción; lo que todavía no exista en demo reutiliza automáticamente la versión actual equivalente.
+      </div>
+    </header>
+    <main>
+      <div class="grid">
+        <section class="card">
+          <h2>Qué permite ya</h2>
+          <p>Empezar con una demo funcional e idéntica en base, sin duplicar hoy toda la web y sin tocar las rutas que están en uso.</p>
+        </section>
+        <section class="card">
+          <h2>Cómo se trabajará</h2>
+          <p>Se crearán solo los archivos que queramos rediseñar o reestructurar. Todo lo demás seguirá entrando por fallback desde la versión viva.</p>
+        </section>
+        <section class="card">
+          <h2>Qué no cambia</h2>
+          <p>Autenticación, APIs y contenido actual. La demo es una capa paralela de presentación y evolución segura.</p>
+        </section>
+        <section class="card">
+          <h2>Promoción final</h2>
+          <p>Cuando la demo esté validada, los archivos override de <code>/demo/</code> podrán promocionarse a producción de forma acotada y reversible.</p>
+        </section>
+      </div>
+
+      <div class="actions">
+        <a class="btn" href="/demo/es/">Abrir demo base</a>
+        <a class="btn secondary" href="/demo/projects/pildoras-colaborativas/es/">Abrir colaborativas en demo</a>
+        <a class="btn secondary" href="/demo/comments/es/">Abrir comentarios en demo</a>
+      </div>
+
+      <div class="note">
+        Documentación de trabajo: <a href="/docs/demo-workflow.md">/docs/demo-workflow.md</a><br />
+        Promoción futura: <a href="/scripts/promote_demo_to_live.py">/scripts/promote_demo_to_live.py</a>
+      </div>
+    </main>
+  </article>
+</body>
+</html>
