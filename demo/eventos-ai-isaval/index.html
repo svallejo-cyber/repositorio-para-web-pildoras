@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eventos AI Isaval · Demo</title>
+  <style>
+    :root {
+      --bg: #f3f6f9;
+      --panel: #ffffff;
+      --ink: #1f2c3a;
+      --muted: #5c6b79;
+      --accent: #0f5f94;
+      --accent-dark: #10314d;
+      --line: #d8e0e8;
+      --soft: #edf5fb;
+      --warm: #f9efe4;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 4%, #dce9f4 0, transparent 22%),
+        radial-gradient(circle at 90% 0%, #e8eef3 0, transparent 24%),
+        var(--bg);
+      line-height: 1.55;
+    }
+    .page {
+      max-width: 1120px;
+      margin: 28px auto;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      overflow: hidden;
+      background: var(--panel);
+      box-shadow: 0 16px 38px rgba(17,34,52,.08);
+    }
+    header {
+      padding: 24px 34px 34px;
+      color: #fff;
+      background:
+        radial-gradient(circle at 78% 18%, rgba(255,255,255,.16) 0, transparent 18%),
+        linear-gradient(115deg, #102c45 0%, #0f5f94 52%, #1a86ba 100%);
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .brand img {
+      height: 54px;
+      width: auto;
+      display: block;
+      border-radius: 10px;
+      background: rgba(255,255,255,.9);
+      padding: 6px 10px;
+      box-shadow: 0 8px 20px rgba(0,0,0,.12);
+    }
+    .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; opacity: .88; }
+    .nav { display:flex; flex-wrap:wrap; gap:8px; }
+    .nav a { text-decoration:none; color:#fff; border:1px solid rgba(255,255,255,.32); background:rgba(255,255,255,.12); padding:8px 11px; border-radius:999px; font-size:13px; font-weight:700; }
+    .hero { display:grid; grid-template-columns: minmax(0, 1.35fr) minmax(280px, .8fr); gap: 26px; align-items:end; }
+    .hero h1 { margin: 10px 0 12px; font-size: clamp(2.2rem, 4vw, 3.6rem); line-height: 1.02; letter-spacing: -.03em; }
+    .hero p { margin: 0; max-width: 760px; font-size: 17px; line-height: 1.6; color: rgba(255,255,255,.92); }
+    .manifesto { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.18); border-radius: 18px; padding: 18px 18px 16px; backdrop-filter: blur(6px); }
+    .manifesto strong { display:block; margin-bottom:8px; font-size:13px; letter-spacing:.08em; text-transform:uppercase; }
+    .manifesto p { font-size:15px; line-height:1.6; }
+    main { padding: 30px 34px 38px; }
+    .section-intro { display:grid; grid-template-columns: 1.15fr .85fr; gap: 18px; align-items:start; margin-bottom: 24px; }
+    .statement { padding: 18px 20px; border-radius: 18px; border: 1px solid #cfddea; background: linear-gradient(180deg, #f8fbfe 0%, #eef5fb 100%); }
+    .statement h2, .focus h2 { margin:0 0 10px; color: var(--accent-dark); font-size: 20px; }
+    .statement p, .focus p { margin:0; color:#32485b; }
+    .focus { padding: 18px 20px; border-radius: 18px; border: 1px solid #ead9c7; background: linear-gradient(180deg, #fffaf4 0%, #f9efe4 100%); }
+    .actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:6px; }
+    .btn { text-decoration:none; border-radius:10px; padding:10px 13px; font-size:14px; font-weight:700; border:1px solid #0f5a8c; color:#fff; background:#0f5f94; display:inline-block; }
+    footer { border-top:1px solid var(--line); padding:14px 34px 22px; color:var(--muted); font-size:14px; background:#fafcfe; }
+    @media (max-width: 900px) { .hero, .section-intro { grid-template-columns: 1fr; } .hero { align-items:start; } }
+    @media (max-width: 760px) { .page { margin: 14px; } header, main, footer { padding-left:18px; padding-right:18px; } .hero h1 { font-size: 2.2rem; } }
+  </style>
+</head>
+<body>
+  <article class="page">
+    <header>
+      <div class="topbar">
+        <div class="brand">
+          <img src="/assets/brand/pinturas-isaval-logo-card.png" alt="Isaval" />
+          <div>
+            <div class="eyebrow">Hub IA Isaval · Demo</div>
+            <div style="font-weight:700; font-size:14px; opacity:.9;">Eventos AI Isaval</div>
+          </div>
+        </div>
+        <nav class="nav">
+          <a href="/demo/">Inicio</a>
+          <a href="/demo/pildoras-corporativas/">Corporativas</a>
+          <a href="/demo/pildoras-ejecutivas/">Ejecutivas</a>
+          <a href="/demo/pildoras-express/">Express</a>
+          <a href="/demo/radar/">Radar</a>
+          <a href="/demo/academy-ai/">Academy AI</a>
+          <a href="/demo/eventos-ai-isaval/">Eventos AI Isaval</a>
+          <a href="/demo/termometro-ai/">Termómetro AI</a>
+          <a href="/demo/actividad-hub/">Actividad Hub</a>
+        </nav>
+      </div>
+      <div class="hero">
+        <div>
+          <div class="eyebrow">Sección en construcción</div>
+          <h1>Eventos AI Isaval</h1>
+          <p>Agenda visible de actividades concretas relacionadas con este mundo: seminarios, formación presencial u online, encuentros off-office, reconocimientos internos y cualquier hito que ayude a mover comunidad y aprendizaje.</p>
+        </div>
+        <aside class="manifesto">
+          <strong>Hashtags guía</strong>
+          <p>#AprenderJuntos #ComunidadEnMarcha #RitmoVisible</p>
+        </aside>
+      </div>
+    </header>
+    <main>
+      <section class="section-intro">
+        <div class="statement">
+          <h2>Rol de esta sección</h2>
+          <p>Aquí anunciaremos y archivaremos las actividades AI de Isaval: desde sesiones formativas y webinars hasta premios a la mejor aportación o al proyecto más productivo. La idea es que el Hub también sea calendario, convocatoria y memoria de movimiento colectivo.</p>
+        </div>
+        <div class="focus">
+          <h2>Estado actual</h2>
+          <p>La estructura ya está creada. En la siguiente fase definiremos cómo distinguir próximos eventos, histórico y reconocimientos para que esta sección tenga vida real y no sea un simple tablón.</p>
+        </div>
+      </section>
+      <div class="actions">
+        <a class="btn" href="/demo/">Volver a la portada demo</a>
+      </div>
+    </main>
+    <footer>Eventos AI Isaval · Demo paralela del Hub IA Isaval.</footer>
+  </article>
+</body>
+</html>
