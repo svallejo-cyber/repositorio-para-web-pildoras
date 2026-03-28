@@ -351,6 +351,12 @@ async function fetchAssetAtPath(request, env, pathname) {
 async function serveDemoAsset(request, env) {
   const url = new URL(request.url);
   const demoPath = url.pathname === "/demo" ? "/demo/" : url.pathname;
+  if (demoPath === "/demo/en" || demoPath === "/demo/en/" || demoPath.startsWith("/demo/en/")) {
+    return redirect("/demo/");
+  }
+  if (demoPath.includes("/en/")) {
+    return redirect(demoPath.replace("/en/", "/es/"));
+  }
   const demoResponse = await fetchAssetAtPath(request, env, demoPath);
   if (demoResponse.status !== 404) {
     return withNoStore(withHeader(demoResponse, "x-hub-variant", "demo"));
