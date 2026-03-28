@@ -53,6 +53,7 @@ const PUBLISHED_PILLS = [
   { slug: "colaborativa-16", lang: "es", type: "collaborative", title: "De la evolución de costes al criterio técnico con alertas", author: "Sergio Huertas", authorEmail: "shuertas@isaval.es", avatar: "/assets/profile/sergio-huertas-360.jpg", publishedAt: "2026-03-26T17:15:00Z", urlPath: "/projects/colaborativa-16/es/" },
   { slug: "colaborativa-17", lang: "es", type: "collaborative", title: "Del descuento discrecional al control comercial trazable", author: "José Martínez", authorEmail: "josemartinez@isaval.es", avatar: "/assets/profile/jose-martinez-360.jpg", publishedAt: "2026-03-26T23:55:00Z", urlPath: "/projects/colaborativa-17/es/" },
   { slug: "colaborativa-18", lang: "es", type: "collaborative", title: "Del impago disperso al expediente único con trazabilidad", author: "Mª Ángeles López", authorEmail: "mlopez@isaval.es", avatar: "/assets/profile/mariangeles-lopez-360.jpg", publishedAt: "2026-03-28T09:48:00Z", urlPath: "/projects/colaborativa-18/es/" },
+  { slug: "colaborativa-19", lang: "es", type: "collaborative", title: "De las condiciones dispersas a la fuente maestra comercial de exportación", author: "José Carlos Garrigós", authorEmail: "jcgarrigos@isaval.es", avatar: "/assets/profile/jose-carlos-garrigos-360.jpg", publishedAt: "2026-03-28T10:15:00Z", urlPath: "/projects/colaborativa-19/es/" },
 ];
 const COLLABORATIVE_PILLS = PUBLISHED_PILLS.filter((item) => item.type === "collaborative");
 
@@ -1583,6 +1584,7 @@ export class HubData extends DurableObject {
       "colaborativa-16": "Aplicación de evolución de costes para formular con más trazabilidad, detectar desviaciones antes y convertir histórico técnico en criterio económico usable.",
       "colaborativa-17": "Control automático de descuentos en apertura de clientes para proteger margen, homogeneizar criterio comercial y dejar trazabilidad auditable por tipología.",
       "colaborativa-18": "Expediente único de impagados para centralizar devoluciones, documentos y actuaciones con apertura inicial automática y trazabilidad completa del caso.",
+      "colaborativa-19": "Fuente maestra de precios y condiciones comerciales para centralizar criterio de exportación, agilizar consulta y alimentar el ERP con mayor coherencia.",
     };
     return descriptions[slug] || "";
   }
