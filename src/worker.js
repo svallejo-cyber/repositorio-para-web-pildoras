@@ -392,17 +392,20 @@ async function fetchAssetAtPath(request, env, pathname) {
 }
 
 async function decorateDemoProjectResponse(response, pathname, store) {
-  const slug = getDemoProjectSlug(pathname);
   const contentType = String(response.headers.get("content-type") || "").toLowerCase();
-  if (!slug || !contentType.includes("text/html")) return response;
+  if (!contentType.includes("text/html")) return response;
 
-  const pill = PUBLISHED_PILLS.find((item) => item.lang === "es" && item.slug === slug);
-  if (!pill) return response;
-
-  const statusEntry = await store.getProjectStatusEntry(slug);
-  const meta = statusEntry.meta;
   const html = await response.text();
-  const badgeBlock = `
+  const statusData = await store.getProjectStatusAdminData();
+  const statusScript = `<script>window.__DEMO_PROJECT_STATUS__=${JSON.stringify(statusData).replace(/</g, "\\u003c")};</script>`;
+
+  const slug = getDemoProjectSlug(pathname);
+  let badgeBlock = "";
+  const pill = slug ? PUBLISHED_PILLS.find((item) => item.lang === "es" && item.slug === slug) : null;
+  if (pill) {
+    const statusEntry = await store.getProjectStatusEntry(slug);
+    const meta = statusEntry.meta;
+    badgeBlock = `
 <style>
   .demo-project-status-badge {
     position: fixed;
@@ -445,8 +448,10 @@ async function decorateDemoProjectResponse(response, pathname, store) {
   <strong>${escapeHtml(meta.label)}</strong>
   <span>${escapeHtml(meta.helper)}</span>
 </div>`;
+  }
 
-  const output = html.includes("</body>") ? html.replace("</body>", `${badgeBlock}</body>`) : `${html}${badgeBlock}`;
+  const injection = `${statusScript}${badgeBlock}`;
+  const output = html.includes("</body>") ? html.replace("</body>", `${injection}</body>`) : `${html}${injection}`;
   const headers = new Headers(response.headers);
   headers.set("content-type", "text/html; charset=UTF-8");
   return new Response(output, {

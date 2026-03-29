@@ -207,10 +207,15 @@
         return 'green';
       }
 
-      async function load() {
+      async function getThermometerData() {
+        if (window.__DEMO_PROJECT_STATUS__) return window.__DEMO_PROJECT_STATUS__;
         const response = await fetch('/api/demo/thermometer', { credentials: 'same-origin', cache: 'no-store' });
         if (!response.ok) throw new Error('load_failed');
-        const data = await response.json();
+        return response.json();
+      }
+
+      async function load() {
+        const data = await getThermometerData();
         const counts = data.counts || {};
         const target = Number(data.target || 20);
         const workingCount = Number(counts.working || 0);

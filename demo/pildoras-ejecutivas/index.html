@@ -171,10 +171,27 @@
         return 'badge-idea';
       }
 
-      async function load() {
+      function buildDataFromEmbeddedStatus(data) {
+        const pills = (data.pills || []).map((pill) => ({
+          ...pill,
+          publishedLabel: pill.publishedAt ? new Date(pill.publishedAt).toLocaleString('es-ES') : ''
+        }));
+        return {
+          pills,
+          counts: data.counts || {},
+          updatedAt: data.updatedAt || null
+        };
+      }
+
+      async function getExecutivePillsData() {
+        if (window.__DEMO_PROJECT_STATUS__) return buildDataFromEmbeddedStatus(window.__DEMO_PROJECT_STATUS__);
         const response = await fetch('/api/demo/executive-pills', { credentials: 'same-origin', cache: 'no-store' });
         if (!response.ok) throw new Error('load_failed');
-        const data = await response.json();
+        return response.json();
+      }
+
+      async function load() {
+        const data = await getExecutivePillsData();
         const pills = data.pills || [];
         const counts = data.counts || {};
 

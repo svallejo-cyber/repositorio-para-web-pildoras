@@ -194,9 +194,12 @@
     const roots = Array.from(document.querySelectorAll('[data-project-status-strip]'));
     if (!roots.length) return;
     try {
-      const response = await fetch('/api/demo/thermometer', { credentials: 'same-origin', cache: 'no-store' });
-      if (!response.ok) throw new Error('status ' + response.status);
-      const data = await response.json();
+      let data = window.__DEMO_PROJECT_STATUS__;
+      if (!data) {
+        const response = await fetch('/api/demo/thermometer', { credentials: 'same-origin', cache: 'no-store' });
+        if (!response.ok) throw new Error('status ' + response.status);
+        data = await response.json();
+      }
       roots.forEach((root) => render(root, data));
     } catch (error) {
       roots.forEach((root) => {
