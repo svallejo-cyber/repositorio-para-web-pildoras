@@ -185,6 +185,15 @@
       line-height:1.5;
       font-size:14px;
     }
+    .meta {
+      color:#5c6b79;
+      font-size:14px;
+    }
+    .status-line {
+      margin-top:14px;
+      color:#5c6b79;
+      font-size:14px;
+    }
     .actions {
       display:flex;
       gap:10px;
@@ -252,9 +261,9 @@
       </div>
       <div class="hero">
         <div>
-          <div class="eyebrow">Sección en construcción</div>
+          <div class="eyebrow">Biblioteca de propósito</div>
           <h1>Píldoras corporativas</h1>
-          <p>Textos impulsados por la propiedad para fijar propósito, criterio y marco común del Hub.</p>
+          <p>Textos impulsados por la propiedad para fijar propósito, criterio y marco común del Hub. Aquí pasan ahora las antiguas ejecutivas de contexto general.</p>
         </div>
         <aside class="manifesto">
           <strong>Hashtags guía</strong>
@@ -266,20 +275,59 @@
       <section class="section-intro">
         <div class="statement">
           <h2>Rol de esta sección</h2>
-          <p>Aquí vivirán los textos que den orientación de fondo al Hub: por qué existe, qué persigue la compañía y qué actitud espera de la organización ante la IA.</p>
+          <p>Aquí vive el marco de fondo del Hub: por qué existe, qué persigue la compañía y qué actitud se quiere ordenar ante la IA. No mide implantación; fija dirección.</p>
+          <div class="status-line" id="updated-at"></div>
         </div>
         <div class="focus">
-          <h2>Estado actual</h2>
-          <p>La portada ya está decidida. El contenido se cargará en la siguiente fase, sin tocar la versión publicada hoy.</p>
+          <h2>Qué entra aquí</h2>
+          <p>Las antiguas ejecutivas 1 a 4 pasan a corporativas. Tenantflow queda fuera de esta biblioteca demo.</p>
         </div>
       </section>
-      <section data-project-status-strip data-project-status-variant="compact"></section>
+      <section class="grid" id="corporate-grid"></section>
       <div class="actions">
         <a class="btn" href="/demo/">Volver a la portada demo</a>
       </div>
     </main>
     <footer>Píldoras corporativas · Demo paralela del Hub IA Isaval.</footer>
   </article>
-<script src="/demo/assets/project-status-strip.js"></script>
+<script>
+  (function () {
+    const corporateGrid = document.getElementById('corporate-grid');
+    const updatedAt = document.getElementById('updated-at');
+
+    async function fetchCorporatePillsData() {
+      const response = await fetch('/api/demo/corporate-pills', { credentials: 'same-origin', cache: 'no-store' });
+      if (!response.ok) throw new Error('load_failed');
+      return response.json();
+    }
+
+    function render(data) {
+      const pills = data.pills || [];
+      updatedAt.textContent = data.updatedAt ? `Biblioteca preparada: ${new Date(data.updatedAt).toLocaleString('es-ES')}` : '';
+      corporateGrid.innerHTML = pills.map((pill) => `
+        <article class="card">
+          <div class="kicker">${pill.demoOrdinalLabel || ''}</div>
+          <h3>${pill.title}</h3>
+          <div class="meta">${pill.author} · ${pill.publishedLabel}</div>
+          <p>Texto de marco y dirección para ordenar el propósito del Hub y dar contexto común al resto de piezas.</p>
+          <div class="actions">
+            <a class="btn" href="${pill.demoUrl}">Abrir pieza demo</a>
+            <a class="btn secondary" href="${pill.liveUrl}">Abrir pieza actual</a>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    async function load() {
+      try {
+        render(await fetchCorporatePillsData());
+      } catch (error) {
+        updatedAt.textContent = 'No se ha podido cargar la biblioteca corporativa.';
+      }
+    }
+
+    load();
+  })();
+</script>
 </body>
 </html>

@@ -61,6 +61,35 @@ const PUBLISHED_PILLS = [
   { slug: "colaborativa-23", lang: "es", type: "collaborative", title: "De la burocracia SCRAP al expediente IMPLICA preparado para automatizarse", author: "Sergio Huertas", authorEmail: "shuertas@isaval.es", avatar: "/assets/profile/sergio-huertas-360.jpg", publishedAt: "2026-03-28T11:15:00Z", urlPath: "/projects/colaborativa-23/es/" },
 ];
 const COLLABORATIVE_PILLS = PUBLISHED_PILLS.filter((item) => item.type === "collaborative");
+const DEMO_EXECUTIVE_SLUG_ORDER = [
+  "pildora-5",
+  "pildora-6",
+  ...Array.from({ length: 23 }, (_, idx) => `colaborativa-${idx + 1}`),
+];
+const DEMO_CORPORATE_SLUG_ORDER = ["pildora-1", "pildora-2", "pildora-3", "pildora-4"];
+const DEMO_EXCLUDED_SLUGS = new Set(["tenantflow"]);
+
+function buildDemoLibraryEntries(kind) {
+  const slugOrder = kind === "corporate" ? DEMO_CORPORATE_SLUG_ORDER : DEMO_EXECUTIVE_SLUG_ORDER;
+  const label = kind === "corporate" ? "Corporativa" : "Ejecutiva";
+  return slugOrder
+    .filter((slug) => !DEMO_EXCLUDED_SLUGS.has(slug))
+    .map((slug, index) => {
+      const pill = PUBLISHED_PILLS.find((item) => item.lang === "es" && item.slug === slug);
+      if (!pill) return null;
+      return {
+        ...pill,
+        demoLibraryKind: kind,
+        demoOrdinal: index + 1,
+        demoOrdinalLabel: `${label} ${index + 1}`,
+      };
+    })
+    .filter(Boolean);
+}
+
+const DEMO_EXECUTIVE_LIBRARY = buildDemoLibraryEntries("executive");
+const DEMO_CORPORATE_LIBRARY = buildDemoLibraryEntries("corporate");
+const DEMO_LIBRARY_BY_SLUG = new Map([...DEMO_EXECUTIVE_LIBRARY, ...DEMO_CORPORATE_LIBRARY].map((item) => [item.slug, item]));
 const DEMO_PROJECT_STATUS_TARGET = 20;
 const PROJECT_STATUS_META = {
   idea: {
@@ -680,6 +709,10 @@ async function handlePublicApi(request, url, store, env) {
     const lang = url.searchParams.get("lang") === "en" ? "en" : "es";
     const podium = await store.getCollaborativePodium(lang);
     return json(podium);
+  }
+  if (request.method === "GET" && url.pathname === "/api/demo/corporate-pills") {
+    const data = await store.getDemoCorporatePills(getHubBaseUrl(env));
+    return json({ ok: true, ...data });
   }
   if (request.method === "GET" && url.pathname === "/api/demo/executive-pills") {
     const data = await store.getDemoExecutivePills(getHubBaseUrl(env));
@@ -1502,7 +1535,7 @@ export class HubData extends DurableObject {
   }
 
   async getProjectStatusEntry(slug) {
-    const pill = PUBLISHED_PILLS.find((item) => item.lang === "es" && item.slug === slug);
+    const pill = DEMO_LIBRARY_BY_SLUG.get(slug);
     if (!pill) return null;
     const state = await this.getProjectStatusState();
     const status = normalizeProjectStatus(state.statuses?.[slug]);
@@ -1518,11 +1551,7 @@ export class HubData extends DurableObject {
 
   async getProjectStatusAdminData() {
     const state = await this.getProjectStatusState();
-    const pills = PUBLISHED_PILLS
-      .filter((item) => item.lang === "es")
-      .slice()
-      .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
-      .map((pill) => {
+    const pills = DEMO_EXECUTIVE_LIBRARY.map((pill) => {
         const status = normalizeProjectStatus(state.statuses?.[pill.slug]);
         const meta = getProjectStatusMeta(status);
         return {
@@ -1555,7 +1584,7 @@ export class HubData extends DurableObject {
   }
 
   async setProjectStatus(slug, status) {
-    const pill = PUBLISHED_PILLS.find((item) => item.lang === "es" && item.slug === slug);
+    const pill = DEMO_EXECUTIVE_LIBRARY.find((item) => item.slug === slug);
     if (!pill) return { ok: false, error: "Pill not found" };
 
     const state = await this.getProjectStatusState();
@@ -1578,6 +1607,8 @@ export class HubData extends DurableObject {
       avatar: pill.avatar,
       publishedAt: pill.publishedAt,
       publishedLabel: formatDateTime(pill.publishedAt, NOTIFICATION_TIMEZONE),
+      demoOrdinal: pill.demoOrdinal,
+      demoOrdinalLabel: pill.demoOrdinalLabel,
       demoUrl: pill.demoUrl,
       liveUrl: `${hubBaseUrl}${pill.urlPath}`,
       status: pill.status,
@@ -1588,6 +1619,27 @@ export class HubData extends DurableObject {
     return {
       updatedAt: statusData.updatedAt,
       counts: statusData.counts,
+      pills,
+    };
+  }
+
+  async getDemoCorporatePills(hubBaseUrl) {
+    const pills = DEMO_CORPORATE_LIBRARY.map((pill) => ({
+      slug: pill.slug,
+      title: pill.title,
+      author: pill.author,
+      authorEmail: pill.authorEmail,
+      avatar: pill.avatar,
+      publishedAt: pill.publishedAt,
+      publishedLabel: formatDateTime(pill.publishedAt, NOTIFICATION_TIMEZONE),
+      demoOrdinal: pill.demoOrdinal,
+      demoOrdinalLabel: pill.demoOrdinalLabel,
+      demoUrl: `/demo${pill.urlPath}`,
+      liveUrl: `${hubBaseUrl}${pill.urlPath}`,
+    }));
+    return {
+      updatedAt: new Date().toISOString(),
+      count: pills.length,
       pills,
     };
   }
