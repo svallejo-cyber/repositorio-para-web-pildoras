@@ -55,6 +55,13 @@
     .table-avatar { width: 44px; height: 44px; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); background: linear-gradient(135deg, #eef4f9, #f9fbfd); flex: 0 0 auto; display: grid; place-items: center; color: #6a7a89; font-size: .78rem; font-weight: 700; }
     .table-avatar img { width: 100%; height: 100%; object-fit: cover; object-position: center 18%; display: block; }
     .hint { font-size: .84rem; color: var(--muted); }
+    .maintenance-section { margin-top: 20px; }
+    .project-summary { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+    .project-status-pill { display: inline-flex; align-items: center; border-radius: 999px; padding: 5px 10px; font-size: .78rem; font-weight: 700; }
+    .project-status-idea { background: #eef2f6; color: #52606c; border: 1px solid #cfd8e3; }
+    .project-status-in-progress { background: #fff1d6; color: #8a5a00; border: 1px solid #f0d28d; }
+    .project-status-working { background: #e5f6ec; color: #0f6b3c; border: 1px solid #9fd0b0; }
+    .status-select { width: 100%; border: 1px solid #cfd8e1; border-radius: 8px; padding: 8px 10px; font: inherit; background: #fff; color: var(--ink); }
     @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
   </style>
 </head>
@@ -141,6 +148,29 @@
             <div class="message" id="table-message"></div>
           </section>
         </div>
+        <section class="card maintenance-section">
+          <h2>Estado de proyectos AI</h2>
+          <p class="hint" style="margin:0 0 14px;">Solo las píldoras en <strong>WORKING</strong> suman en el Termómetro AI. Aquí decides el estado visible de cada proyecto.</p>
+          <div class="project-summary">
+            <div class="stat"><small>Total píldoras</small><strong id="project-total-count">0</strong></div>
+            <div class="stat"><small>IDEA</small><strong id="project-idea-count">0</strong></div>
+            <div class="stat"><small>IN PROGRESS</small><strong id="project-progress-count">0</strong></div>
+            <div class="stat"><small>WORKING</small><strong id="project-working-count">0 / 20</strong></div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Título</th>
+                <th>Autor</th>
+                <th>Estado actual</th>
+                <th>Cambiar estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="project-status-body"></tbody>
+          </table>
+          <div class="message" id="project-status-message"></div>
+        </section>
       </div>
     </div>
   </div>
@@ -166,12 +196,25 @@
       const totalCount = document.getElementById('total-count');
       const activeCount = document.getElementById('active-count');
       const inactiveCount = document.getElementById('inactive-count');
+      const projectStatusBody = document.getElementById('project-status-body');
+      const projectStatusMessage = document.getElementById('project-status-message');
+      const projectTotalCount = document.getElementById('project-total-count');
+      const projectIdeaCount = document.getElementById('project-idea-count');
+      const projectProgressCount = document.getElementById('project-progress-count');
+      const projectWorkingCount = document.getElementById('project-working-count');
       const fetchOptions = {
         credentials: 'same-origin',
         cache: 'no-store',
       };
       let users = [];
       let filteredUsers = [];
+      let projectPills = [];
+
+      function projectStatusClass(status) {
+        if (status === 'working') return 'project-status-working';
+        if (status === 'in_progress') return 'project-status-in-progress';
+        return 'project-status-idea';
+      }
 
       function setMessage(el, text, type) {
         el.textContent = text || '';
@@ -334,6 +377,64 @@
         render();
       }
 
+      function renderProjectStatuses(data) {
+        projectPills = data.pills || [];
+        const counts = data.counts || {};
+        projectTotalCount.textContent = String(projectPills.length);
+        projectIdeaCount.textContent = String(counts.idea || 0);
+        projectProgressCount.textContent = String(counts.in_progress || 0);
+        projectWorkingCount.textContent = `${counts.working || 0} / ${data.target || 20}`;
+
+        projectStatusBody.innerHTML = '';
+        if (!projectPills.length) {
+          setMessage(projectStatusMessage, 'No hay píldoras disponibles para gestionar estados.', '');
+          return;
+        }
+
+        setMessage(projectStatusMessage, data.updatedAt ? `Actualizado: ${new Date(data.updatedAt).toLocaleString('es-ES')}` : '', '');
+        projectPills.forEach((pill) => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><strong>${pill.title}</strong><div class="hint">${new Date(pill.publishedAt).toLocaleString('es-ES')}</div></td>
+            <td>${pill.author}</td>
+            <td><span class="project-status-pill ${projectStatusClass(pill.status)}">${pill.statusLabel}</span><div class="hint" style="margin-top:6px;">${pill.statusHelper}</div></td>
+            <td>
+              <select class="status-select" data-project-status-select="${pill.slug}">
+                <option value="idea" ${pill.status === 'idea' ? 'selected' : ''}>IDEA</option>
+                <option value="in_progress" ${pill.status === 'in_progress' ? 'selected' : ''}>IN PROGRESS</option>
+                <option value="working" ${pill.status === 'working' ? 'selected' : ''}>WORKING</option>
+              </select>
+            </td>
+            <td>
+              <div class="row-actions">
+                <button class="mini" type="button" data-project-save="${pill.slug}">Guardar</button>
+                <a class="mini" href="${pill.demoUrl}">Abrir demo</a>
+              </div>
+            </td>
+          `;
+          projectStatusBody.appendChild(tr);
+        });
+      }
+
+      async function loadProjectStatuses() {
+        const response = await fetch('/api/admin-maintenance/project-statuses', fetchOptions);
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(payload.error || 'project_status_load_failed');
+        renderProjectStatuses(payload);
+      }
+
+      async function saveProjectStatus(slug, status) {
+        const response = await fetch('/api/admin-maintenance/project-statuses', {
+          ...fetchOptions,
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ slug, status }),
+        });
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(payload.error || 'project_status_save_failed');
+        renderProjectStatuses(payload);
+      }
+
       async function saveUser(payload, id) {
         const response = await fetch(id ? `/api/invited-users/${id}` : '/api/invited-users', {
           ...fetchOptions,
@@ -427,6 +528,19 @@
         }
       });
 
+      projectStatusBody.addEventListener('click', async (event) => {
+        const saveSlug = event.target.getAttribute('data-project-save');
+        if (!saveSlug) return;
+        const select = projectStatusBody.querySelector(`[data-project-status-select="${saveSlug}"]`);
+        if (!select) return;
+        try {
+          await saveProjectStatus(saveSlug, select.value);
+          setMessage(projectStatusMessage, 'Estado de proyecto actualizado.', 'ok');
+        } catch (error) {
+          setMessage(projectStatusMessage, 'No se ha podido actualizar el estado del proyecto.', 'error');
+        }
+      });
+
       searchInput.addEventListener('input', render);
       resetButton.addEventListener('click', resetForm);
       exportButton.addEventListener('click', exportCsv);
@@ -461,7 +575,10 @@
         window.location.href = '/admin/login/';
       });
 
-      loadUsers().catch(() => setMessage(tableMessage, 'No se ha podido cargar la lista de invitados.', 'error'));
+      Promise.all([loadUsers(), loadProjectStatuses()]).catch(() => {
+        setMessage(tableMessage, 'No se ha podido cargar la lista de invitados.', 'error');
+        setMessage(projectStatusMessage, 'No se ha podido cargar el estado de proyectos.', 'error');
+      });
     })();
   </script>
 </body>

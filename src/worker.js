@@ -61,6 +61,33 @@ const PUBLISHED_PILLS = [
   { slug: "colaborativa-23", lang: "es", type: "collaborative", title: "De la burocracia SCRAP al expediente IMPLICA preparado para automatizarse", author: "Sergio Huertas", authorEmail: "shuertas@isaval.es", avatar: "/assets/profile/sergio-huertas-360.jpg", publishedAt: "2026-03-28T11:15:00Z", urlPath: "/projects/colaborativa-23/es/" },
 ];
 const COLLABORATIVE_PILLS = PUBLISHED_PILLS.filter((item) => item.type === "collaborative");
+const DEMO_PROJECT_STATUS_TARGET = 20;
+const PROJECT_STATUS_META = {
+  idea: {
+    key: "idea",
+    label: "IDEA",
+    helper: "Exploración inicial",
+    color: "#5c6b79",
+    background: "#eef2f6",
+    border: "#cfdae5",
+  },
+  in_progress: {
+    key: "in_progress",
+    label: "IN PROGRESS",
+    helper: "En desarrollo o despliegue",
+    color: "#8a5a00",
+    background: "#fff1d6",
+    border: "#f0d28d",
+  },
+  working: {
+    key: "working",
+    label: "WORKING",
+    helper: "En uso real",
+    color: "#0f6b3c",
+    background: "#e5f6ec",
+    border: "#9fd0b0",
+  },
+};
 
 function json(data, status = 200, headers = {}) {
   return new Response(JSON.stringify(data), {
@@ -152,6 +179,17 @@ function cleanAvatar(value) {
   if (text.startsWith("data:image/")) return text.slice(0, 500_000);
   if (text.startsWith("/")) return text.slice(0, 260);
   return "";
+}
+
+function normalizeProjectStatus(value) {
+  const key = String(value || "").trim().toLowerCase();
+  if (key === "working") return "working";
+  if (key === "in_progress") return "in_progress";
+  return "idea";
+}
+
+function getProjectStatusMeta(value) {
+  return PROJECT_STATUS_META[normalizeProjectStatus(value)] || PROJECT_STATUS_META.idea;
 }
 
 function isValidEmail(value) {
@@ -325,7 +363,12 @@ function isAdminAssetPath(pathname) {
 }
 
 function isAdminMaintenanceApi(pathname) {
-  return pathname === "/api/admin-maintenance/purge-excluded-accesses";
+  return pathname === "/api/admin-maintenance/purge-excluded-accesses" || pathname === "/api/admin-maintenance/project-statuses";
+}
+
+function getDemoProjectSlug(pathname) {
+  const match = String(pathname || "").match(/^\/demo\/projects\/([^/]+)\//);
+  return match ? normalizeSlug(match[1]) : "";
 }
 
 async function getAuthenticatedSession(request, store) {
@@ -348,7 +391,72 @@ async function fetchAssetAtPath(request, env, pathname) {
   return env.ASSETS.fetch(new Request(url.toString(), request));
 }
 
-async function serveDemoAsset(request, env) {
+async function decorateDemoProjectResponse(response, pathname, store) {
+  const slug = getDemoProjectSlug(pathname);
+  const contentType = String(response.headers.get("content-type") || "").toLowerCase();
+  if (!slug || !contentType.includes("text/html")) return response;
+
+  const pill = PUBLISHED_PILLS.find((item) => item.lang === "es" && item.slug === slug);
+  if (!pill) return response;
+
+  const statusEntry = await store.getProjectStatusEntry(slug);
+  const meta = statusEntry.meta;
+  const html = await response.text();
+  const badgeBlock = `
+<style>
+  .demo-project-status-badge {
+    position: fixed;
+    top: 18px;
+    right: 18px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 176px;
+    max-width: min(86vw, 260px);
+    padding: 12px 14px;
+    border-radius: 16px;
+    border: 1px solid ${meta.border};
+    background: ${meta.background};
+    color: ${meta.color};
+    box-shadow: 0 14px 30px rgba(16, 27, 44, .18);
+    font-family: Arial, sans-serif;
+  }
+  .demo-project-status-badge strong {
+    font-size: 12px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+  .demo-project-status-badge span {
+    font-size: 13px;
+    line-height: 1.35;
+  }
+  @media (max-width: 720px) {
+    .demo-project-status-badge {
+      top: auto;
+      right: 12px;
+      left: 12px;
+      bottom: 12px;
+      max-width: none;
+    }
+  }
+</style>
+<div class="demo-project-status-badge">
+  <strong>${escapeHtml(meta.label)}</strong>
+  <span>${escapeHtml(meta.helper)}</span>
+</div>`;
+
+  const output = html.includes("</body>") ? html.replace("</body>", `${badgeBlock}</body>`) : `${html}${badgeBlock}`;
+  const headers = new Headers(response.headers);
+  headers.set("content-type", "text/html; charset=UTF-8");
+  return new Response(output, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
+}
+
+async function serveDemoAsset(request, env, store) {
   const url = new URL(request.url);
   const demoPath = url.pathname === "/demo" ? "/demo/" : url.pathname;
   if (demoPath === "/demo/en" || demoPath === "/demo/en/" || demoPath.startsWith("/demo/en/")) {
@@ -359,11 +467,13 @@ async function serveDemoAsset(request, env) {
   }
   const demoResponse = await fetchAssetAtPath(request, env, demoPath);
   if (demoResponse.status !== 404) {
-    return withNoStore(withHeader(demoResponse, "x-hub-variant", "demo"));
+    const decorated = await decorateDemoProjectResponse(demoResponse, demoPath, store);
+    return withNoStore(withHeader(decorated, "x-hub-variant", "demo"));
   }
   const livePath = demoPath.replace(/^\/demo/, "") || "/";
   const liveResponse = await fetchAssetAtPath(request, env, livePath);
-  return withNoStore(withHeader(liveResponse, "x-hub-variant", "demo-fallback"));
+  const decorated = await decorateDemoProjectResponse(liveResponse, demoPath, store);
+  return withNoStore(withHeader(decorated, "x-hub-variant", "demo-fallback"));
 }
 
 export default {
@@ -439,7 +549,7 @@ export default {
     }
 
     if (isDemoPath(url.pathname)) {
-      return serveDemoAsset(request, env);
+      return serveDemoAsset(request, env, store);
     }
 
     if (request.method === "GET" && isTrackablePath(url.pathname)) {
@@ -520,6 +630,23 @@ async function handleAdminAuthApi(request, url, store) {
 }
 
 async function handleAdminMaintenanceApi(request, url, store) {
+  if (request.method === "GET" && url.pathname === "/api/admin-maintenance/project-statuses") {
+    const data = await store.getProjectStatusAdminData();
+    return json({ ok: true, ...data });
+  }
+
+  if (request.method === "POST" && url.pathname === "/api/admin-maintenance/project-statuses") {
+    const payload = await request.json().catch(() => null);
+    if (!payload) return json({ error: "Invalid JSON" }, 400);
+    const slug = normalizeSlug(payload.slug);
+    const status = normalizeProjectStatus(payload.status);
+    if (!slug) return json({ error: "Missing slug" }, 400);
+    const result = await store.setProjectStatus(slug, status);
+    if (!result.ok) return json({ error: result.error }, 404);
+    const data = await store.getProjectStatusAdminData();
+    return json({ ok: true, updated: result.entry, ...data });
+  }
+
   if (request.method === "POST" && url.pathname === "/api/admin-maintenance/purge-excluded-accesses") {
     const result = await store.purgeExcludedAccesses(Array.from(EXCLUDED_TRACKING_EMAILS));
     return json({ ok: true, result });
@@ -542,6 +669,16 @@ async function handleApi(request, url, store, session, env) {
     const limit = Math.min(100, Math.max(1, Number(url.searchParams.get("limit") || 40)));
     const comments = await store.getRecentComments({ lang, limit, hubBaseUrl: getHubBaseUrl(env) });
     return json({ lang, comments });
+  }
+
+  if (request.method === "GET" && url.pathname === "/api/demo/executive-pills") {
+    const data = await store.getDemoExecutivePills(getHubBaseUrl(env));
+    return json({ ok: true, ...data });
+  }
+
+  if (request.method === "GET" && url.pathname === "/api/demo/thermometer") {
+    const data = await store.getProjectStatusAdminData();
+    return json({ ok: true, ...data });
   }
 
   if (request.method === "GET" && url.pathname === "/api/comments") {
@@ -1335,6 +1472,105 @@ export class HubData extends DurableObject {
     const events = (await this.ctx.storage.get("access-events")) || [];
     events.unshift({ id: crypto.randomUUID(), ...event });
     await this.ctx.storage.put("access-events", events.slice(0, 500));
+  }
+
+  async getProjectStatusState() {
+    return (await this.ctx.storage.get("project-status-state")) || { statuses: {}, updatedAt: null };
+  }
+
+  async saveProjectStatusState(state) {
+    await this.ctx.storage.put("project-status-state", state);
+  }
+
+  async getProjectStatusEntry(slug) {
+    const pill = PUBLISHED_PILLS.find((item) => item.lang === "es" && item.slug === slug);
+    if (!pill) return null;
+    const state = await this.getProjectStatusState();
+    const status = normalizeProjectStatus(state.statuses?.[slug]);
+    const meta = getProjectStatusMeta(status);
+    return {
+      slug,
+      status,
+      meta,
+      updatedAt: state.updatedAt || null,
+      pill,
+    };
+  }
+
+  async getProjectStatusAdminData() {
+    const state = await this.getProjectStatusState();
+    const pills = PUBLISHED_PILLS
+      .filter((item) => item.lang === "es")
+      .slice()
+      .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
+      .map((pill) => {
+        const status = normalizeProjectStatus(state.statuses?.[pill.slug]);
+        const meta = getProjectStatusMeta(status);
+        return {
+          ...pill,
+          status,
+          statusLabel: meta.label,
+          statusHelper: meta.helper,
+          statusMeta: meta,
+          demoUrl: `/demo${pill.urlPath}`,
+        };
+      });
+
+    const counts = {
+      idea: pills.filter((pill) => pill.status === "idea").length,
+      in_progress: pills.filter((pill) => pill.status === "in_progress").length,
+      working: pills.filter((pill) => pill.status === "working").length,
+    };
+
+    return {
+      updatedAt: state.updatedAt || null,
+      target: DEMO_PROJECT_STATUS_TARGET,
+      thermometer: {
+        workingCount: counts.working,
+        target: DEMO_PROJECT_STATUS_TARGET,
+        completedRatio: Math.min(100, Number(((counts.working / DEMO_PROJECT_STATUS_TARGET) * 100).toFixed(1))),
+      },
+      counts,
+      pills,
+    };
+  }
+
+  async setProjectStatus(slug, status) {
+    const pill = PUBLISHED_PILLS.find((item) => item.lang === "es" && item.slug === slug);
+    if (!pill) return { ok: false, error: "Pill not found" };
+
+    const state = await this.getProjectStatusState();
+    state.statuses = state.statuses || {};
+    state.statuses[slug] = normalizeProjectStatus(status);
+    state.updatedAt = new Date().toISOString();
+    await this.saveProjectStatusState(state);
+
+    const entry = await this.getProjectStatusEntry(slug);
+    return { ok: true, entry };
+  }
+
+  async getDemoExecutivePills(hubBaseUrl) {
+    const statusData = await this.getProjectStatusAdminData();
+    const pills = statusData.pills.map((pill) => ({
+      slug: pill.slug,
+      title: pill.title,
+      author: pill.author,
+      authorEmail: pill.authorEmail,
+      avatar: pill.avatar,
+      publishedAt: pill.publishedAt,
+      publishedLabel: formatDateTime(pill.publishedAt, NOTIFICATION_TIMEZONE),
+      demoUrl: pill.demoUrl,
+      liveUrl: `${hubBaseUrl}${pill.urlPath}`,
+      status: pill.status,
+      statusLabel: pill.statusLabel,
+      statusHelper: pill.statusHelper,
+      statusMeta: pill.statusMeta,
+    }));
+    return {
+      updatedAt: statusData.updatedAt,
+      counts: statusData.counts,
+      pills,
+    };
   }
 
   async getCollaborativePodium(lang = "es") {

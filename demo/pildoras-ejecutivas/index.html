@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Píldoras ejecutivas · Demo</title>
-
   <style>
     :root {
       --bg: #f3f6f9;
@@ -14,8 +13,6 @@
       --accent: #0f5f94;
       --accent-dark: #10314d;
       --line: #d8e0e8;
-      --soft: #edf5fb;
-      --warm: #f9efe4;
     }
     * { box-sizing: border-box; }
     body {
@@ -29,7 +26,7 @@
       line-height: 1.55;
     }
     .page {
-      max-width: 1120px;
+      max-width: 1160px;
       margin: 28px auto;
       border: 1px solid var(--line);
       border-radius: 22px;
@@ -44,188 +41,61 @@
         radial-gradient(circle at 78% 18%, rgba(255,255,255,.16) 0, transparent 18%),
         linear-gradient(115deg, #102c45 0%, #0f5f94 52%, #1a86ba 100%);
     }
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
-      margin-bottom: 24px;
-    }
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
+    .topbar { display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom:24px; }
+    .brand { display:flex; align-items:center; gap:14px; }
     .brand img {
-      height: 54px;
-      width: auto;
-      display: block;
-      border-radius: 10px;
-      background: rgba(255,255,255,.9);
-      padding: 6px 10px;
-      box-shadow: 0 8px 20px rgba(0,0,0,.12);
+      height:54px; width:auto; display:block; border-radius:10px; background:rgba(255,255,255,.9);
+      padding:6px 10px; box-shadow:0 8px 20px rgba(0,0,0,.12);
     }
-    .eyebrow {
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: .09em;
-      text-transform: uppercase;
-      opacity: .88;
-    }
+    .eyebrow { font-size:12px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; opacity:.88; }
     .nav { display:flex; flex-wrap:wrap; gap:8px; }
     .nav a {
-      text-decoration:none;
-      color:#fff;
-      border:1px solid rgba(255,255,255,.32);
-      background:rgba(255,255,255,.12);
-      padding:8px 11px;
-      border-radius:999px;
-      font-size:13px;
-      font-weight:700;
+      text-decoration:none; color:#fff; border:1px solid rgba(255,255,255,.32); background:rgba(255,255,255,.12);
+      padding:8px 11px; border-radius:999px; font-size:13px; font-weight:700;
     }
-    .hero {
-      display:grid;
-      grid-template-columns: minmax(0, 1.35fr) minmax(280px, .8fr);
-      gap: 26px;
-      align-items:end;
-    }
-    .hero h1 {
-      margin: 10px 0 12px;
-      font-size: clamp(2.2rem, 4vw, 3.6rem);
-      line-height: 1.02;
-      letter-spacing: -.03em;
-    }
-    .hero p {
-      margin: 0;
-      max-width: 760px;
-      font-size: 17px;
-      line-height: 1.6;
-      color: rgba(255,255,255,.92);
-    }
+    .hero { display:grid; grid-template-columns:minmax(0,1.2fr) minmax(260px,.8fr); gap:24px; align-items:end; }
+    .hero h1 { margin:10px 0 12px; font-size:clamp(2.1rem,4vw,3.4rem); line-height:1.02; letter-spacing:-.03em; }
+    .hero p { margin:0; max-width:760px; font-size:17px; line-height:1.6; color:rgba(255,255,255,.92); }
     .manifesto {
-      background: rgba(255,255,255,.1);
-      border: 1px solid rgba(255,255,255,.18);
-      border-radius: 18px;
-      padding: 18px 18px 16px;
-      backdrop-filter: blur(6px);
+      background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.18); border-radius:18px;
+      padding:18px; backdrop-filter: blur(6px);
     }
-    .manifesto strong {
-      display:block;
-      margin-bottom:8px;
-      font-size:13px;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-    }
-    .manifesto p {
-      font-size:15px;
-      line-height:1.6;
-    }
+    .manifesto strong { display:block; margin-bottom:8px; font-size:13px; letter-spacing:.08em; text-transform:uppercase; }
+    .manifesto p { font-size:15px; line-height:1.6; }
     main { padding: 30px 34px 38px; }
-    .section-intro {
-      display:grid;
-      grid-template-columns: 1.15fr .85fr;
-      gap: 18px;
-      align-items:start;
-      margin-bottom: 24px;
-    }
-    .statement {
-      padding: 18px 20px;
-      border-radius: 18px;
-      border: 1px solid #cfddea;
-      background: linear-gradient(180deg, #f8fbfe 0%, #eef5fb 100%);
-    }
-    .statement h2, .focus h2 {
-      margin:0 0 10px;
-      color: var(--accent-dark);
-      font-size: 20px;
-    }
-    .statement p, .focus p { margin:0; color:#32485b; }
-    .focus {
-      padding: 18px 20px;
-      border-radius: 18px;
-      border: 1px solid #ead9c7;
-      background: linear-gradient(180deg, #fffaf4 0%, #f9efe4 100%);
-    }
-    .grid {
-      display:grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 16px;
-    }
-    .card {
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:18px;
-      background:#fbfdff;
+    .intro-grid { display:grid; grid-template-columns:1fr auto; gap:16px; align-items:center; margin-bottom:20px; }
+    .intro-panel, .stats-panel {
+      border:1px solid var(--line); border-radius:18px; background:#fbfdff; padding:20px;
       box-shadow: inset 0 1px 0 rgba(255,255,255,.7);
-      display:grid;
-      gap:12px;
     }
-    .card .kicker {
-      font-size:12px;
-      font-weight:700;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      color:#31516a;
-    }
-    .card h3 {
-      margin:0;
-      font-size:24px;
-      line-height:1.12;
-      color:#10314d;
-    }
-    .card p {
-      margin:0;
-      color:#32485b;
-      min-height:72px;
-    }
-    .hashtags {
-      color:#0f5f94;
-      font-weight:700;
-      line-height:1.5;
-      font-size:14px;
-    }
-    .actions {
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:6px;
-    }
-    .btn {
-      text-decoration:none;
-      border-radius:10px;
-      padding:10px 13px;
-      font-size:14px;
-      font-weight:700;
-      border:1px solid #0f5a8c;
-      color:#fff;
-      background:#0f5f94;
-      display:inline-block;
-    }
-    .btn.secondary {
-      background:#fff;
-      color:#10314d;
-      border-color:#cad8e5;
-    }
-    footer {
-      border-top:1px solid var(--line);
-      padding:14px 34px 22px;
-      color:var(--muted);
-      font-size:14px;
-      background:#fafcfe;
-    }
+    .intro-panel h2, .stats-panel h2 { margin:0 0 10px; color:var(--accent-dark); font-size:20px; }
+    .intro-panel p, .stats-panel p { margin:0; color:#32485b; }
+    .stats-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-top:14px; }
+    .stat { border:1px solid var(--line); border-radius:14px; background:#fff; padding:14px; }
+    .stat small { display:block; color:#5c6b79; margin-bottom:6px; }
+    .stat strong { font-size:1.45rem; }
+    .cards { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+    .card { border:1px solid var(--line); border-radius:18px; padding:18px; background:#fff; display:grid; gap:12px; }
+    .card h3 { margin:0; font-size:24px; line-height:1.18; color:#10314d; }
+    .card p { margin:0; color:#32485b; }
+    .meta { color:#5c6b79; font-size:14px; }
+    .badge { display:inline-flex; align-items:center; border-radius:999px; padding:5px 10px; font-size:12px; font-weight:700; }
+    .badge-idea { background:#eef2f6; color:#52606c; border:1px solid #cfd8e3; }
+    .badge-progress { background:#fff1d6; color:#8a5a00; border:1px solid #f0d28d; }
+    .badge-working { background:#e5f6ec; color:#0f6b3c; border:1px solid #9fd0b0; }
+    .actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:4px; }
+    .btn { text-decoration:none; border-radius:10px; padding:10px 13px; font-size:14px; font-weight:700; border:1px solid #0f5a8c; color:#fff; background:#0f5f94; display:inline-block; }
+    .btn.secondary { background:#fff; color:#10314d; border-color:#cad8e5; }
+    .status-line { margin-top:14px; color:#5c6b79; font-size:14px; }
+    footer { border-top:1px solid var(--line); padding:14px 34px 22px; color:var(--muted); font-size:14px; background:#fafcfe; }
     @media (max-width: 900px) {
-      .hero, .section-intro, .grid { grid-template-columns: 1fr; }
-      .hero { align-items:start; }
+      .hero, .intro-grid, .cards, .stats-grid { grid-template-columns:1fr; }
     }
     @media (max-width: 760px) {
-      .page { margin: 14px; }
+      .page { margin:14px; }
       header, main, footer { padding-left:18px; padding-right:18px; }
-      .hero h1 { font-size: 2.2rem; }
-      .card h3 { font-size: 21px; }
     }
   </style>
-
 </head>
 <body>
   <article class="page">
@@ -252,9 +122,9 @@
       </div>
       <div class="hero">
         <div>
-          <div class="eyebrow">Sección en construcción</div>
-          <h1>Píldoras ejecutivas</h1>
-          <p>Aportaciones del equipo con desarrollo largo, proyecto estructurado o ejecución ya en marcha.</p>
+          <div class="eyebrow">Biblioteca larga del hub</div>
+          <h1>Píldoras ejecutivas con estado visible.</h1>
+          <p>Esta sección reúne las piezas largas del Hub y muestra su madurez editorial y operativa con tres estados: <strong>IDEA</strong>, <strong>IN PROGRESS</strong> y <strong>WORKING</strong>.</p>
         </div>
         <aside class="manifesto">
           <strong>Hashtags guía</strong>
@@ -263,21 +133,73 @@
       </div>
     </header>
     <main>
-      <section class="section-intro">
-        <div class="statement">
-          <h2>Rol de esta sección</h2>
-          <p>Esta será la biblioteca principal de casos desarrollados: proyectos en uso, problemas resueltos, pilotos serios y aprendizajes que merecen lectura completa.</p>
+      <section class="intro-grid">
+        <div class="intro-panel">
+          <h2>Qué ordena esta vista</h2>
+          <p>No separa por autoría. Ordena por piezas largas y muestra de forma explícita si el proyecto está solo planteado, en despliegue o ya funcionando.</p>
+          <div class="status-line" id="updated-at"></div>
         </div>
-        <div class="focus">
-          <h2>Estado actual</h2>
-          <p>La portada ya está decidida. El contenido se cargará en la siguiente fase, sin tocar la versión publicada hoy.</p>
+        <div class="stats-panel">
+          <h2>Resumen</h2>
+          <div class="stats-grid">
+            <div class="stat"><small>IDEA</small><strong id="idea-count">0</strong></div>
+            <div class="stat"><small>IN PROGRESS</small><strong id="progress-count">0</strong></div>
+            <div class="stat"><small>WORKING</small><strong id="working-count">0</strong></div>
+          </div>
         </div>
       </section>
-      <div class="actions">
-        <a class="btn" href="/demo/">Volver a la portada demo</a>
+
+      <section class="cards" id="pills-grid"></section>
+
+      <div class="actions" style="margin-top:18px;">
+        <a class="btn secondary" href="/demo/">Volver a la portada demo</a>
       </div>
     </main>
     <footer>Píldoras ejecutivas · Demo paralela del Hub IA Isaval.</footer>
   </article>
+  <script>
+    (function () {
+      const pillsGrid = document.getElementById('pills-grid');
+      const ideaCount = document.getElementById('idea-count');
+      const progressCount = document.getElementById('progress-count');
+      const workingCount = document.getElementById('working-count');
+      const updatedAt = document.getElementById('updated-at');
+
+      function badgeClass(status) {
+        if (status === 'working') return 'badge-working';
+        if (status === 'in_progress') return 'badge-progress';
+        return 'badge-idea';
+      }
+
+      async function load() {
+        const response = await fetch('/api/demo/executive-pills', { credentials: 'same-origin', cache: 'no-store' });
+        if (!response.ok) throw new Error('load_failed');
+        const data = await response.json();
+        const pills = data.pills || [];
+        const counts = data.counts || {};
+
+        ideaCount.textContent = String(counts.idea || 0);
+        progressCount.textContent = String(counts.in_progress || 0);
+        workingCount.textContent = String(counts.working || 0);
+        updatedAt.textContent = data.updatedAt ? `Actualizado: ${new Date(data.updatedAt).toLocaleString('es-ES')}` : 'Sin cambios de estado todavía.';
+
+        pillsGrid.innerHTML = pills.map((pill) => `
+          <article class="card">
+            <div><span class="badge ${badgeClass(pill.status)}">${pill.statusLabel}</span></div>
+            <h3>${pill.title}</h3>
+            <div class="meta">${pill.author} · ${pill.publishedLabel}</div>
+            <p>${pill.statusHelper}. La demo de esta píldora muestra ya el badge dentro de la propia página.</p>
+            <div class="actions">
+              <a class="btn" href="${pill.demoUrl}">Abrir píldora demo</a>
+            </div>
+          </article>
+        `).join('');
+      }
+
+      load().catch(() => {
+        updatedAt.textContent = 'No se ha podido cargar la biblioteca de píldoras ejecutivas.';
+      });
+    })();
+  </script>
 </body>
 </html>
