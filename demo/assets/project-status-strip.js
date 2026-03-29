@@ -189,19 +189,26 @@
     `;
   }
 
+  function renderAll(data) {
+    const roots = Array.from(document.querySelectorAll('[data-project-status-strip]'));
+    roots.forEach((root) => render(root, data));
+  }
+
   async function load() {
     injectStyles();
     const roots = Array.from(document.querySelectorAll('[data-project-status-strip]'));
     if (!roots.length) return;
+    const embedded = window.__DEMO_PROJECT_STATUS__;
+    if (embedded) {
+      renderAll(embedded);
+    }
     try {
-      let data = window.__DEMO_PROJECT_STATUS__;
-      if (!data) {
-        const response = await fetch('/api/demo/thermometer', { credentials: 'same-origin', cache: 'no-store' });
-        if (!response.ok) throw new Error('status ' + response.status);
-        data = await response.json();
-      }
-      roots.forEach((root) => render(root, data));
+      const response = await fetch('/api/demo/thermometer', { credentials: 'same-origin', cache: 'no-store' });
+      if (!response.ok) throw new Error('status ' + response.status);
+      const data = await response.json();
+      renderAll(data);
     } catch (error) {
+      if (embedded) return;
       roots.forEach((root) => {
         root.className = 'demo-status-strip';
         root.innerHTML = '<p>No se ha podido cargar el estado de proyectos en esta sección.</p>';

@@ -450,8 +450,14 @@ async function decorateDemoProjectResponse(response, pathname, store) {
 </div>`;
   }
 
-  const injection = `${statusScript}${badgeBlock}`;
-  const output = html.includes("</body>") ? html.replace("</body>", `${injection}</body>`) : `${html}${injection}`;
+  const htmlWithStatus = html.includes("</head>")
+    ? html.replace("</head>", `${statusScript}</head>`)
+    : html.includes("</body>")
+      ? html.replace("</body>", `${statusScript}</body>`)
+      : `${html}${statusScript}`;
+  const output = badgeBlock && htmlWithStatus.includes("</body>")
+    ? htmlWithStatus.replace("</body>", `${badgeBlock}</body>`)
+    : `${htmlWithStatus}${badgeBlock}`;
   const headers = new Headers(response.headers);
   headers.set("content-type", "text/html; charset=UTF-8");
   return new Response(output, {

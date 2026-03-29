@@ -207,15 +207,13 @@
         return 'green';
       }
 
-      async function getThermometerData() {
-        if (window.__DEMO_PROJECT_STATUS__) return window.__DEMO_PROJECT_STATUS__;
+      async function fetchThermometerData() {
         const response = await fetch('/api/demo/thermometer', { credentials: 'same-origin', cache: 'no-store' });
         if (!response.ok) throw new Error('load_failed');
         return response.json();
       }
 
-      async function load() {
-        const data = await getThermometerData();
+      function render(data) {
         const counts = data.counts || {};
         const target = Number(data.target || 20);
         const workingCount = Number(counts.working || 0);
@@ -250,9 +248,22 @@
         `).join('');
       }
 
-      load().catch(() => {
-        updatedAtEl.textContent = 'No se ha podido cargar el termómetro AI.';
-      });
+      async function load() {
+        const embedded = window.__DEMO_PROJECT_STATUS__;
+        if (embedded) {
+          render(embedded);
+        }
+        try {
+          const fresh = await fetchThermometerData();
+          render(fresh);
+        } catch (error) {
+          if (!embedded) {
+            updatedAtEl.textContent = 'No se ha podido cargar el termómetro AI.';
+          }
+        }
+      }
+
+      load();
     })();
   </script>
 </body>

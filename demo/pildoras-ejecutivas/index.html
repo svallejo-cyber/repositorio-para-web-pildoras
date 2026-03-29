@@ -183,15 +183,13 @@
         };
       }
 
-      async function getExecutivePillsData() {
-        if (window.__DEMO_PROJECT_STATUS__) return buildDataFromEmbeddedStatus(window.__DEMO_PROJECT_STATUS__);
+      async function fetchExecutivePillsData() {
         const response = await fetch('/api/demo/executive-pills', { credentials: 'same-origin', cache: 'no-store' });
         if (!response.ok) throw new Error('load_failed');
         return response.json();
       }
 
-      async function load() {
-        const data = await getExecutivePillsData();
+      function render(data) {
         const pills = data.pills || [];
         const counts = data.counts || {};
 
@@ -213,9 +211,22 @@
         `).join('');
       }
 
-      load().catch(() => {
-        updatedAt.textContent = 'No se ha podido cargar la biblioteca de píldoras ejecutivas.';
-      });
+      async function load() {
+        const embedded = window.__DEMO_PROJECT_STATUS__;
+        if (embedded) {
+          render(buildDataFromEmbeddedStatus(embedded));
+        }
+        try {
+          const fresh = await fetchExecutivePillsData();
+          render(fresh);
+        } catch (error) {
+          if (!embedded) {
+            updatedAt.textContent = 'No se ha podido cargar la biblioteca de píldoras ejecutivas.';
+          }
+        }
+      }
+
+      load();
     })();
   </script>
 </body>

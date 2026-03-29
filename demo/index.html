@@ -368,13 +368,7 @@
     var workingEl = document.getElementById('thermo-home-working');
     var trackEl = document.getElementById('thermo-home-track');
     if (!workingEl || !trackEl) return;
-    try {
-      var data = window.__DEMO_PROJECT_STATUS__;
-      if (!data) {
-        var response = await fetch('/api/demo/thermometer', { credentials: 'same-origin', cache: 'no-store' });
-        if (!response.ok) throw new Error('status ' + response.status);
-        data = await response.json();
-      }
+    function renderHome(data) {
       var target = Number(data.target || 20);
       var working = Number((data.thermometer && data.thermometer.workingCount) || (data.counts && data.counts.working) || 0);
       workingEl.textContent = String(working);
@@ -383,7 +377,18 @@
         var filledClass = number <= Math.min(target, working) ? 'filled ' + thermoZoneClass(number) : '';
         return '<span class="thermo-mini-segment ' + filledClass + '"></span>';
       }).join('');
+    }
+    var embedded = window.__DEMO_PROJECT_STATUS__;
+    if (embedded) {
+      renderHome(embedded);
+    }
+    try {
+      var response = await fetch('/api/demo/thermometer', { credentials: 'same-origin', cache: 'no-store' });
+      if (!response.ok) throw new Error('status ' + response.status);
+      var data = await response.json();
+      renderHome(data);
     } catch (error) {
+      if (embedded) return;
       trackEl.innerHTML = '<span style="color:#b54848;font-size:13px;">No se ha podido cargar el termómetro.</span>';
     }
   }
