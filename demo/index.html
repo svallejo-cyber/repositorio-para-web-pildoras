@@ -191,6 +191,15 @@
       flex-wrap:wrap;
       margin-top:6px;
     }
+    .thermo-card { position: relative; }
+    .thermo-mini-metric { display:flex; align-items:baseline; gap:8px; margin-top:4px; }
+    .thermo-mini-metric strong { font-size:2rem; line-height:1; color:#10314d; }
+    .thermo-mini-metric span { color:#5c6b79; font-weight:700; }
+    .thermo-mini-track { display:grid; grid-template-columns:repeat(20, minmax(0,1fr)); gap:4px; margin-top:8px; }
+    .thermo-mini-segment { height:12px; border-radius:999px; background:#e6ecf2; border:1px solid #d6dee7; }
+    .thermo-mini-segment.filled.red { background:#c23f3f; border-color:#c23f3f; }
+    .thermo-mini-segment.filled.amber { background:#dda42f; border-color:#dda42f; }
+    .thermo-mini-segment.filled.green { background:#289763; border-color:#289763; }
     .btn {
       text-decoration:none;
       border-radius:10px;
@@ -325,10 +334,12 @@
           <div class="actions"><a class="btn" href="/demo/eventos-ai-isaval/">Abrir sección</a></div>
         </article>
 
-        <article class="card">
+        <article class="card thermo-card" id="thermo-home-card">
           <div class="kicker">Sección 07</div>
           <h3>Termómetro AI</h3>
           <p>Escala de 20 hitos para medir implantación real: solo los proyectos en WORKING elevan el termómetro del Hub.</p>
+          <div class="thermo-mini-metric"><strong id="thermo-home-working">0</strong><span>/ 20</span></div>
+          <div class="thermo-mini-track" id="thermo-home-track"></div>
           <div class="hashtags">#DeLaIdeaALaTraccion #EstadoReal #ProgresoVisible</div>
           <div class="actions"><a class="btn" href="/demo/termometro-ai/">Abrir sección</a></div>
         </article>
@@ -344,12 +355,43 @@
     </main>
     <footer>Demo editorial del Hub IA Isaval · Solo español · Preparada para iterar sin tocar producción.</footer>
   </article>
+<script src="/demo/assets/project-status-strip.js"></script>
 <script>
 (function(){
+  function thermoZoneClass(index){
+    if (index <= 6) return 'red';
+    if (index <= 13) return 'amber';
+    return 'green';
+  }
+
+  async function loadHomeThermometer(){
+    var workingEl = document.getElementById('thermo-home-working');
+    var trackEl = document.getElementById('thermo-home-track');
+    if (!workingEl || !trackEl) return;
+    try {
+      var response = await fetch('/api/demo/thermometer', { credentials: 'same-origin', cache: 'no-store' });
+      if (!response.ok) throw new Error('status ' + response.status);
+      var data = await response.json();
+      var target = Number(data.target || 20);
+      var working = Number((data.thermometer && data.thermometer.workingCount) || (data.counts && data.counts.working) || 0);
+      workingEl.textContent = String(working);
+      trackEl.innerHTML = Array.from({ length: target }, function (_, idx) {
+        var number = idx + 1;
+        var filledClass = number <= Math.min(target, working) ? 'filled ' + thermoZoneClass(number) : '';
+        return '<span class="thermo-mini-segment ' + filledClass + '"></span>';
+      }).join('');
+    } catch (error) {
+      trackEl.innerHTML = '<span style="color:#b54848;font-size:13px;">No se ha podido cargar el termómetro.</span>';
+    }
+  }
+
   async function logout(){
     try { await fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' }); } catch (e) {}
     window.location.href = '/login/';
   }
+
+  loadHomeThermometer();
+
   document.addEventListener('click', function(event){
     var trigger = event.target.closest('[data-logout]');
     if (!trigger) return;
@@ -358,6 +400,5 @@
   });
 })();
 </script>
-<script src="/demo/assets/project-status-strip.js"></script>
 </body>
 </html>
