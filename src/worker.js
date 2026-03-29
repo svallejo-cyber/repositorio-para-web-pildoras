@@ -3,6 +3,7 @@ import { DurableObject } from "cloudflare:workers";
 const SESSION_COOKIE = "hub_session_v3";
 const ADMIN_SESSION_COOKIE = "admin_session_v1";
 const SESSION_MAX_AGE = 60 * 30;
+const DEMO_BUILD = "20260329c";
 const ADMIN_EMAILS = new Set(["svallejoi@icloud.com"]);
 const EXCLUDED_TRACKING_EMAILS = new Set(["svallejo@isaval.es", "svallejoi@icloud.com"]);
 const NOTIFICATION_TIMEZONE = "Europe/Madrid";
@@ -123,7 +124,11 @@ function json(data, status = 200, headers = {}) {
     status,
     headers: {
       "content-type": "application/json; charset=UTF-8",
-      "cache-control": "no-store",
+      "cache-control": "private, no-store, no-cache, max-age=0, must-revalidate",
+      pragma: "no-cache",
+      expires: "0",
+      "cdn-cache-control": "no-store",
+      "cloudflare-cdn-cache-control": "no-store",
       ...headers,
     },
   });
@@ -141,7 +146,12 @@ function redirect(location, status = 302, headers = {}) {
 
 function withNoStore(response) {
   const headers = new Headers(response.headers);
-  headers.set("cache-control", "no-store");
+  headers.set("cache-control", "private, no-store, no-cache, max-age=0, must-revalidate");
+  headers.set("pragma", "no-cache");
+  headers.set("expires", "0");
+  headers.set("cdn-cache-control", "no-store");
+  headers.set("cloudflare-cdn-cache-control", "no-store");
+  headers.delete("etag");
   return new Response(response.body, {
     status: response.status,
     statusText: response.statusText,
@@ -443,6 +453,7 @@ async function decorateDemoProjectResponse(response, pathname, store, env) {
   const commentsData = await store.getRecentComments({ lang: "es", limit: 6, hubBaseUrl });
   const podiumData = await store.getCollaborativePodium("es");
   const statusScript = `<script>
+window.__DEMO_BUILD__=${serializeForInlineScript(DEMO_BUILD)};
 window.__DEMO_PROJECT_STATUS__=${serializeForInlineScript(statusData)};
 window.__DEMO_EXECUTIVE_PILLS__=${serializeForInlineScript(executiveData)};
 window.__DEMO_CORPORATE_PILLS__=${serializeForInlineScript(corporateData)};
@@ -556,6 +567,17 @@ window.__DEMO_COLLABORATIVE_PODIUM__=${serializeForInlineScript(podiumData)};
 
 async function serveDemoAsset(request, env, store) {
   const url = new URL(request.url);
+  if (request.method === "GET" && !url.pathname.startsWith("/api/")) {
+    const currentBuild = url.searchParams.get("dv");
+    if (currentBuild !== DEMO_BUILD) {
+      url.searchParams.set("dv", DEMO_BUILD);
+      return redirect(url.toString(), 302, {
+        "cache-control": "private, no-store, no-cache, max-age=0, must-revalidate",
+        pragma: "no-cache",
+        expires: "0",
+      });
+    }
+  }
   const demoPath = url.pathname === "/demo" ? "/demo/" : url.pathname;
   if (demoPath === "/demo/en" || demoPath === "/demo/en/" || demoPath.startsWith("/demo/en/")) {
     return redirect("/demo/");
