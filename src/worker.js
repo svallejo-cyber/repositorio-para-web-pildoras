@@ -384,7 +384,11 @@ function isAdminApi(pathname) {
 }
 
 function isPublicApi(pathname) {
-  return pathname === "/api/collaborative-podium" || pathname === "/api/demo/thermometer" || pathname === "/api/demo/executive-pills";
+  return pathname === "/api/collaborative-podium"
+    || pathname === "/api/demo/thermometer"
+    || pathname === "/api/demo/executive-pills"
+    || pathname === "/api/demo/corporate-pills"
+    || pathname === "/api/recent-comments";
 }
 
 function isAdminAssetPath(pathname) {
@@ -420,13 +424,24 @@ async function fetchAssetAtPath(request, env, pathname) {
   return env.ASSETS.fetch(new Request(url.toString(), request));
 }
 
-async function decorateDemoProjectResponse(response, pathname, store) {
+async function decorateDemoProjectResponse(response, pathname, store, env) {
   const contentType = String(response.headers.get("content-type") || "").toLowerCase();
   if (!contentType.includes("text/html")) return response;
 
   const html = await response.text();
+  const hubBaseUrl = getHubBaseUrl(env);
   const statusData = await store.getProjectStatusAdminData();
-  const statusScript = `<script>window.__DEMO_PROJECT_STATUS__=${JSON.stringify(statusData).replace(/</g, "\\u003c")};</script>`;
+  const executiveData = await store.getDemoExecutivePills(hubBaseUrl);
+  const corporateData = await store.getDemoCorporatePills(hubBaseUrl);
+  const commentsData = await store.getRecentComments({ lang: "es", limit: 6, hubBaseUrl });
+  const podiumData = await store.getCollaborativePodium("es");
+  const statusScript = `<script>
+window.__DEMO_PROJECT_STATUS__=${JSON.stringify(statusData).replace(/</g, "\\u003c")};
+window.__DEMO_EXECUTIVE_PILLS__=${JSON.stringify(executiveData).replace(/</g, "\\u003c")};
+window.__DEMO_CORPORATE_PILLS__=${JSON.stringify(corporateData).replace(/</g, "\\u003c")};
+window.__DEMO_RECENT_COMMENTS__=${JSON.stringify(commentsData).replace(/</g, "\\u003c")};
+window.__DEMO_COLLABORATIVE_PODIUM__=${JSON.stringify(podiumData).replace(/</g, "\\u003c")};
+</script>`;
 
   const slug = getDemoProjectSlug(pathname);
   let badgeBlock = "";
@@ -507,12 +522,12 @@ async function serveDemoAsset(request, env, store) {
   }
   const demoResponse = await fetchAssetAtPath(request, env, demoPath);
   if (demoResponse.status !== 404) {
-    const decorated = await decorateDemoProjectResponse(demoResponse, demoPath, store);
+    const decorated = await decorateDemoProjectResponse(demoResponse, demoPath, store, env);
     return withNoStore(withHeader(decorated, "x-hub-variant", "demo"));
   }
   const livePath = demoPath.replace(/^\/demo/, "") || "/";
   const liveResponse = await fetchAssetAtPath(request, env, livePath);
-  const decorated = await decorateDemoProjectResponse(liveResponse, demoPath, store);
+  const decorated = await decorateDemoProjectResponse(liveResponse, demoPath, store, env);
   return withNoStore(withHeader(decorated, "x-hub-variant", "demo-fallback"));
 }
 

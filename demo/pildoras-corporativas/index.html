@@ -319,10 +319,14 @@
     }
 
     async function load() {
+      const embedded = window.__DEMO_CORPORATE_PILLS__;
+      if (embedded) {
+        render(embedded);
+      }
       try {
         render(await fetchCorporatePillsData());
       } catch (error) {
-        updatedAt.textContent = 'No se ha podido cargar la biblioteca corporativa.';
+        if (!embedded) updatedAt.textContent = 'No se ha podido cargar la biblioteca corporativa.';
       }
     }
 

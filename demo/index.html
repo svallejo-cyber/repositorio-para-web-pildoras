@@ -486,10 +486,10 @@
     window.location.href = '/login/';
   }
 
-  async function loadHomeLibraries(){
-    var corporateEl = document.getElementById('home-corporate-list');
-    var executiveEl = document.getElementById('home-executive-list');
-    if (!corporateEl || !executiveEl) return;
+    async function loadHomeLibraries(){
+      var corporateEl = document.getElementById('home-corporate-list');
+      var executiveEl = document.getElementById('home-executive-list');
+      if (!corporateEl || !executiveEl) return;
 
     function renderCorporate(items){
       corporateEl.innerHTML = items.map(function(item){
@@ -516,6 +516,16 @@
       }).join('');
     }
 
+    var embeddedCorporate = window.__DEMO_CORPORATE_PILLS__;
+    var embeddedExecutive = window.__DEMO_EXECUTIVE_PILLS__;
+    if (embeddedCorporate && embeddedExecutive) {
+      renderCorporate((embeddedCorporate.pills || []).slice(0, 4));
+      var embeddedExecutiveItems = (embeddedExecutive.pills || []).slice().sort(function(a, b){
+        var order = { working: 0, in_progress: 1, idea: 2 };
+        return (order[a.status] ?? 9) - (order[b.status] ?? 9) || (a.demoOrdinal || 999) - (b.demoOrdinal || 999);
+      }).slice(0, 6);
+      renderExecutive(embeddedExecutiveItems);
+    }
     try {
       var responses = await Promise.all([
         fetch('/api/demo/corporate-pills', { credentials: 'same-origin', cache: 'no-store' }),
@@ -531,8 +541,8 @@
       }).slice(0, 6);
       renderExecutive(executiveItems);
     } catch (error) {
-      corporateEl.innerHTML = '<div class="meta">No se ha podido cargar la biblioteca corporativa.</div>';
-      executiveEl.innerHTML = '<div class="meta">No se ha podido cargar la biblioteca ejecutiva.</div>';
+      if (!embeddedCorporate) corporateEl.innerHTML = '<div class="meta">No se ha podido cargar la biblioteca corporativa.</div>';
+      if (!embeddedExecutive) executiveEl.innerHTML = '<div class="meta">No se ha podido cargar la biblioteca ejecutiva.</div>';
     }
   }
 

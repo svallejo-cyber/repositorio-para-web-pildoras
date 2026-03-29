@@ -328,10 +328,8 @@
     ];
 
     async function load() {
-      try {
-        const response = await fetch('/api/demo/executive-pills', { credentials: 'same-origin', cache: 'no-store' });
-        if (!response.ok) throw new Error('load_failed');
-        const data = await response.json();
+      const embedded = window.__DEMO_EXECUTIVE_PILLS__;
+      function renderFrom(data) {
         const bySlug = new Map((data.pills || []).map((pill) => [pill.slug, pill]));
 
         radarGrid.innerHTML = categoryMap.map((category) => {
@@ -353,8 +351,18 @@
             </article>
           `;
         }).join('');
+      }
+
+      if (embedded) {
+        renderFrom(embedded);
+      }
+      try {
+        const response = await fetch('/api/demo/executive-pills', { credentials: 'same-origin', cache: 'no-store' });
+        if (!response.ok) throw new Error('load_failed');
+        const data = await response.json();
+        renderFrom(data);
       } catch (error) {
-        radarGrid.innerHTML = '<article class="card"><h3>No se ha podido cargar el radar.</h3><p>La DEMO necesita leer la biblioteca ejecutiva para pintar esta clasificación temática.</p></article>';
+        if (!embedded) radarGrid.innerHTML = '<article class="card"><h3>No se ha podido cargar el radar.</h3><p>La DEMO necesita leer la biblioteca ejecutiva para pintar esta clasificación temática.</p></article>';
       }
     }
 

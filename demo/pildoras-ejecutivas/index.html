@@ -214,9 +214,9 @@
       }
 
       async function load() {
-        const embedded = window.__DEMO_PROJECT_STATUS__;
+        const embedded = window.__DEMO_EXECUTIVE_PILLS__;
         if (embedded) {
-          render(buildDataFromEmbeddedStatus(embedded));
+          render(embedded);
         }
         try {
           const fresh = await fetchExecutivePillsData();

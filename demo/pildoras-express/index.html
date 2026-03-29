@@ -312,10 +312,8 @@
     }
 
     async function load() {
-      try {
-        const response = await fetch('/api/demo/executive-pills', { credentials: 'same-origin', cache: 'no-store' });
-        if (!response.ok) throw new Error('load_failed');
-        const data = await response.json();
+      const embedded = window.__DEMO_EXECUTIVE_PILLS__;
+      function renderFrom(data) {
         const pills = (data.pills || []).slice().sort((a, b) => {
           const order = { working: 0, in_progress: 1, idea: 2 };
           return (order[a.status] ?? 9) - (order[b.status] ?? 9) || (a.demoOrdinal || 999) - (b.demoOrdinal || 999);
@@ -335,8 +333,18 @@
             </div>
           </article>
         `).join('');
+      }
+
+      if (embedded) {
+        renderFrom(embedded);
+      }
+      try {
+        const response = await fetch('/api/demo/executive-pills', { credentials: 'same-origin', cache: 'no-store' });
+        if (!response.ok) throw new Error('load_failed');
+        const data = await response.json();
+        renderFrom(data);
       } catch (error) {
-        expressGrid.innerHTML = '<article class="card"><h3>No se ha podido cargar el feed express.</h3><p>La DEMO necesita leer el cuerpo ejecutivo para construir este flujo corto.</p></article>';
+        if (!embedded) expressGrid.innerHTML = '<article class="card"><h3>No se ha podido cargar el feed express.</h3><p>La DEMO necesita leer el cuerpo ejecutivo para construir este flujo corto.</p></article>';
       }
     }
 

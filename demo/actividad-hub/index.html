@@ -337,21 +337,15 @@
     const commentsEl = document.getElementById('activity-comments');
 
     async function load() {
-      try {
-        const responses = await Promise.all([
-          fetch('/api/demo/executive-pills', { credentials: 'same-origin', cache: 'no-store' }),
-          fetch('/api/collaborative-podium?lang=es', { credentials: 'same-origin', cache: 'no-store' }),
-          fetch('/api/recent-comments?lang=es&limit=6', { credentials: 'same-origin', cache: 'no-store' })
-        ]);
-        if (responses.some((response) => !response.ok)) throw new Error('load_failed');
-        const executiveData = await responses[0].json();
-        const podiumData = await responses[1].json();
-        const commentsData = await responses[2].json();
+      const embeddedExecutive = window.__DEMO_EXECUTIVE_PILLS__;
+      const embeddedPodium = window.__DEMO_COLLABORATIVE_PODIUM__;
+      const embeddedComments = window.__DEMO_RECENT_COMMENTS__;
 
+      function renderAll(executiveData, podiumData, commentsData) {
         const pills = executiveData.pills || [];
         const counts = executiveData.counts || {};
         const ranking = podiumData.ranking || [];
-        const comments = commentsData.comments || [];
+        const comments = commentsData.comments || commentsData || [];
 
         statsEl.innerHTML = `
           <div class="stat"><small>Ejecutivas</small><strong>${pills.length}</strong></div>
@@ -374,10 +368,28 @@
             <div>${item.message}</div>
           </div>
         `).join('');
+      }
+
+      if (embeddedExecutive && embeddedPodium && embeddedComments) {
+        renderAll(embeddedExecutive, embeddedPodium, embeddedComments);
+      }
+      try {
+        const responses = await Promise.all([
+          fetch('/api/demo/executive-pills', { credentials: 'same-origin', cache: 'no-store' }),
+          fetch('/api/collaborative-podium?lang=es', { credentials: 'same-origin', cache: 'no-store' }),
+          fetch('/api/recent-comments?lang=es&limit=6', { credentials: 'same-origin', cache: 'no-store' })
+        ]);
+        if (responses.some((response) => !response.ok)) throw new Error('load_failed');
+        const executiveData = await responses[0].json();
+        const podiumData = await responses[1].json();
+        const commentsData = await responses[2].json();
+        renderAll(executiveData, podiumData, commentsData);
       } catch (error) {
-        statsEl.innerHTML = '<div class="stat"><small>Error</small><strong>No cargado</strong></div>';
-        podiumEl.innerHTML = '<div class="list-item"><strong>No se ha podido cargar el podio.</strong></div>';
-        commentsEl.innerHTML = '<div class="list-item"><strong>No se ha podido cargar la conversación reciente.</strong></div>';
+        if (!embeddedExecutive || !embeddedPodium || !embeddedComments) {
+          statsEl.innerHTML = '<div class="stat"><small>Error</small><strong>No cargado</strong></div>';
+          podiumEl.innerHTML = '<div class="list-item"><strong>No se ha podido cargar el podio.</strong></div>';
+          commentsEl.innerHTML = '<div class="list-item"><strong>No se ha podido cargar la conversación reciente.</strong></div>';
+        }
       }
     }
 
