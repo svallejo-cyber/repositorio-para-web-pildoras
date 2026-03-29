@@ -53,6 +53,21 @@
     .micro-card { border:1px solid #e4ebf2; border-radius:12px; padding:14px; background:#fff; }
     .micro-card strong { display:block; font-size:1.55rem; margin-bottom:4px; }
     .micro-card span { color:var(--muted); font-size:.9rem; }
+    .alert-card { border:1px solid #f1d3d3; border-radius:14px; background:linear-gradient(180deg,#fff8f8 0%,#fff 100%); padding:16px; margin-bottom:16px; }
+    .alert-card h3 { margin:0 0 8px; color:#a03c3c; font-size:1rem; }
+    .alert-card p { margin:0 0 12px; color:#7f5b5b; font-size:.92rem; }
+    .member-list { display:flex; flex-wrap:wrap; gap:10px; }
+    .member-chip { border:1px solid #efd7d7; background:#fff; border-radius:999px; padding:8px 12px; font-size:.9rem; color:#5d4040; }
+    .member-chip strong { color:#3d2d2d; }
+    .activity-level-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin-bottom:16px; }
+    .activity-level-card { border:1px solid #e4ebf2; border-radius:12px; padding:14px; background:#fff; }
+    .activity-level-card strong { display:block; font-size:1.45rem; margin-bottom:4px; }
+    .activity-level-card span { color:var(--muted); font-size:.9rem; }
+    .badge { display:inline-flex; align-items:center; border-radius:999px; padding:4px 10px; font-size:.8rem; font-weight:700; }
+    .badge-none { background:#fbe6e6; color:#9a3b3b; }
+    .badge-low { background:#fff1d9; color:#8b5a05; }
+    .badge-medium { background:#e8f2ff; color:#0e5c96; }
+    .badge-high { background:#e4f6eb; color:#1e7a49; }
     .section { margin-top:18px; }
     .section h2 { color:var(--accent); margin:0 0 12px; }
     table { width:100%; border-collapse:collapse; background:#fff; border:1px solid var(--line); border-radius:12px; overflow:hidden; }
@@ -64,10 +79,12 @@
     @media (max-width: 900px) {
       .dashboard-grid { grid-template-columns:1fr; }
       .micro-grid { grid-template-columns:1fr; }
+      .activity-level-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
     }
     @media (max-width: 640px) {
       .bar-row { grid-template-columns:90px 1fr 60px; }
       .activity-chart { gap:6px; }
+      .activity-level-grid { grid-template-columns:1fr; }
     }
   </style>
 </head>
@@ -112,6 +129,29 @@
           </section>
         </div>
         <section class="section">
+          <h2>Nivel de actividad por miembro</h2>
+          <div class="activity-level-grid" id="activity-levels"></div>
+          <div class="alert-card" id="inactive-users-panel" hidden>
+            <h3>Miembros sin ninguna actividad todavía</h3>
+            <p>Listado exacto de usuarios que siguen sin haber entrado al hub. Es el grupo que conviene activar primero.</p>
+            <div class="member-list" id="inactive-users-list"></div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Nivel</th>
+                <th>Accesos</th>
+                <th>Último acceso</th>
+                <th>Última ruta</th>
+                <th>Idioma</th>
+              </tr>
+            </thead>
+            <tbody id="member-activity-body"></tbody>
+          </table>
+        </section>
+        <section class="section">
           <h2>Usuarios</h2>
           <table>
             <thead>
@@ -155,6 +195,10 @@
       const activityMicroEl = document.getElementById('activity-micro');
       const accessBucketsEl = document.getElementById('access-buckets');
       const activityChartEl = document.getElementById('activity-chart');
+      const activityLevelsEl = document.getElementById('activity-levels');
+      const inactiveUsersPanelEl = document.getElementById('inactive-users-panel');
+      const inactiveUsersListEl = document.getElementById('inactive-users-list');
+      const memberActivityBody = document.getElementById('member-activity-body');
       const usersBody = document.getElementById('users-body');
       const eventsBody = document.getElementById('events-body');
       const statusEl = document.getElementById('status');
@@ -183,6 +227,10 @@
 
       function microCard(value, label) {
         return `<div class="micro-card"><strong>${value}</strong><span>${label}</span></div>`;
+      }
+
+      function activityBadge(level, label) {
+        return `<span class="badge badge-${level || 'none'}">${label || 'Sin actividad'}</span>`;
       }
 
       async function load() {
@@ -237,6 +285,40 @@
             <div class="activity-label">${day.label}</div>
           </div>
         `).join('');
+
+        activityLevelsEl.innerHTML = (data.activityLevels || []).map((level) => `
+          <div class="activity-level-card">
+            <strong>${level.count || 0}</strong>
+            <span>${level.label}</span>
+            <div class="muted" style="margin-top:6px; font-size:.84rem;">${percentage(level.percentage)}</div>
+          </div>
+        `).join('');
+
+        const inactiveUsers = data.inactiveUsers || [];
+        if (inactiveUsers.length) {
+          inactiveUsersPanelEl.hidden = false;
+          inactiveUsersListEl.innerHTML = inactiveUsers.map((user) => `
+            <div class="member-chip"><strong>${user.name}</strong> · ${user.email}</div>
+          `).join('');
+        } else {
+          inactiveUsersPanelEl.hidden = true;
+          inactiveUsersListEl.innerHTML = '';
+        }
+
+        memberActivityBody.innerHTML = '';
+        (data.users || []).forEach((user) => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${user.name}</td>
+            <td>${user.email}</td>
+            <td>${activityBadge(user.activityLevel, user.activityLabel)}</td>
+            <td>${user.accessCount || 0}</td>
+            <td>${fmtDate(user.lastAccessAt)}</td>
+            <td class="muted">${user.lastPath || '-'}</td>
+            <td>${user.lastLanguage || '-'}</td>
+          `;
+          memberActivityBody.appendChild(tr);
+        });
 
         usersBody.innerHTML = '';
         (data.users || []).forEach((user) => {

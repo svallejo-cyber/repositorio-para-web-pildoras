@@ -1823,24 +1823,69 @@ export class HubData extends DurableObject {
     await this.purgeExcludedAccesses(Array.from(EXCLUDED_TRACKING_EMAILS));
     const users = (await this.getInvitedUsers()).filter((user) => !isTrackingExcludedEmail(user.email));
     const events = ((await this.ctx.storage.get("access-events")) || []).filter((event) => !isTrackingExcludedEmail(event.email));
-    const sorted = [...users].sort((a, b) => {
+    const classifyActivityLevel = (accessCount) => {
+      const count = Number(accessCount || 0);
+      if (count <= 0) return { key: "none", label: "Sin actividad", rank: 0 };
+      if (count === 1) return { key: "low", label: "Actividad baja", rank: 1 };
+      if (count <= 4) return { key: "medium", label: "Actividad media", rank: 2 };
+      return { key: "high", label: "Actividad alta", rank: 3 };
+    };
+    const usersWithActivity = users.map((user) => {
+      const level = classifyActivityLevel(user.accessCount);
+      return {
+        ...user,
+        hasActivity: (user.accessCount || 0) > 0,
+        activityLevel: level.key,
+        activityLabel: level.label,
+        activityRank: level.rank,
+      };
+    });
+    const sorted = [...usersWithActivity].sort((a, b) => {
       const ad = a.lastAccessAt ? new Date(a.lastAccessAt).getTime() : 0;
       const bd = b.lastAccessAt ? new Date(b.lastAccessAt).getTime() : 0;
       return bd - ad;
     });
-    const totalUsers = users.length;
-    const usersWithAccess = users.filter((user) => (user.accessCount || 0) > 0).length;
+    const totalUsers = usersWithActivity.length;
+    const usersWithAccess = usersWithActivity.filter((user) => user.hasActivity).length;
     const usersWithoutAccess = Math.max(totalUsers - usersWithAccess, 0);
     const accessBuckets = [
-      { key: "0", label: "0 accesos", count: users.filter((user) => (user.accessCount || 0) === 0).length },
-      { key: "1", label: "1 acceso", count: users.filter((user) => (user.accessCount || 0) === 1).length },
-      { key: "2-3", label: "2-3 accesos", count: users.filter((user) => (user.accessCount || 0) >= 2 && (user.accessCount || 0) <= 3).length },
-      { key: "4-7", label: "4-7 accesos", count: users.filter((user) => (user.accessCount || 0) >= 4 && (user.accessCount || 0) <= 7).length },
-      { key: "8+", label: "8 o más", count: users.filter((user) => (user.accessCount || 0) >= 8).length },
+      { key: "0", label: "0 accesos", count: usersWithActivity.filter((user) => (user.accessCount || 0) === 0).length },
+      { key: "1", label: "1 acceso", count: usersWithActivity.filter((user) => (user.accessCount || 0) === 1).length },
+      { key: "2-3", label: "2-3 accesos", count: usersWithActivity.filter((user) => (user.accessCount || 0) >= 2 && (user.accessCount || 0) <= 3).length },
+      { key: "4-7", label: "4-7 accesos", count: usersWithActivity.filter((user) => (user.accessCount || 0) >= 4 && (user.accessCount || 0) <= 7).length },
+      { key: "8+", label: "8 o más", count: usersWithActivity.filter((user) => (user.accessCount || 0) >= 8).length },
     ].map((bucket) => ({
       ...bucket,
       percentage: totalUsers ? Number(((bucket.count / totalUsers) * 100).toFixed(1)) : 0,
     }));
+    const activityLevels = [
+      {
+        key: "none",
+        label: "Sin actividad",
+        count: usersWithActivity.filter((user) => user.activityLevel === "none").length,
+      },
+      {
+        key: "low",
+        label: "Actividad baja",
+        count: usersWithActivity.filter((user) => user.activityLevel === "low").length,
+      },
+      {
+        key: "medium",
+        label: "Actividad media",
+        count: usersWithActivity.filter((user) => user.activityLevel === "medium").length,
+      },
+      {
+        key: "high",
+        label: "Actividad alta",
+        count: usersWithActivity.filter((user) => user.activityLevel === "high").length,
+      },
+    ].map((level) => ({
+      ...level,
+      percentage: totalUsers ? Number(((level.count / totalUsers) * 100).toFixed(1)) : 0,
+    }));
+    const inactiveUsers = usersWithActivity
+      .filter((user) => !user.hasActivity)
+      .sort((a, b) => a.name.localeCompare(b.name, "es", { sensitivity: "base" }));
 
     const eventsByDayMap = new Map();
     const pageViewCount = events.filter((event) => event.type === "page-view").length;
@@ -1861,10 +1906,10 @@ export class HubData extends DurableObject {
     return {
       summary: {
         totalUsers,
-        activeUsers: users.filter((user) => user.active).length,
+        activeUsers: usersWithActivity.filter((user) => user.active).length,
         usersWithAccess,
         usersWithoutAccess,
-        totalAccesses: users.reduce((sum, user) => sum + (user.accessCount || 0), 0),
+        totalAccesses: usersWithActivity.reduce((sum, user) => sum + (user.accessCount || 0), 0),
         adoptionRate: totalUsers ? Number(((usersWithAccess / totalUsers) * 100).toFixed(1)) : 0,
         inactivityRate: totalUsers ? Number(((usersWithoutAccess / totalUsers) * 100).toFixed(1)) : 0,
         pageViewCount,
@@ -1872,6 +1917,8 @@ export class HubData extends DurableObject {
         loginCount,
       },
       accessBuckets,
+      activityLevels,
+      inactiveUsers,
       activityByDay: Array.from(eventsByDayMap.values()),
       users: sorted,
       recentEvents: events.slice(0, 80),
