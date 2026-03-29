@@ -210,6 +210,13 @@ function cleanAvatar(value) {
   return "";
 }
 
+function serializeForInlineScript(value) {
+  return JSON.stringify(value)
+    .replace(/</g, "\\u003c")
+    .replace(/\u2028/g, "\\u2028")
+    .replace(/\u2029/g, "\\u2029");
+}
+
 function normalizeProjectStatus(value) {
   const key = String(value || "").trim().toLowerCase();
   if (key === "working") return "working";
@@ -436,11 +443,11 @@ async function decorateDemoProjectResponse(response, pathname, store, env) {
   const commentsData = await store.getRecentComments({ lang: "es", limit: 6, hubBaseUrl });
   const podiumData = await store.getCollaborativePodium("es");
   const statusScript = `<script>
-window.__DEMO_PROJECT_STATUS__=${JSON.stringify(statusData).replace(/</g, "\\u003c")};
-window.__DEMO_EXECUTIVE_PILLS__=${JSON.stringify(executiveData).replace(/</g, "\\u003c")};
-window.__DEMO_CORPORATE_PILLS__=${JSON.stringify(corporateData).replace(/</g, "\\u003c")};
-window.__DEMO_RECENT_COMMENTS__=${JSON.stringify(commentsData).replace(/</g, "\\u003c")};
-window.__DEMO_COLLABORATIVE_PODIUM__=${JSON.stringify(podiumData).replace(/</g, "\\u003c")};
+window.__DEMO_PROJECT_STATUS__=${serializeForInlineScript(statusData)};
+window.__DEMO_EXECUTIVE_PILLS__=${serializeForInlineScript(executiveData)};
+window.__DEMO_CORPORATE_PILLS__=${serializeForInlineScript(corporateData)};
+window.__DEMO_RECENT_COMMENTS__=${serializeForInlineScript(commentsData)};
+window.__DEMO_COLLABORATIVE_PODIUM__=${serializeForInlineScript(podiumData)};
 </script>`;
 
   const slug = getDemoProjectSlug(pathname);
@@ -451,6 +458,30 @@ window.__DEMO_COLLABORATIVE_PODIUM__=${JSON.stringify(podiumData).replace(/</g, 
     const meta = statusEntry.meta;
     badgeBlock = `
 <style>
+  .demo-project-nav {
+    position: sticky;
+    top: 0;
+    z-index: 9998;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 10px 14px;
+    background: rgba(16, 44, 69, .96);
+    border-bottom: 1px solid rgba(255,255,255,.14);
+    backdrop-filter: blur(8px);
+    font-family: Arial, sans-serif;
+  }
+  .demo-project-nav a {
+    text-decoration: none;
+    color: #fff;
+    border: 1px solid rgba(255,255,255,.22);
+    background: rgba(255,255,255,.08);
+    padding: 7px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+  }
   .demo-project-status-badge {
     position: fixed;
     top: 18px;
@@ -488,6 +519,15 @@ window.__DEMO_COLLABORATIVE_PODIUM__=${JSON.stringify(podiumData).replace(/</g, 
     }
   }
 </style>
+<div class="demo-project-nav">
+  <a href="/demo/">Inicio DEMO</a>
+  <a href="/demo/pildoras-corporativas/">Corporativas</a>
+  <a href="/demo/pildoras-ejecutivas/">Ejecutivas</a>
+  <a href="/demo/pildoras-express/">Express</a>
+  <a href="/demo/radar/">Radar</a>
+  <a href="/demo/termometro-ai/">Termómetro AI</a>
+  <a href="/demo/actividad-hub/">Actividad Hub</a>
+</div>
 <div class="demo-project-status-badge">
   <strong>${escapeHtml(meta.label)}</strong>
   <span>${escapeHtml(meta.helper)}</span>
@@ -499,8 +539,11 @@ window.__DEMO_COLLABORATIVE_PODIUM__=${JSON.stringify(podiumData).replace(/</g, 
     : html.includes("</body>")
       ? html.replace("</body>", `${statusScript}</body>`)
       : `${html}${statusScript}`;
-  const output = badgeBlock && htmlWithStatus.includes("</body>")
-    ? htmlWithStatus.replace("</body>", `${badgeBlock}</body>`)
+  const htmlWithNav = badgeBlock && htmlWithStatus.includes("<body")
+    ? htmlWithStatus.replace(/<body([^>]*)>/i, `<body$1>${badgeBlock}`)
+    : htmlWithStatus;
+  const output = htmlWithNav
+    ? htmlWithNav
     : `${htmlWithStatus}${badgeBlock}`;
   const headers = new Headers(response.headers);
   headers.set("content-type", "text/html; charset=UTF-8");
@@ -724,6 +767,12 @@ async function handlePublicApi(request, url, store, env) {
     const lang = url.searchParams.get("lang") === "en" ? "en" : "es";
     const podium = await store.getCollaborativePodium(lang);
     return json(podium);
+  }
+  if (request.method === "GET" && url.pathname === "/api/recent-comments") {
+    const lang = url.searchParams.get("lang") === "en" ? "en" : "es";
+    const limit = Math.min(100, Math.max(1, Number(url.searchParams.get("limit") || 40)));
+    const comments = await store.getRecentComments({ lang, limit, hubBaseUrl: getHubBaseUrl(env) });
+    return json({ lang, comments });
   }
   if (request.method === "GET" && url.pathname === "/api/demo/corporate-pills") {
     const data = await store.getDemoCorporatePills(getHubBaseUrl(env));
