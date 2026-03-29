@@ -80,10 +80,16 @@
     .statement h2, .focus h2 { margin:0 0 10px; color: var(--accent-dark); font-size: 20px; }
     .statement p, .focus p { margin:0; color:#32485b; }
     .focus { padding: 18px 20px; border-radius: 18px; border: 1px solid #ead9c7; background: linear-gradient(180deg, #fffaf4 0%, #f9efe4 100%); }
+    .grid { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .card { border:1px solid var(--line); border-radius:18px; padding:18px; background:#fbfdff; box-shadow: inset 0 1px 0 rgba(255,255,255,.7); display:grid; gap:12px; }
+    .card .kicker { font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#31516a; }
+    .card h3 { margin:0; font-size:24px; line-height:1.12; color:#10314d; }
+    .card p, .card li { color:#32485b; }
+    .card ul { margin:0; padding-left:18px; display:grid; gap:8px; }
     .actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:6px; }
     .btn { text-decoration:none; border-radius:10px; padding:10px 13px; font-size:14px; font-weight:700; border:1px solid #0f5a8c; color:#fff; background:#0f5f94; display:inline-block; }
     footer { border-top:1px solid var(--line); padding:14px 34px 22px; color:var(--muted); font-size:14px; background:#fafcfe; }
-    @media (max-width: 900px) { .hero, .section-intro { grid-template-columns: 1fr; } .hero { align-items:start; } }
+    @media (max-width: 900px) { .hero, .section-intro, .grid { grid-template-columns: 1fr; } .hero { align-items:start; } }
     @media (max-width: 760px) { .page { margin: 14px; } header, main, footer { padding-left:18px; padding-right:18px; } .hero h1 { font-size: 2.2rem; } }
   </style>
 </head>
@@ -112,7 +118,7 @@
       </div>
       <div class="hero">
         <div>
-          <div class="eyebrow">Sección en construcción</div>
+          <div class="eyebrow">Ritmo visible de comunidad</div>
           <h1>Eventos AI Isaval</h1>
           <p>Agenda visible de actividades concretas relacionadas con este mundo: seminarios, formación presencial u online, encuentros off-office, reconocimientos internos y cualquier hito que ayude a mover comunidad y aprendizaje.</p>
         </div>
@@ -129,17 +135,53 @@
           <p>Aquí anunciaremos y archivaremos las actividades AI de Isaval: desde sesiones formativas y webinars hasta premios a la mejor aportación o al proyecto más productivo. La idea es que el Hub también sea calendario, convocatoria y memoria de movimiento colectivo.</p>
         </div>
         <div class="focus">
-          <h2>Estado actual</h2>
-          <p>La estructura ya está creada. En la siguiente fase definiremos cómo distinguir próximos eventos, histórico y reconocimientos para que esta sección tenga vida real y no sea un simple tablón.</p>
+          <h2>Primer armazón</h2>
+          <p>La DEMO deja ya definidos los formatos de actividad que pueden dar ritmo y comunidad al Hub, aunque todavía no se carguen fechas reales.</p>
         </div>
       </section>
-      <section data-project-status-strip data-project-status-variant="compact"></section>
+      <section class="grid">
+        <article class="card">
+          <div class="kicker">Formato 01</div>
+          <h3>Seminario interno AI Isaval</h3>
+          <ul>
+            <li>Sesión corta de contexto para abrir una línea de trabajo.</li>
+            <li>Puede ser presencial o en Teams.</li>
+            <li>Sirve para alinear lenguaje y criterio directivo.</li>
+          </ul>
+        </article>
+        <article class="card">
+          <div class="kicker">Formato 02</div>
+          <h3>Taller por áreas</h3>
+          <ul>
+            <li>Trabajo práctico con un departamento concreto.</li>
+            <li>Objetivo: bajar ideas a casos y prototipos rápidos.</li>
+            <li>Especialmente útil cuando hay ya una necesidad clara.</li>
+          </ul>
+        </article>
+        <article class="card">
+          <div class="kicker">Formato 03</div>
+          <h3>Encuentro off-office</h3>
+          <ul>
+            <li>Espacio más abierto para compartir hallazgos y tensiones.</li>
+            <li>Permite conversación transversal y visión de conjunto.</li>
+            <li>Útil para no encapsular la AI dentro de un solo área.</li>
+          </ul>
+        </article>
+        <article class="card">
+          <div class="kicker">Formato 04</div>
+          <h3>Reconocimiento interno</h3>
+          <ul>
+            <li>Premio a la mejor aportación o al proyecto más productivo.</li>
+            <li>Refuerza la señal de que el Hub no es decorativo.</li>
+            <li>Convierte aprendizaje y ejecución en algo visible.</li>
+          </ul>
+        </article>
+      </section>
       <div class="actions">
         <a class="btn" href="/demo/">Volver a la portada demo</a>
       </div>
     </main>
     <footer>Eventos AI Isaval · Demo paralela del Hub IA Isaval.</footer>
   </article>
-<script src="/demo/assets/project-status-strip.js"></script>
 </body>
 </html>

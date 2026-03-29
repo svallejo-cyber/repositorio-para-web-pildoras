@@ -179,6 +179,21 @@
       color:#32485b;
       min-height:72px;
     }
+    .meta {
+      color:#5c6b79;
+      font-size:14px;
+    }
+    .badge {
+      display:inline-flex;
+      align-items:center;
+      border-radius:999px;
+      padding:5px 10px;
+      font-size:12px;
+      font-weight:700;
+    }
+    .badge-idea { background:#eef2f6; color:#52606c; border:1px solid #cfd8e3; }
+    .badge-progress { background:#fff1d6; color:#8a5a00; border:1px solid #f0d28d; }
+    .badge-working { background:#e5f6ec; color:#0f6b3c; border:1px solid #9fd0b0; }
     .hashtags {
       color:#0f5f94;
       font-weight:700;
@@ -252,7 +267,7 @@
       </div>
       <div class="hero">
         <div>
-          <div class="eyebrow">Sección en construcción</div>
+          <div class="eyebrow">Feed corto del hub</div>
           <h1>Píldoras express</h1>
           <p>Ideas rápidas, avances breves, hallazgos y señales útiles que no requieren todavía una pieza larga.</p>
         </div>
@@ -269,17 +284,64 @@
           <p>Aquí entrarán pequeñas aportaciones con valor inmediato: un avance corto, una mejora detectada, un update de proyecto o una intuición que convenga compartir ya.</p>
         </div>
         <div class="focus">
-          <h2>Estado actual</h2>
-          <p>La portada ya está decidida. El contenido se cargará en la siguiente fase, sin tocar la versión publicada hoy.</p>
+          <h2>Primer criterio aplicado</h2>
+          <p>Mientras no exista aún un modelo propio de microcontenidos, esta DEMO usa el estado real de las ejecutivas para generar updates cortos y visibles.</p>
         </div>
       </section>
-      <section data-project-status-strip data-project-status-variant="compact"></section>
+      <section class="grid" id="express-grid"></section>
       <div class="actions">
         <a class="btn" href="/demo/">Volver a la portada demo</a>
       </div>
     </main>
     <footer>Píldoras express · Demo paralela del Hub IA Isaval.</footer>
   </article>
-<script src="/demo/assets/project-status-strip.js"></script>
+<script>
+  (function () {
+    const expressGrid = document.getElementById('express-grid');
+
+    function badgeClass(status) {
+      if (status === 'working') return 'badge-working';
+      if (status === 'in_progress') return 'badge-progress';
+      return 'badge-idea';
+    }
+
+    function statusCopy(pill) {
+      if (pill.status === 'working') return 'Proyecto ya en uso real. Esta express funciona como update visible de implantación.';
+      if (pill.status === 'in_progress') return 'Proyecto en despliegue. Esta express resume una línea de trabajo que ya ha pasado de idea a ejecución.';
+      return 'Proyecto planteado y ordenado. Esta express ayuda a poner la idea en circulación mientras madura la pieza larga.';
+    }
+
+    async function load() {
+      try {
+        const response = await fetch('/api/demo/executive-pills', { credentials: 'same-origin', cache: 'no-store' });
+        if (!response.ok) throw new Error('load_failed');
+        const data = await response.json();
+        const pills = (data.pills || []).slice().sort((a, b) => {
+          const order = { working: 0, in_progress: 1, idea: 2 };
+          return (order[a.status] ?? 9) - (order[b.status] ?? 9) || (a.demoOrdinal || 999) - (b.demoOrdinal || 999);
+        }).slice(0, 8);
+
+        expressGrid.innerHTML = pills.map((pill) => `
+          <article class="card">
+            <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;">
+              <div class="kicker">${pill.demoOrdinalLabel || ''}</div>
+              <span class="badge ${badgeClass(pill.status)}">${pill.statusLabel}</span>
+            </div>
+            <h3>${pill.title}</h3>
+            <div class="meta">${pill.author}</div>
+            <p>${statusCopy(pill)}</p>
+            <div class="actions">
+              <a class="btn" href="${pill.demoUrl}">Abrir ejecutiva</a>
+            </div>
+          </article>
+        `).join('');
+      } catch (error) {
+        expressGrid.innerHTML = '<article class="card"><h3>No se ha podido cargar el feed express.</h3><p>La DEMO necesita leer el cuerpo ejecutivo para construir este flujo corto.</p></article>';
+      }
+    }
+
+    load();
+  })();
+</script>
 </body>
 </html>

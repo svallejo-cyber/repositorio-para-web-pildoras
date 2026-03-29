@@ -179,6 +179,27 @@
       color:#32485b;
       min-height:72px;
     }
+    .meta {
+      color:#5c6b79;
+      font-size:14px;
+    }
+    .radar-list {
+      display:grid;
+      gap:10px;
+    }
+    .radar-item {
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fff;
+      padding:12px 14px;
+      display:grid;
+      gap:6px;
+    }
+    .radar-item strong {
+      color:#10314d;
+      font-size:16px;
+      line-height:1.2;
+    }
     .hashtags {
       color:#0f5f94;
       font-weight:700;
@@ -252,7 +273,7 @@
       </div>
       <div class="hero">
         <div>
-          <div class="eyebrow">Sección en construcción</div>
+          <div class="eyebrow">Clasificación temática</div>
           <h1>Radar</h1>
           <p>Ordenación temática del conocimiento, de las señales externas y de las subclasificaciones del hub.</p>
         </div>
@@ -269,17 +290,76 @@
           <p>El Radar recogerá lo que hay que mirar con atención: referencias, señales, patrones y agrupaciones que ayuden a no perder contexto mientras el Hub crece.</p>
         </div>
         <div class="focus">
-          <h2>Estado actual</h2>
-          <p>La portada ya está decidida. El contenido se cargará en la siguiente fase, sin tocar la versión publicada hoy.</p>
+          <h2>Primer criterio aplicado</h2>
+          <p>La DEMO usa ya una primera agrupación temática de las ejecutivas para convertir la biblioteca en lectura estratégica y no en simple secuencia de publicaciones.</p>
         </div>
       </section>
-      <section data-project-status-strip data-project-status-variant="compact"></section>
+      <section class="grid" id="radar-grid"></section>
       <div class="actions">
         <a class="btn" href="/demo/">Volver a la portada demo</a>
       </div>
     </main>
     <footer>Radar · Demo paralela del Hub IA Isaval.</footer>
   </article>
-<script src="/demo/assets/project-status-strip.js"></script>
+<script>
+  (function () {
+    const radarGrid = document.getElementById('radar-grid');
+    const categoryMap = [
+      {
+        title: 'Dirección y gobierno',
+        helper: 'Marco, criterio, señales de dirección y lectura general del movimiento AI en la compañía.',
+        slugs: ['pildora-5', 'pildora-6', 'colaborativa-1', 'colaborativa-2', 'colaborativa-7', 'colaborativa-8']
+      },
+      {
+        title: 'Comercial y exportación',
+        helper: 'Piezas ligadas a prospección, condiciones comerciales, pricing y criterio de mercado exterior.',
+        slugs: ['colaborativa-9', 'colaborativa-10', 'colaborativa-12', 'colaborativa-17', 'colaborativa-19', 'colaborativa-20']
+      },
+      {
+        title: 'Operaciones y logística',
+        helper: 'Casos ligados a fábrica, OEE, muelles, envasado y lectura operativa de planta.',
+        slugs: ['colaborativa-3', 'colaborativa-6', 'colaborativa-15', 'colaborativa-21']
+      },
+      {
+        title: 'Calidad, SAT, laboratorio y desarrollo',
+        helper: 'Bloque técnico donde se concentran incidencias, control de calidad, I+D y trazabilidad documental.',
+        slugs: ['colaborativa-4', 'colaborativa-13', 'colaborativa-14', 'colaborativa-16', 'colaborativa-22', 'colaborativa-23']
+      }
+    ];
+
+    async function load() {
+      try {
+        const response = await fetch('/api/demo/executive-pills', { credentials: 'same-origin', cache: 'no-store' });
+        if (!response.ok) throw new Error('load_failed');
+        const data = await response.json();
+        const bySlug = new Map((data.pills || []).map((pill) => [pill.slug, pill]));
+
+        radarGrid.innerHTML = categoryMap.map((category) => {
+          const items = category.slugs.map((slug) => bySlug.get(slug)).filter(Boolean);
+          return `
+            <article class="card">
+              <div class="kicker">Radar temático</div>
+              <h3>${category.title}</h3>
+              <p>${category.helper}</p>
+              <div class="radar-list">
+                ${items.map((item) => `
+                  <div class="radar-item">
+                    <strong>${item.demoOrdinalLabel || ''} · ${item.title}</strong>
+                    <div class="meta">${item.author}</div>
+                    <div class="actions"><a class="btn secondary" href="${item.demoUrl}">Abrir</a></div>
+                  </div>
+                `).join('')}
+              </div>
+            </article>
+          `;
+        }).join('');
+      } catch (error) {
+        radarGrid.innerHTML = '<article class="card"><h3>No se ha podido cargar el radar.</h3><p>La DEMO necesita leer la biblioteca ejecutiva para pintar esta clasificación temática.</p></article>';
+      }
+    }
+
+    load();
+  })();
+</script>
 </body>
 </html>

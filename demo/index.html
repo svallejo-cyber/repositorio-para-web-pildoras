@@ -179,6 +179,70 @@
       color:#32485b;
       min-height:72px;
     }
+    .meta {
+      color:#5c6b79;
+      font-size:14px;
+    }
+    .content-block {
+      margin-top: 26px;
+      display: grid;
+      gap: 18px;
+    }
+    .content-split {
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap:16px;
+    }
+    .content-panel {
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:18px;
+      background:#fbfdff;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.7);
+      display:grid;
+      gap:12px;
+    }
+    .content-panel h2 {
+      margin:0;
+      font-size:24px;
+      color:#10314d;
+    }
+    .mini-list {
+      display:grid;
+      gap:12px;
+    }
+    .mini-card {
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fff;
+      padding:14px;
+      display:grid;
+      gap:8px;
+    }
+    .mini-card h3 {
+      margin:0;
+      font-size:18px;
+      line-height:1.2;
+      color:#10314d;
+    }
+    .mini-kicker {
+      font-size:12px;
+      font-weight:700;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:#31516a;
+    }
+    .badge {
+      display:inline-flex;
+      align-items:center;
+      border-radius:999px;
+      padding:5px 10px;
+      font-size:12px;
+      font-weight:700;
+    }
+    .badge-idea { background:#eef2f6; color:#52606c; border:1px solid #cfd8e3; }
+    .badge-progress { background:#fff1d6; color:#8a5a00; border:1px solid #f0d28d; }
+    .badge-working { background:#e5f6ec; color:#0f6b3c; border:1px solid #9fd0b0; }
     .hashtags {
       color:#0f5f94;
       font-weight:700;
@@ -224,7 +288,7 @@
       background:#fafcfe;
     }
     @media (max-width: 900px) {
-      .hero, .section-intro, .grid { grid-template-columns: 1fr; }
+      .hero, .section-intro, .grid, .content-split { grid-template-columns: 1fr; }
       .hero { align-items:start; }
     }
     @media (max-width: 760px) {
@@ -352,12 +416,36 @@
           <div class="actions"><a class="btn" href="/demo/actividad-hub/">Abrir sección</a></div>
         </article>
       </section>
+
+      <section class="content-block">
+        <div class="content-split">
+          <section class="content-panel">
+            <div class="kicker">Biblioteca ya cargada</div>
+            <h2>Corporativas</h2>
+            <p>Marco de propiedad y dirección para dar propósito y contexto común al Hub.</p>
+            <div class="mini-list" id="home-corporate-list"></div>
+          </section>
+
+          <section class="content-panel">
+            <div class="kicker">Tracción actual</div>
+            <h2>Ejecutivas destacadas</h2>
+            <p>Casos largos ya reordenados dentro del nuevo cuerpo ejecutivo de la DEMO.</p>
+            <div class="mini-list" id="home-executive-list"></div>
+          </section>
+        </div>
+      </section>
     </main>
     <footer>Demo editorial del Hub IA Isaval · Solo español · Preparada para iterar sin tocar producción.</footer>
   </article>
 <script src="/demo/assets/project-status-strip.js"></script>
 <script>
 (function(){
+  function badgeClass(status){
+    if (status === 'working') return 'badge-working';
+    if (status === 'in_progress') return 'badge-progress';
+    return 'badge-idea';
+  }
+
   function thermoZoneClass(index){
     if (index <= 6) return 'red';
     if (index <= 13) return 'amber';
@@ -398,7 +486,58 @@
     window.location.href = '/login/';
   }
 
+  async function loadHomeLibraries(){
+    var corporateEl = document.getElementById('home-corporate-list');
+    var executiveEl = document.getElementById('home-executive-list');
+    if (!corporateEl || !executiveEl) return;
+
+    function renderCorporate(items){
+      corporateEl.innerHTML = items.map(function(item){
+        return '<article class="mini-card">'
+          + '<div class="mini-kicker">' + (item.demoOrdinalLabel || '') + '</div>'
+          + '<h3>' + item.title + '</h3>'
+          + '<div class="meta">' + item.author + '</div>'
+          + '<div class="actions"><a class="btn secondary" href="' + item.demoUrl + '">Abrir</a></div>'
+          + '</article>';
+      }).join('');
+    }
+
+    function renderExecutive(items){
+      executiveEl.innerHTML = items.map(function(item){
+        return '<article class="mini-card">'
+          + '<div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;">'
+          + '<div class="mini-kicker">' + (item.demoOrdinalLabel || '') + '</div>'
+          + '<span class="badge ' + badgeClass(item.status) + '">' + item.statusLabel + '</span>'
+          + '</div>'
+          + '<h3>' + item.title + '</h3>'
+          + '<div class="meta">' + item.author + '</div>'
+          + '<div class="actions"><a class="btn secondary" href="' + item.demoUrl + '">Abrir</a></div>'
+          + '</article>';
+      }).join('');
+    }
+
+    try {
+      var responses = await Promise.all([
+        fetch('/api/demo/corporate-pills', { credentials: 'same-origin', cache: 'no-store' }),
+        fetch('/api/demo/executive-pills', { credentials: 'same-origin', cache: 'no-store' })
+      ]);
+      if (!responses[0].ok || !responses[1].ok) throw new Error('load_failed');
+      var corporateData = await responses[0].json();
+      var executiveData = await responses[1].json();
+      renderCorporate((corporateData.pills || []).slice(0, 4));
+      var executiveItems = (executiveData.pills || []).slice().sort(function(a, b){
+        var order = { working: 0, in_progress: 1, idea: 2 };
+        return (order[a.status] ?? 9) - (order[b.status] ?? 9) || (a.demoOrdinal || 999) - (b.demoOrdinal || 999);
+      }).slice(0, 6);
+      renderExecutive(executiveItems);
+    } catch (error) {
+      corporateEl.innerHTML = '<div class="meta">No se ha podido cargar la biblioteca corporativa.</div>';
+      executiveEl.innerHTML = '<div class="meta">No se ha podido cargar la biblioteca ejecutiva.</div>';
+    }
+  }
+
   loadHomeThermometer();
+  loadHomeLibraries();
 
   document.addEventListener('click', function(event){
     var trigger = event.target.closest('[data-logout]');

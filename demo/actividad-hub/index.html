@@ -179,6 +179,44 @@
       color:#32485b;
       min-height:72px;
     }
+    .meta {
+      color:#5c6b79;
+      font-size:14px;
+    }
+    .stats-grid {
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:12px;
+      margin-bottom:18px;
+    }
+    .stat {
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fff;
+      padding:14px;
+    }
+    .stat small {
+      display:block;
+      color:#5c6b79;
+      margin-bottom:6px;
+    }
+    .stat strong {
+      font-size:1.5rem;
+      color:#10314d;
+    }
+    .list {
+      display:grid;
+      gap:12px;
+    }
+    .list-item {
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fff;
+      padding:14px;
+      display:grid;
+      gap:6px;
+    }
+    .list-item strong { color:#10314d; }
     .hashtags {
       color:#0f5f94;
       font-weight:700;
@@ -252,7 +290,7 @@
       </div>
       <div class="hero">
         <div>
-          <div class="eyebrow">Sección en construcción</div>
+          <div class="eyebrow">Pulso del hub</div>
           <h1>Actividad Hub</h1>
           <p>Pulso de participación real: publicaciones, comentarios, conversación y movimiento de la comunidad.</p>
         </div>
@@ -269,17 +307,82 @@
           <p>Esta sección convertirá la actividad del Hub en lectura de adopción: quién publica, quién comenta, quién activa conversación y dónde hay más tracción.</p>
         </div>
         <div class="focus">
-          <h2>Estado actual</h2>
-          <p>La portada ya está decidida. El contenido se cargará en la siguiente fase, sin tocar la versión publicada hoy.</p>
+          <h2>Primer criterio aplicado</h2>
+          <p>La DEMO ya combina publicaciones, comentarios y autores más activos para convertir el Hub en un cuadro de pulso y no solo en una biblioteca.</p>
         </div>
       </section>
-      <section data-project-status-strip data-project-status-variant="compact"></section>
+      <section class="stats-grid" id="activity-stats"></section>
+      <section class="grid">
+        <article class="card">
+          <div class="kicker">Autores con más publicaciones</div>
+          <h3>Podio de aportación</h3>
+          <div class="list" id="activity-podium"></div>
+        </article>
+        <article class="card">
+          <div class="kicker">Conversación reciente</div>
+          <h3>Últimos comentarios</h3>
+          <div class="list" id="activity-comments"></div>
+        </article>
+      </section>
       <div class="actions">
         <a class="btn" href="/demo/">Volver a la portada demo</a>
       </div>
     </main>
     <footer>Actividad Hub · Demo paralela del Hub IA Isaval.</footer>
   </article>
-<script src="/demo/assets/project-status-strip.js"></script>
+<script>
+  (function () {
+    const statsEl = document.getElementById('activity-stats');
+    const podiumEl = document.getElementById('activity-podium');
+    const commentsEl = document.getElementById('activity-comments');
+
+    async function load() {
+      try {
+        const responses = await Promise.all([
+          fetch('/api/demo/executive-pills', { credentials: 'same-origin', cache: 'no-store' }),
+          fetch('/api/collaborative-podium?lang=es', { credentials: 'same-origin', cache: 'no-store' }),
+          fetch('/api/recent-comments?lang=es&limit=6', { credentials: 'same-origin', cache: 'no-store' })
+        ]);
+        if (responses.some((response) => !response.ok)) throw new Error('load_failed');
+        const executiveData = await responses[0].json();
+        const podiumData = await responses[1].json();
+        const commentsData = await responses[2].json();
+
+        const pills = executiveData.pills || [];
+        const counts = executiveData.counts || {};
+        const ranking = podiumData.ranking || [];
+        const comments = commentsData.comments || [];
+
+        statsEl.innerHTML = `
+          <div class="stat"><small>Ejecutivas</small><strong>${pills.length}</strong></div>
+          <div class="stat"><small>WORKING</small><strong>${counts.working || 0}</strong></div>
+          <div class="stat"><small>Autores activos</small><strong>${ranking.length}</strong></div>
+          <div class="stat"><small>Comentarios recientes</small><strong>${comments.length}</strong></div>
+        `;
+
+        podiumEl.innerHTML = ranking.slice(0, 6).map((item, index) => `
+          <div class="list-item">
+            <strong>#${index + 1} · ${item.author}</strong>
+            <div class="meta">${item.count} publicaciones · Última: ${item.latestTitle}</div>
+          </div>
+        `).join('');
+
+        commentsEl.innerHTML = comments.map((item) => `
+          <div class="list-item">
+            <strong>${item.authorName || item.name || 'Comentario'}</strong>
+            <div class="meta">${item.relativeTime || item.publishedLabel || ''}</div>
+            <div>${item.message}</div>
+          </div>
+        `).join('');
+      } catch (error) {
+        statsEl.innerHTML = '<div class="stat"><small>Error</small><strong>No cargado</strong></div>';
+        podiumEl.innerHTML = '<div class="list-item"><strong>No se ha podido cargar el podio.</strong></div>';
+        commentsEl.innerHTML = '<div class="list-item"><strong>No se ha podido cargar la conversación reciente.</strong></div>';
+      }
+    }
+
+    load();
+  })();
+</script>
 </body>
 </html>

@@ -147,6 +147,42 @@
       border: 1px solid #ead9c7;
       background: linear-gradient(180deg, #fffaf4 0%, #f9efe4 100%);
     }
+    .grid {
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .card {
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:18px;
+      background:#fbfdff;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.7);
+      display:grid;
+      gap:12px;
+    }
+    .card .kicker {
+      font-size:12px;
+      font-weight:700;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:#31516a;
+    }
+    .card h3 {
+      margin:0;
+      font-size:24px;
+      line-height:1.12;
+      color:#10314d;
+    }
+    .card p, .card li {
+      color:#32485b;
+    }
+    .card ul {
+      margin:0;
+      padding-left:18px;
+      display:grid;
+      gap:8px;
+    }
     .actions {
       display:flex;
       gap:10px;
@@ -172,7 +208,7 @@
       background:#fafcfe;
     }
     @media (max-width: 900px) {
-      .hero, .section-intro { grid-template-columns: 1fr; }
+      .hero, .section-intro, .grid { grid-template-columns: 1fr; }
       .hero { align-items:start; }
     }
     @media (max-width: 760px) {
@@ -207,7 +243,7 @@
       </div>
       <div class="hero">
         <div>
-          <div class="eyebrow">Sección en construcción</div>
+          <div class="eyebrow">Aprendizaje aplicable</div>
           <h1>Academy AI</h1>
           <p>Repositorio de recursos para el aprendizaje: guías, materiales, ejemplos, buenas prácticas y referencias para elevar el nivel medio de criterio y autonomía dentro de Isaval.</p>
         </div>
@@ -224,17 +260,53 @@
           <p>Aquí quedarán depositados los recursos de aprendizaje del Hub: desde materiales introductorios hasta guías de uso, casos explicados, plantillas, itinerarios de formación y referencias internas o externas que ayuden a aprender mejor.</p>
         </div>
         <div class="focus">
-          <h2>Estado actual</h2>
-          <p>La estructura ya está creada. En la siguiente fase cargaremos los primeros recursos y decidiremos cómo ordenarlos para que sean útiles de verdad y no un simple almacén de enlaces.</p>
+          <h2>Primer armazón</h2>
+          <p>La DEMO arranca ya con una estructura de aprendizaje por capas: empezar, pensar mejor, ejecutar y trabajar con criterio seguro.</p>
         </div>
       </section>
-      <section data-project-status-strip data-project-status-variant="compact"></section>
+      <section class="grid">
+        <article class="card">
+          <div class="kicker">Track 01</div>
+          <h3>Empezar en el Hub</h3>
+          <ul>
+            <li>Qué es cada sección y para qué sirve.</li>
+            <li>Cómo comentar y aportar sin esperar a tener una pieza perfecta.</li>
+            <li>Cómo mover una idea desde el comentario hasta la píldora.</li>
+          </ul>
+        </article>
+        <article class="card">
+          <div class="kicker">Track 02</div>
+          <h3>Pensar mejor con AI</h3>
+          <ul>
+            <li>Uso directivo de conversaciones bien contextualizadas.</li>
+            <li>Diferencia entre pedir texto y ordenar razonamiento.</li>
+            <li>Cómo usar la IA como acompañante, no como sustituto del criterio.</li>
+          </ul>
+        </article>
+        <article class="card">
+          <div class="kicker">Track 03</div>
+          <h3>De idea a WORKING</h3>
+          <ul>
+            <li>Qué distingue una IDEA de un IN PROGRESS y de un WORKING.</li>
+            <li>Cómo preparar un proyecto para que entre en ejecución real.</li>
+            <li>Cómo leer el Termómetro AI sin inflar el avance.</li>
+          </ul>
+        </article>
+        <article class="card">
+          <div class="kicker">Track 04</div>
+          <h3>Buenas prácticas</h3>
+          <ul>
+            <li>No subir datos sensibles ni información no preparada.</li>
+            <li>Priorizar claridad del caso antes que brillo del texto.</li>
+            <li>Usar el Hub para compartir aprendizaje, no para aparentar dominio.</li>
+          </ul>
+        </article>
+      </section>
       <div class="actions">
         <a class="btn" href="/demo/">Volver a la portada demo</a>
       </div>
     </main>
     <footer>Academy AI · Demo paralela del Hub IA Isaval.</footer>
   </article>
-<script src="/demo/assets/project-status-strip.js"></script>
 </body>
 </html>
