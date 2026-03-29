@@ -355,7 +355,7 @@ function isAdminApi(pathname) {
 }
 
 function isPublicApi(pathname) {
-  return pathname === "/api/collaborative-podium";
+  return pathname === "/api/collaborative-podium" || pathname === "/api/demo/thermometer" || pathname === "/api/demo/executive-pills";
 }
 
 function isAdminAssetPath(pathname) {
@@ -540,7 +540,7 @@ export default {
     const session = await getAuthenticatedSession(request, store);
 
     if (isPublicApi(url.pathname)) {
-      return handlePublicApi(request, url, store);
+      return handlePublicApi(request, url, store, env);
     }
 
     if (url.pathname.startsWith("/api/demo/")) {
@@ -675,11 +675,19 @@ async function handleAdminMaintenanceApi(request, url, store) {
   return json({ error: "Not found" }, 404);
 }
 
-async function handlePublicApi(request, url, store) {
+async function handlePublicApi(request, url, store, env) {
   if (request.method === "GET" && url.pathname === "/api/collaborative-podium") {
     const lang = url.searchParams.get("lang") === "en" ? "en" : "es";
     const podium = await store.getCollaborativePodium(lang);
     return json(podium);
+  }
+  if (request.method === "GET" && url.pathname === "/api/demo/executive-pills") {
+    const data = await store.getDemoExecutivePills(getHubBaseUrl(env));
+    return json({ ok: true, ...data });
+  }
+  if (request.method === "GET" && url.pathname === "/api/demo/thermometer") {
+    const data = await store.getProjectStatusAdminData();
+    return json({ ok: true, ...data });
   }
   return json({ error: "Not found" }, 404);
 }
@@ -690,16 +698,6 @@ async function handleApi(request, url, store, session, env) {
     const limit = Math.min(100, Math.max(1, Number(url.searchParams.get("limit") || 40)));
     const comments = await store.getRecentComments({ lang, limit, hubBaseUrl: getHubBaseUrl(env) });
     return json({ lang, comments });
-  }
-
-  if (request.method === "GET" && url.pathname === "/api/demo/executive-pills") {
-    const data = await store.getDemoExecutivePills(getHubBaseUrl(env));
-    return json({ ok: true, ...data });
-  }
-
-  if (request.method === "GET" && url.pathname === "/api/demo/thermometer") {
-    const data = await store.getProjectStatusAdminData();
-    return json({ ok: true, ...data });
   }
 
   if (request.method === "GET" && url.pathname === "/api/comments") {
