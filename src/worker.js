@@ -532,6 +532,12 @@ export default {
       return handlePublicApi(request, url, store);
     }
 
+    if (url.pathname.startsWith("/api/demo/")) {
+      const demoSession = session || adminSession;
+      if (!demoSession) return json({ error: "Unauthorized" }, 401);
+      return handleApi(request, url, store, demoSession, env);
+    }
+
     if (url.pathname.startsWith("/api/")) {
       if (!session) return json({ error: "Unauthorized" }, 401);
       return handleApi(request, url, store, session, env);
@@ -543,13 +549,17 @@ export default {
       return withNoStore(response);
     }
 
+    if (isDemoPath(url.pathname)) {
+      if (!session && !adminSession) {
+        const next = encodeURIComponent(url.pathname + url.search);
+        return redirect(`/login/?next=${next}`);
+      }
+      return serveDemoAsset(request, env, store);
+    }
+
     if (!session) {
       const next = encodeURIComponent(url.pathname + url.search);
       return redirect(`/login/?next=${next}`);
-    }
-
-    if (isDemoPath(url.pathname)) {
-      return serveDemoAsset(request, env, store);
     }
 
     if (request.method === "GET" && isTrackablePath(url.pathname)) {
