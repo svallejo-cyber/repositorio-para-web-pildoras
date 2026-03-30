@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Collaborative 24 · Full text</title>
+  <style>
+    body { font-family: Arial, sans-serif; color: #1f2c3a; margin: 0; padding: 24px; line-height: 1.58; }
+    h1, h2 { color: #10314d; }
+    h1 { font-size: 26px; margin: 0 0 18px; }
+    h2 { font-size: 18px; margin: 22px 0 10px; }
+    p { margin: 0 0 12px; }
+    ul { margin: 8px 0 12px 22px; }
+    li { margin: 6px 0; }
+  </style>
+</head>
+<body>
+  <h1>Specification monitoring program for quality control</h1>
+  <h2>Context</h2>
+  <p>Quality control has long worked with defined specifications for each product, but there was no tool capable of contrasting those ranges against the actual reality of historical production.</p>
+  <p>Sergio’s proposal starts from a simple premise: use five years of manufacturing history to understand how critical properties really behave and review whether the current ranges still make sense.</p>
+  <h2>What has been developed</h2>
+  <p>The application is built in Python. It consolidates quality history from Excel and CSV files, cleans and normalizes production data and analyzes each combination of product, color and property.</p>
+  <p>The system works with properties such as density, viscosity, tinting strength and pH. From there it proposes acceptance ranges based on median ± 20%, compares the current specification against the suggested one and generates exportable technical recommendations.</p>
+  <h2>Architecture and flow</h2>
+  <ul>
+    <li>Incremental ingestion with traceability of already processed files.</li>
+    <li>Robust cleaning through configurable column aliases.</li>
+    <li>Analytics by product + color + property combination.</li>
+    <li>Recommendation engine with parameterized business rules.</li>
+    <li>Streamlit web interface with visualization and Excel, CSV and PDF exports.</li>
+  </ul>
+  <h2>Relevant findings from the project log</h2>
+  <p>The log confirms that the workflow is operational end to end and currently contains 6,179 consolidated rows. It also highlights a meaningful signal: 1,584 viscosity values fall outside the configured range, although they are not automatically excluded today.</p>
+  <p>That makes the tool more than an analyzer. It becomes a practical basis for deciding whether ranges should be recentered, limits corrected or formulations reviewed.</p>
+  <h2>Business value</h2>
+  <ul>
+    <li>Technical review grounded in real historical data rather than only theoretical judgement.</li>
+    <li>Potential reduction of adjustments and smoother production flow.</li>
+    <li>Greater ability to detect poorly centered properties or specifications that no longer match actual manufacturing reality.</li>
+    <li>A tool already running and being used, not just a proposal.</li>
+  </ul>
+  <h2>Conclusion</h2>
+  <p>The proposal turns quality-control history into an operational basis for reviewing specifications with evidence. Its value lies not only in analysis, but in helping decide when to keep a range, when to adjust it and when a formulation itself should be reviewed to gain stability on the plant floor.</p>
+</body>
+</html>

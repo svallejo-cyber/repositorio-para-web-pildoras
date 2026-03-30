@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Colaborativa 24 · Texto completo</title>
+  <style>
+    body { font-family: Arial, sans-serif; color: #1f2c3a; margin: 0; padding: 24px; line-height: 1.58; }
+    h1, h2 { color: #10314d; }
+    h1 { font-size: 26px; margin: 0 0 18px; }
+    h2 { font-size: 18px; margin: 22px 0 10px; }
+    p { margin: 0 0 12px; }
+    ul { margin: 8px 0 12px 22px; }
+    li { margin: 6px 0; }
+  </style>
+</head>
+<body>
+  <h1>Programa de seguimiento de especificaciones de control de calidad</h1>
+  <h2>Contexto</h2>
+  <p>En control de calidad existen especificaciones definidas para cada producto, pero hasta ahora no se había construido una herramienta capaz de contrastar esos rangos con la realidad histórica de producción.</p>
+  <p>La propuesta de Sergio parte de una idea simple: aprovechar cinco años de histórico de fabricaciones para analizar cómo se comportan realmente las propiedades críticas y revisar si los rangos vigentes siguen siendo los adecuados.</p>
+  <h2>Qué se ha desarrollado</h2>
+  <p>La aplicación está construida en Python y consolida históricos de calidad desde archivos Excel y CSV, limpia y normaliza los datos productivos y analiza cada combinación de producto, color y propiedad.</p>
+  <p>El sistema trabaja con propiedades como densidad, viscosidad, fuerza colorante y pH. A partir de ahí propone rangos de aceptación basados en mediana ± 20%, compara especificación vigente frente a propuesta y genera recomendaciones técnicas exportables.</p>
+  <h2>Arquitectura y flujo</h2>
+  <ul>
+    <li>Ingesta incremental con trazabilidad de archivos ya procesados.</li>
+    <li>Limpieza robusta mediante alias de columnas configurables.</li>
+    <li>Analítica por combinación producto + color + propiedad.</li>
+    <li>Motor de recomendaciones con reglas parametrizadas.</li>
+    <li>Interfaz web en Streamlit con visualizaciones y exportación a Excel, CSV y PDF.</li>
+  </ul>
+  <h2>Hallazgos relevantes del cuaderno de bitácora</h2>
+  <p>La bitácora confirma que el flujo está operativo de extremo a extremo y que el estado observado contiene 6.179 filas consolidadas. También deja una señal importante: 1.584 valores de viscosidad aparecen fuera del rango configurado, aunque hoy no se descartan automáticamente.</p>
+  <p>Eso convierte la herramienta no solo en un analizador, sino en una base práctica para revisar si conviene recentrar rangos, corregir límites o incluso replantear formulaciones.</p>
+  <h2>Qué aporta al negocio</h2>
+  <ul>
+    <li>Revisión técnica con base real en datos históricos y no solo en criterio teórico.</li>
+    <li>Reducción potencial de ajustes y mejora de la fluidez productiva.</li>
+    <li>Mayor capacidad para detectar propiedades mal centradas o especificaciones poco alineadas con la fabricación real.</li>
+    <li>Herramienta ya en funcionamiento y usándose, no solo en fase de propuesta.</li>
+  </ul>
+  <h2>Conclusión</h2>
+  <p>La propuesta convierte histórico de control de calidad en un criterio operativo para revisar especificaciones con evidencia. Su valor no está solo en analizar, sino en ayudar a decidir cuándo mantener un rango, cuándo ajustarlo y cuándo revisar la formulación para ganar estabilidad en planta.</p>
+</body>
+</html>
