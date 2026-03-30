@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Collaborative pill 25 · From email threads to a traceable validation flow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Lora:wght@600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root { --bg:#f3f6f9; --panel:#ffffff; --ink:#1f2c3a; --muted:#5c6b79; --accent:#0f5f94; --accent-dark:#10314d; --line:#d8e0e8; --soft:#edf5fb; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:"IBM Plex Sans",sans-serif; color:var(--ink); line-height:1.56; background:radial-gradient(circle at 8% 5%, #d9e8f4 0, transparent 22%), radial-gradient(circle at 90% 0%, #e9eef3 0, transparent 24%), var(--bg); }
+    .sheet { max-width:980px; margin:36px auto; border:1px solid var(--line); border-radius:16px; background:var(--panel); overflow:hidden; box-shadow:0 14px 36px rgba(18,37,54,.08); }
+    header { padding:22px 38px 30px; color:#fff; background:linear-gradient(110deg,var(--accent-dark) 0%,var(--accent) 56%,#1577af 100%); }
+    .topnav { display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
+    .navbtn { text-decoration:none; background:rgba(255,255,255,.15); color:#fff; border:1px solid rgba(255,255,255,.4); padding:7px 10px; border-radius:8px; font-size:.85rem; font-weight:600; }
+    .hero { display:grid; grid-template-columns:120px 1fr; gap:18px; align-items:center; margin-top:8px; }
+    .avatar { width:120px; height:120px; border-radius:22px; overflow:hidden; border:3px solid rgba(255,255,255,.25); box-shadow:0 10px 24px rgba(0,0,0,.15); background:linear-gradient(135deg, rgba(255,255,255,.28), rgba(255,255,255,.08)); }
+    .avatar img { width:100%; height:100%; object-fit:cover; object-position:center 15%; display:block; }
+    .kicker { font-size:.76rem; letter-spacing:.09em; text-transform:uppercase; opacity:.92; font-weight:600; }
+    h1 { margin:8px 0 10px; font-family:"Lora",serif; font-size:clamp(1.85rem,2.8vw,2.3rem); line-height:1.2; }
+    .meta { font-size:.95rem; opacity:.94; }
+    main { padding:30px 38px 34px; }
+    section + section { margin-top:24px; }
+    h2 { margin:0 0 10px; font-size:1.12rem; color:var(--accent); }
+    p { margin:0 0 10px; }
+    .quote { border-left:4px solid #95c1de; background:var(--soft); color:#24445c; padding:12px 14px; border-radius:0 10px 10px 0; font-weight:500; margin-top:10px; }
+    .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-top:10px; }
+    .card { border:1px solid var(--line); border-radius:11px; padding:12px; background:#fbfdff; }
+    .tag { display:inline-block; text-transform:uppercase; letter-spacing:.07em; font-size:.74rem; color:#2d536f; font-weight:700; margin-bottom:6px; }
+    ul { margin:8px 0 0; padding-left:18px; }
+    li { margin:6px 0; }
+    .highlight { border:1px solid #cddff0; background:#f3f8fd; border-radius:11px; padding:14px; margin-top:10px; }
+    .highlight strong { color:var(--accent); }
+    .linkbox { border:1px solid #cddff0; background:#f3f8fd; border-radius:10px; padding:12px; word-break:break-word; }
+    .pdf-link { display:inline-block; margin-top:10px; text-decoration:none; background:var(--accent); color:#fff; border:1px solid #0f5a8c; border-radius:8px; padding:8px 12px; font-size:.9rem; font-weight:600; }
+    .linkbox a.pdf-link, .linkbox a.pdf-link:visited, .linkbox a.pdf-link:hover, .linkbox a.pdf-link:focus { color:#fff; }
+    footer { border-top:1px solid var(--line); color:var(--muted); font-size:.87rem; padding:14px 38px 22px; background:#fafcfe; }
+    @media (max-width:760px) { header, main, footer { padding-left:18px; padding-right:18px; } .hero { grid-template-columns:1fr; } .grid { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <article class="sheet">
+    <header>
+      <div class="topnav">
+        <a class="navbtn" href="/projects/pildoras-colaborativas/en/">Back to collaborative pills</a>
+        <a class="navbtn" href="/">Go to main hub</a>
+        <a class="navbtn" href="../es/">Leer en español</a>
+      </div>
+      <div class="hero">
+        <div class="avatar" aria-label="María Vallejo"><img src="/assets/profile/maria-vallejo-360.jpg" alt="María Vallejo" width="120" height="120" loading="eager" decoding="async" /></div>
+        <div>
+          <div class="kicker">Collaborative pill · Isaval team</div>
+          <h1>From email threads to a traceable validation flow</h1>
+          <div class="meta">María Vallejo · Twenty-fifth collaborative contribution to the hub on packaging validation, approval traceability and AI-built internal tools</div>
+        </div>
+      </div>
+    </header>
+    <main>
+      <section>
+        <h2>The problem</h2>
+        <p>Packaging design validation is still managed by email: heavy PDFs, scattered comments, overlapping versions and an operational flow that depends too much on the person coordinating it.</p>
+        <p>When production needs to know which design was finally approved, there is no formal traceability showing who approved what, when they did it and on which exact version. The process works, but it works inside Outlook threads and in the manager’s head.</p>
+        <div class="quote">The opportunity was not just to digitize email, but to build a proprietary validation flow with formal traceability, full visibility and orderly access to the approval history.</div>
+      </section>
+      <section>
+        <h2>What has been built</h2>
+        <p>With AI support, María has built a local functional pilot of a web platform for packaging validation. The manager looks up the reference by EAN, uploads the design PDF, assigns reviewers and sets a deadline. Reviewers receive the task in their pending panel, open the design in the browser and leave comments anchored to the exact point on the PDF.</p>
+        <p>Each reviewer approves or rejects independently. If a rejection happens, a corrected version is uploaded and the tool allows comparison between iterations. When all reviewers approve, the reference automatically moves to <em>Internally validated</em>.</p>
+      </section>
+      <section>
+        <h2>Operational value</h2>
+        <div class="grid">
+          <div class="card"><span class="tag">Traceability</span><p>It records who approved, when they did it and on which exact version of the design.</p></div>
+          <div class="card"><span class="tag">Review</span><p>Comments stay anchored to the PDF itself, without email exchanges describing where the issue is.</p></div>
+          <div class="card"><span class="tag">Visibility</span><p>A traffic-light dashboard shows the real status of every reference and allows filtering by product, status or reviewer.</p></div>
+          <div class="card"><span class="tag">Scalability</span><p>Other teams can access the finally validated design and the full approval history in consultation mode.</p></div>
+        </div>
+      </section>
+      <section>
+        <h2>What this opens up</h2>
+        <ul>
+          <li>The pilot already works locally and makes it possible to validate the real flow with the teams involved.</li>
+          <li>The next step is turning the prototype into something deployable in the company environment together with Systems.</li>
+          <li>The biggest value already achieved is not only the software itself, but the precise definition of the process, user profiles and functional needs.</li>
+          <li>The same approach could be replicated in other approval flows currently trapped in email: technical sheets, commercial material or labeling.</li>
+        </ul>
+      </section>
+      <section class="highlight">
+        <strong>Collaborative conclusion:</strong> this proposal shows how AI makes it possible to move from an informal email-based process to a tailored internal tool with traceability, visibility and a real basis for scaling complex validation workflows inside Isaval.
+      </section>
+      <section>
+        <h2>Access to the full content</h2>
+        <div class="linkbox">
+          Full text of the collaborative pill:<br />
+          <a class="pdf-link" href="./colaborativa-25-full-text-en.pdf" target="_blank" rel="noopener noreferrer">Open full PDF</a>
+        </div>
+      </section>
+    </main>
+    <footer>Collaborative pill 25 · Internal Isaval document.</footer>
+  </article>
+  <script src="/assets/js/hub-interactions.js" defer></script>
+</body>
+</html>

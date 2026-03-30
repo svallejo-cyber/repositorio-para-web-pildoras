@@ -61,12 +61,13 @@ const PUBLISHED_PILLS = [
   { slug: "colaborativa-22", lang: "es", type: "collaborative", title: "De la devolución opaca al material bloqueado con trazabilidad", author: "Celia López González", authorEmail: "clopez@isaval.es", avatar: "/assets/profile/celia-lopez-360.jpg", publishedAt: "2026-03-28T10:35:00Z", urlPath: "/projects/colaborativa-22/es/" },
   { slug: "colaborativa-23", lang: "es", type: "collaborative", title: "De la burocracia SCRAP al expediente IMPLICA preparado para automatizarse", author: "Sergio Huertas", authorEmail: "shuertas@isaval.es", avatar: "/assets/profile/sergio-huertas-360.jpg", publishedAt: "2026-03-28T11:15:00Z", urlPath: "/projects/colaborativa-23/es/" },
   { slug: "colaborativa-24", lang: "es", type: "collaborative", title: "Del rango teórico al rango de aceptación real", author: "Sergio Huertas", authorEmail: "shuertas@isaval.es", avatar: "/assets/profile/sergio-huertas-360.jpg", publishedAt: "2026-03-30T10:00:00Z", urlPath: "/projects/colaborativa-24/es/" },
+  { slug: "colaborativa-25", lang: "es", type: "collaborative", title: "De los emails al proceso trazable", author: "María Vallejo", authorEmail: "mvallejo@isaval.es", avatar: "/assets/profile/maria-vallejo-360.jpg", publishedAt: "2026-03-30T22:15:00Z", urlPath: "/projects/colaborativa-25/es/" },
 ];
 const COLLABORATIVE_PILLS = PUBLISHED_PILLS.filter((item) => item.type === "collaborative");
 const DEMO_EXECUTIVE_SLUG_ORDER = [
   "pildora-5",
   "pildora-6",
-  ...Array.from({ length: 24 }, (_, idx) => `colaborativa-${idx + 1}`),
+  ...Array.from({ length: 25 }, (_, idx) => `colaborativa-${idx + 1}`),
 ];
 const DEMO_CORPORATE_SLUG_ORDER = ["pildora-1", "pildora-2", "pildora-3", "pildora-4"];
 const DEMO_EXCLUDED_SLUGS = new Set(["tenantflow"]);
@@ -2031,6 +2032,7 @@ export class HubData extends DurableObject {
       "colaborativa-22": "Gestión trazable de devoluciones y material bloqueado para reducir stock inmovilizado, ordenar destinos finales y preparar una capa predictiva sobre incidencias y retornos.",
       "colaborativa-23": "Agente OCR para reagrupar expedientes documentales del SCRAP, reducir carga administrativa y preparar la integración automática con IMPLICA y su trazabilidad operativa.",
       "colaborativa-24": "Herramienta viva de control de calidad para revisar rangos de aceptación con cinco años de histórico productivo, proponer límites realistas y reducir ajustes innecesarios en fabricación.",
+      "colaborativa-25": "Piloto local para pasar de la validación de envases por email a un flujo trazable con comentarios anclados, versiones comparables y registro formal de aprobaciones.",
     };
     return descriptions[slug] || "";
   }
