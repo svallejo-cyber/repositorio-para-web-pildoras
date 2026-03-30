@@ -28,6 +28,7 @@ const DEFAULT_INVITED_AVATARS = {
   "josemartinez@isaval.es": "/assets/profile/jose-martinez-360.jpg",
   "mlopez@isaval.es": "/assets/profile/mariangeles-lopez-360.jpg",
   "clopez@isaval.es": "/assets/profile/celia-lopez-360.jpg",
+  "pgomis@isaval.es": "/assets/profile/paco-gomis-360.jpg",
 };
 const PUBLISHED_PILLS = [
   { slug: "tenantflow", lang: "es", type: "executive", title: "TenantFlow", author: "Santiago Vallejo", authorEmail: "svallejo@isaval.es", avatar: "/assets/profile/santiago2-360.jpg", publishedAt: "2026-03-07T23:18:44Z", urlPath: "/projects/tenantflow/es/" },
@@ -62,12 +63,15 @@ const PUBLISHED_PILLS = [
   { slug: "colaborativa-23", lang: "es", type: "collaborative", title: "De la burocracia SCRAP al expediente IMPLICA preparado para automatizarse", author: "Sergio Huertas", authorEmail: "shuertas@isaval.es", avatar: "/assets/profile/sergio-huertas-360.jpg", publishedAt: "2026-03-28T11:15:00Z", urlPath: "/projects/colaborativa-23/es/" },
   { slug: "colaborativa-24", lang: "es", type: "collaborative", title: "Del rango teórico al rango de aceptación real", author: "Sergio Huertas", authorEmail: "shuertas@isaval.es", avatar: "/assets/profile/sergio-huertas-360.jpg", publishedAt: "2026-03-30T10:00:00Z", urlPath: "/projects/colaborativa-24/es/" },
   { slug: "colaborativa-25", lang: "es", type: "collaborative", title: "De los emails al proceso trazable", author: "María Vallejo", authorEmail: "mvallejo@isaval.es", avatar: "/assets/profile/maria-vallejo-360.jpg", publishedAt: "2026-03-30T22:15:00Z", urlPath: "/projects/colaborativa-25/es/" },
+  { slug: "colaborativa-26", lang: "es", type: "collaborative", title: "De perseguir el dato a gestionar la acción", author: "Francisco Gomis Bayona", authorEmail: "pgomis@isaval.es", avatar: "/assets/profile/paco-gomis-360.jpg", publishedAt: "2026-03-31T08:30:00Z", urlPath: "/projects/colaborativa-26/es/" },
+  { slug: "colaborativa-27", lang: "es", type: "collaborative", title: "Del control puntual al autocontrol distribuido", author: "Francisco Gomis Bayona", authorEmail: "pgomis@isaval.es", avatar: "/assets/profile/paco-gomis-360.jpg", publishedAt: "2026-03-31T08:35:00Z", urlPath: "/projects/colaborativa-27/es/" },
+  { slug: "colaborativa-28", lang: "es", type: "collaborative", title: "De rehacer el modelo a escalarlo", author: "Francisco Gomis Bayona", authorEmail: "pgomis@isaval.es", avatar: "/assets/profile/paco-gomis-360.jpg", publishedAt: "2026-03-31T08:40:00Z", urlPath: "/projects/colaborativa-28/es/" },
 ];
 const COLLABORATIVE_PILLS = PUBLISHED_PILLS.filter((item) => item.type === "collaborative");
 const DEMO_EXECUTIVE_SLUG_ORDER = [
   "pildora-5",
   "pildora-6",
-  ...Array.from({ length: 25 }, (_, idx) => `colaborativa-${idx + 1}`),
+  ...Array.from({ length: 28 }, (_, idx) => `colaborativa-${idx + 1}`),
 ];
 const DEMO_CORPORATE_SLUG_ORDER = ["pildora-1", "pildora-2", "pildora-3", "pildora-4"];
 const DEMO_EXCLUDED_SLUGS = new Set(["tenantflow"]);
@@ -2033,6 +2037,9 @@ export class HubData extends DurableObject {
       "colaborativa-23": "Agente OCR para reagrupar expedientes documentales del SCRAP, reducir carga administrativa y preparar la integración automática con IMPLICA y su trazabilidad operativa.",
       "colaborativa-24": "Herramienta viva de control de calidad para revisar rangos de aceptación con cinco años de histórico productivo, proponer límites realistas y reducir ajustes innecesarios en fabricación.",
       "colaborativa-25": "Piloto local para pasar de la validación de envases por email a un flujo trazable con comentarios anclados, versiones comparables y registro formal de aprobaciones.",
+      "colaborativa-26": "Centralización y automatización de alertas en tiendas mediante una tabla unificada en Power BI y distribución automática de incidencias por usuario y zona.",
+      "colaborativa-27": "Modelo recurrente de alertas sobre precios, descuentos y ventas bajo coste para distribuir el control comercial y fomentar autocontrol en la red.",
+      "colaborativa-28": "Capa lógica en Tabular Editor para consolidar ventas España-Portugal en Power BI sin rehacer 200 medidas ni duplicar operaciones internas.",
     };
     return descriptions[slug] || "";
   }

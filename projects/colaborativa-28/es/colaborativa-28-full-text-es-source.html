@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>De rehacer el modelo a escalarlo: Consolidación de ventas España–Portugal sin duplicar medidas</title>
+  <style>
+body { font-family: Arial, sans-serif; color: #1f2c3a; margin: 0; padding: 24px; line-height: 1.58; }
+h1, h2 { color: #10314d; }
+h1 { font-size: 26px; margin: 0 0 18px; }
+h2 { font-size: 18px; margin: 22px 0 10px; }
+p { margin: 0 0 12px; }
+ul { margin: 8px 0 12px 22px; }
+li { margin: 6px 0; }
+</style>
+</head>
+<body>
+  <h1>De rehacer el modelo a escalarlo: Consolidación de ventas España–Portugal sin duplicar medidas</h1>
+  <h2>Contexto</h2><p>Con la preparación de los presupuestos 2026 surgió la necesidad de analizar ventas no solo por empresa, sino también en una visión consolidada España–Portugal.</p><p>El modelo de Power BI ya trabajaba con ventas, kilos, unidades, líneas de pedido y cerca de 200 medidas derivadas usadas en informes operativos.</p><h2>Problema identificado</h2><p>El modelo permitía analizar España y Portugal por separado, pero no existía un consolidado real.</p><p>La consolidación no era trivial porque las ventas de España incluyen operaciones al cliente interno de Portugal, lo que genera duplicidades si se suman sin lógica adicional.</p><p>Modificar una a una unas 200 medidas habría exigido días o semanas y un proceso de testeo muy delicado.</p><h2>Qué se ha construido</h2><p>La solución ha sido introducir una capa adicional mediante Tabular Editor sin modificar las medidas existentes.</p><p>El usuario puede seleccionar Pinturas Isaval, Tintas Isaval o Consolidado, y la lógica elimina automáticamente la distorsión generada por las ventas internas.</p><h2>Papel de la IA</h2><p>La IA ha sido clave para encontrar un enfoque alternativo al trabajo manual, descubrir el uso de Tabular Editor en este contexto y resolver los problemas surgidos durante la implementación.</p><p>Sin este apoyo, el camino natural habría sido modificar las medidas individualmente.</p><h2>Resultado operativo y conclusión</h2><p>El consolidado ya está construido, validado y disponible para toda la organización dentro del informe ANÁLISIS VENTAS.</p><p>El valor no está en modificar más, sino en construir una lógica capaz de escalar sin necesidad de rehacer el modelo.</p>
+</body>
+</html>

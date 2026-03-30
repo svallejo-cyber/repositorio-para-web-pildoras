@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>From rebuilding the model to scaling it: Spain–Portugal sales consolidation without duplicating measures</title>
+  <style>
+body { font-family: Arial, sans-serif; color: #1f2c3a; margin: 0; padding: 24px; line-height: 1.58; }
+h1, h2 { color: #10314d; }
+h1 { font-size: 26px; margin: 0 0 18px; }
+h2 { font-size: 18px; margin: 22px 0 10px; }
+p { margin: 0 0 12px; }
+ul { margin: 8px 0 12px 22px; }
+li { margin: 6px 0; }
+</style>
+</head>
+<body>
+  <h1>From rebuilding the model to scaling it: Spain–Portugal sales consolidation without duplicating measures</h1>
+  <h2>Context</h2><p>Budget preparation for 2026 required a consolidated Spain–Portugal sales view, not only separate legal-entity analysis.</p><p>The Power BI model already contained sales, kilos, units, order lines and nearly 200 measures used across operational reports.</p><h2>Identified problem</h2><p>The model could analyze Spain and Portugal separately, but it had no reliable consolidated option.</p><p>A direct sum would create duplication because Spain includes sales to Portugal’s internal customer.</p><p>Editing around 200 measures one by one would have taken days or weeks and created major testing risk.</p><h2>What has been built</h2><p>The solution was to add an extra logic layer in Tabular Editor without touching the existing measures.</p><p>Users can now select Spain, Portugal or Consolidated, and the consolidated view excludes the internal cross-company distortion automatically.</p><h2>Role of AI</h2><p>AI helped identify an alternative to manual measure-by-measure work, introduced Tabular Editor as the right tool and helped solve implementation issues quickly.</p><p>Without that support, the natural path would have been a far slower manual rewrite.</p><h2>Operational result and conclusion</h2><p>The consolidated view is already built, validated and available in the ANÁLISIS VENTAS report.</p><p>The value lies not in changing more, but in building a model that can scale without being rebuilt.</p>
+</body>
+</html>
