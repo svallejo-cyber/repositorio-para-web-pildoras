@@ -303,6 +303,14 @@ function subtractDays(date, days) {
   return new Date(date.getTime() - days * 24 * 60 * 60 * 1000);
 }
 
+function addDays(date, days) {
+  return new Date(date.getTime() + days * 24 * 60 * 60 * 1000);
+}
+
+function dateFromDateKey(dateKey) {
+  return new Date(`${dateKey}T12:00:00Z`);
+}
+
 function escapeHtml(value) {
   return String(value || "")
     .replace(/&/g, "&amp;")
@@ -1612,10 +1620,103 @@ export class HubData extends DurableObject {
     await this.appendAccessEvent({ type, userId, email, name, path, language, at: new Date().toISOString() });
   }
 
+  async getAccessAnalyticsState() {
+    return (await this.ctx.storage.get("access-analytics-state")) || null;
+  }
+
+  async saveAccessAnalyticsState(state) {
+    await this.ctx.storage.put("access-analytics-state", state);
+  }
+
+  buildAccessAnalyticsStateFromEvents(events, users = []) {
+    const byDay = {};
+    let createdAt = null;
+    for (const event of events || []) {
+      const at = event?.at || new Date().toISOString();
+      if (!createdAt || new Date(at).getTime() < new Date(createdAt).getTime()) {
+        createdAt = at;
+      }
+      const key = getLocalDateKey(new Date(at), NOTIFICATION_TIMEZONE);
+      const entry = byDay[key] || {
+        dateKey: key,
+        count: 0,
+        loginCount: 0,
+        pageViewCount: 0,
+        pdfOpenCount: 0,
+      };
+      entry.count += 1;
+      if (event.type === "login") entry.loginCount += 1;
+      if (event.type === "page-view") entry.pageViewCount += 1;
+      if (event.type === "pdf-open") entry.pdfOpenCount += 1;
+      byDay[key] = entry;
+    }
+    for (const user of users || []) {
+      if (!user?.firstAccessAt) continue;
+      if (!createdAt || new Date(user.firstAccessAt).getTime() < new Date(createdAt).getTime()) {
+        createdAt = user.firstAccessAt;
+      }
+    }
+    const totals = Object.values(byDay).reduce((acc, day) => ({
+      eventCount: acc.eventCount + (day.count || 0),
+      loginCount: acc.loginCount + (day.loginCount || 0),
+      pageViewCount: acc.pageViewCount + (day.pageViewCount || 0),
+      pdfOpenCount: acc.pdfOpenCount + (day.pdfOpenCount || 0),
+    }), { eventCount: 0, loginCount: 0, pageViewCount: 0, pdfOpenCount: 0 });
+    return {
+      version: 1,
+      createdAt: createdAt || null,
+      updatedAt: new Date().toISOString(),
+      totals,
+      byDay,
+    };
+  }
+
+  async ensureAccessAnalyticsState() {
+    const current = await this.getAccessAnalyticsState();
+    if (current && current.version === 1 && current.byDay) {
+      return current;
+    }
+    const events = (await this.ctx.storage.get("access-events")) || [];
+    const users = await this.getInvitedUsers();
+    const rebuilt = this.buildAccessAnalyticsStateFromEvents(events, users);
+    await this.saveAccessAnalyticsState(rebuilt);
+    return rebuilt;
+  }
+
+  async recordAccessAnalyticsEvent(event) {
+    const state = (await this.ensureAccessAnalyticsState()) || this.buildAccessAnalyticsStateFromEvents([]);
+    const at = event?.at || new Date().toISOString();
+    const key = getLocalDateKey(new Date(at), NOTIFICATION_TIMEZONE);
+    const entry = state.byDay[key] || {
+      dateKey: key,
+      count: 0,
+      loginCount: 0,
+      pageViewCount: 0,
+      pdfOpenCount: 0,
+    };
+    entry.count += 1;
+    if (event.type === "login") entry.loginCount += 1;
+    if (event.type === "page-view") entry.pageViewCount += 1;
+    if (event.type === "pdf-open") entry.pdfOpenCount += 1;
+    state.byDay[key] = entry;
+    state.totals = state.totals || { eventCount: 0, loginCount: 0, pageViewCount: 0, pdfOpenCount: 0 };
+    state.totals.eventCount += 1;
+    if (event.type === "login") state.totals.loginCount += 1;
+    if (event.type === "page-view") state.totals.pageViewCount += 1;
+    if (event.type === "pdf-open") state.totals.pdfOpenCount += 1;
+    if (!state.createdAt || new Date(at).getTime() < new Date(state.createdAt).getTime()) {
+      state.createdAt = at;
+    }
+    state.updatedAt = new Date().toISOString();
+    await this.saveAccessAnalyticsState(state);
+  }
+
   async appendAccessEvent(event) {
     const events = (await this.ctx.storage.get("access-events")) || [];
-    events.unshift({ id: crypto.randomUUID(), ...event });
-    await this.ctx.storage.put("access-events", events.slice(0, 500));
+    const storedEvent = { id: crypto.randomUUID(), ...event };
+    events.unshift(storedEvent);
+    await this.ctx.storage.put("access-events", events);
+    await this.recordAccessAnalyticsEvent(storedEvent);
   }
 
   async getProjectStatusState() {
@@ -2227,6 +2328,7 @@ export class HubData extends DurableObject {
     await this.purgeExcludedAccesses(Array.from(EXCLUDED_TRACKING_EMAILS));
     const users = (await this.getInvitedUsers()).filter((user) => !isTrackingExcludedEmail(user.email));
     const events = ((await this.ctx.storage.get("access-events")) || []).filter((event) => !isTrackingExcludedEmail(event.email));
+    const analytics = await this.ensureAccessAnalyticsState();
     const classifyActivityLevel = (accessCount) => {
       const count = Number(accessCount || 0);
       if (count <= 0) return { key: "none", label: "Sin actividad", rank: 0 };
@@ -2291,20 +2393,48 @@ export class HubData extends DurableObject {
       .filter((user) => !user.hasActivity)
       .sort((a, b) => a.name.localeCompare(b.name, "es", { sensitivity: "base" }));
 
-    const eventsByDayMap = new Map();
-    const pageViewCount = events.filter((event) => event.type === "page-view").length;
-    const pdfOpenCount = events.filter((event) => event.type === "pdf-open").length;
-    const loginCount = events.filter((event) => event.type === "login").length;
-    for (let offset = 13; offset >= 0; offset -= 1) {
-      const date = subtractDays(new Date(), offset);
-      const key = getLocalDateKey(date, NOTIFICATION_TIMEZONE);
-      eventsByDayMap.set(key, { dateKey: key, label: key.slice(5), count: 0 });
+    const totalAccesses = usersWithActivity.reduce((sum, user) => sum + (user.accessCount || 0), 0);
+    const analyticsByDay = analytics?.byDay || {};
+    const pageViewCount = Number(analytics?.totals?.pageViewCount || 0);
+    const pdfOpenCount = Number(analytics?.totals?.pdfOpenCount || 0);
+    const loginCount = Math.max(Number(analytics?.totals?.loginCount || 0), totalAccesses);
+
+    const activationByDayMap = new Map();
+    let historyStartKey = null;
+    for (const user of usersWithActivity) {
+      if (!user.firstAccessAt) continue;
+      const key = getLocalDateKey(new Date(user.firstAccessAt), NOTIFICATION_TIMEZONE);
+      activationByDayMap.set(key, (activationByDayMap.get(key) || 0) + 1);
+      if (!historyStartKey || key < historyStartKey) historyStartKey = key;
     }
-    for (const event of events) {
-      const key = getLocalDateKey(new Date(event.at || Date.now()), NOTIFICATION_TIMEZONE);
-      if (eventsByDayMap.has(key)) {
-        eventsByDayMap.get(key).count += 1;
-      }
+    for (const key of Object.keys(analyticsByDay)) {
+      if (!historyStartKey || key < historyStartKey) historyStartKey = key;
+    }
+    const todayKey = getLocalDateKey(new Date(), NOTIFICATION_TIMEZONE);
+    if (!historyStartKey) historyStartKey = todayKey;
+
+    const activityByDay = [];
+    const activationByDay = [];
+    let cumulativeActivated = 0;
+    for (let cursor = dateFromDateKey(historyStartKey); getLocalDateKey(cursor, NOTIFICATION_TIMEZONE) <= todayKey; cursor = addDays(cursor, 1)) {
+      const key = getLocalDateKey(cursor, NOTIFICATION_TIMEZONE);
+      const day = analyticsByDay[key] || { count: 0, loginCount: 0, pageViewCount: 0, pdfOpenCount: 0 };
+      const activated = activationByDayMap.get(key) || 0;
+      cumulativeActivated += activated;
+      activityByDay.push({
+        dateKey: key,
+        label: key.slice(5),
+        count: day.count || 0,
+        loginCount: day.loginCount || 0,
+        pageViewCount: day.pageViewCount || 0,
+        pdfOpenCount: day.pdfOpenCount || 0,
+      });
+      activationByDay.push({
+        dateKey: key,
+        label: key.slice(5),
+        count: activated,
+        cumulativeCount: cumulativeActivated,
+      });
     }
 
     return {
@@ -2313,17 +2443,19 @@ export class HubData extends DurableObject {
         activeUsers: usersWithActivity.filter((user) => user.active).length,
         usersWithAccess,
         usersWithoutAccess,
-        totalAccesses: usersWithActivity.reduce((sum, user) => sum + (user.accessCount || 0), 0),
+        totalAccesses,
         adoptionRate: totalUsers ? Number(((usersWithAccess / totalUsers) * 100).toFixed(1)) : 0,
         inactivityRate: totalUsers ? Number(((usersWithoutAccess / totalUsers) * 100).toFixed(1)) : 0,
         pageViewCount,
         pdfOpenCount,
         loginCount,
+        historyStartAt: historyStartKey ? `${historyStartKey}T00:00:00Z` : null,
       },
       accessBuckets,
       activityLevels,
       inactiveUsers,
-      activityByDay: Array.from(eventsByDayMap.values()),
+      activityByDay,
+      activationByDay,
       users: sorted,
       recentEvents: events.slice(0, 80),
     };
@@ -2351,6 +2483,7 @@ export class HubData extends DurableObject {
     const events = (await this.ctx.storage.get("access-events")) || [];
     const filteredEvents = events.filter((event) => !excluded.has(String(event.email || "").toLowerCase()));
     await this.ctx.storage.put("access-events", filteredEvents);
+    await this.saveAccessAnalyticsState(this.buildAccessAnalyticsStateFromEvents(filteredEvents, users));
 
     return {
       resetUsers,
