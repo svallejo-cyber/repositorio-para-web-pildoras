@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="es"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>Píldora colaborativa 30 · De la factura retenida al circuito trazable de resolución</title><link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin /><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Lora:wght@600;700&display=swap" rel="stylesheet" /><style>
+:root { --bg: #f3f6f9; --panel: #ffffff; --ink: #1f2c3a; --muted: #5c6b79; --accent: #0f5f94; --accent-dark: #10314d; --line: #d8e0e8; --soft: #edf5fb; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: "IBM Plex Sans", Arial, sans-serif; color: var(--ink); line-height: 1.56; background: radial-gradient(circle at 8% 5%, #d9e8f4 0, transparent 22%), radial-gradient(circle at 90% 0%, #e9eef3 0, transparent 24%), var(--bg); }
+.sheet { max-width: 980px; margin: 36px auto; border: 1px solid var(--line); border-radius: 16px; background: var(--panel); overflow: hidden; box-shadow: 0 14px 36px rgba(18, 37, 54, 0.08); }
+header { padding: 22px 38px 30px; color: #fff; background: linear-gradient(110deg, var(--accent-dark) 0%, var(--accent) 56%, #1577af 100%); }
+.topnav { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+.navbtn { text-decoration: none; background: rgba(255, 255, 255, 0.15); color: #fff; border: 1px solid rgba(255, 255, 255, 0.4); padding: 7px 10px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; }
+.hero { display: grid; grid-template-columns: 120px 1fr; gap: 18px; align-items: center; margin-top: 8px; }
+.avatar { width: 120px; height: 120px; border-radius: 22px; overflow: hidden; border: 3px solid rgba(255,255,255,.25); box-shadow: 0 10px 24px rgba(0,0,0,.15); }
+.avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.kicker { font-size: 0.76rem; letter-spacing: 0.09em; text-transform: uppercase; opacity: 0.92; font-weight: 600; }
+h1 { margin: 8px 0 10px; font-family: "Lora", Georgia, serif; font-size: clamp(1.85rem, 2.8vw, 2.3rem); line-height: 1.2; }
+.meta { font-size: 0.95rem; opacity: 0.94; }
+main { padding: 30px 38px 34px; }
+section + section { margin-top: 24px; }
+h2 { margin: 0 0 10px; font-size: 1.12rem; color: var(--accent); }
+p { margin: 0 0 10px; }
+.quote { border-left: 4px solid #95c1de; background: var(--soft); color: #24445c; padding: 12px 14px; border-radius: 0 10px 10px 0; font-weight: 500; margin-top: 10px; }
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 10px; }
+.card { border: 1px solid var(--line); border-radius: 11px; padding: 12px; background: #fbfdff; }
+.highlight { border: 1px solid #cddff0; background: #f3f8fd; border-radius: 11px; padding: 14px; margin-top: 10px; }
+.highlight strong { color: var(--accent); }
+.linkbox { border: 1px solid #cddff0; background: #f3f8fd; border-radius: 10px; padding: 12px; word-break: break-word; }
+.pdf-link { display: inline-block; margin-top: 10px; text-decoration: none; background: var(--accent); color: #fff; border: 1px solid #0f5a8c; border-radius: 8px; padding: 8px 12px; font-size: 0.9rem; font-weight: 600; }
+.linkbox a.pdf-link, .linkbox a.pdf-link:visited, .linkbox a.pdf-link:hover, .linkbox a.pdf-link:focus { color: #fff; }
+footer { border-top: 1px solid var(--line); color: var(--muted); font-size: 0.87rem; padding: 14px 38px 22px; background: #fafcfe; }
+@media (max-width: 760px) { header, main, footer { padding-left: 18px; padding-right: 18px; } .hero { grid-template-columns: 1fr; } .grid { grid-template-columns: 1fr; } }
+</style></head>
+<body><article class="sheet"><header><div class="topnav"><a class="navbtn" href="/projects/pildoras-colaborativas/es/">Volver a colaborativas</a><a class="navbtn" href="/">Ir a la principal</a><a class="navbtn" href="../en/">Read in English</a></div><div class="hero"><div class="avatar" aria-label="Ruth Murgui López"><img src="/assets/profile/ruth-murgui-360.jpg" alt="Ruth Murgui López" width="120" height="120" loading="eager" decoding="async" /></div><div><div class="kicker">Píldora colaborativa · Equipo Isaval</div><h1>De la factura retenida al circuito trazable de resolución<br />Gestión estructurada de incidencias con proveedor para reducir bloqueos, retrasos y revisión manual en Finanzas</h1><div class="meta">Ruth Murgui López · Trigésima aportación colaborativa del hub sobre Finanzas Proveedores, incidencias de factura y trazabilidad operativa</div></div></div></header><main>
+<section><h2>El problema</h2><p>En Finanzas Proveedores, una parte relevante del tiempo se va en revisar facturas que no pueden contabilizarse por incidencias en entradas de almacén, diferencias de precio, pedidos mal grabados o ausencia de recepción.</p><p>La operativa actual obliga a puntear línea a línea cada factura, detectar el error, capturar pantalla, reenviar la incidencia al área correspondiente y volver después, una y otra vez, para comprobar si alguien la ha resuelto.</p><div class="quote">La factura no se contabiliza, no entra en previsiones, retrasa pagarés y el seguimiento queda disperso entre pantallazos, correos y esperas.</div></section>
+<section><h2>Qué propone la píldora</h2><p>Ruth plantea convertir esa gestión manual y repetitiva en un circuito estructurado de incidencias, donde cada factura bloqueada deje de depender del repaso diario de una carpeta personal.</p><p>La idea es centralizar en un único flujo la detección del problema, su clasificación, el envío al responsable correcto y el seguimiento hasta cierre, con trazabilidad real del estado de cada incidencia.</p></section>
+<section><h2>Qué cambiaría en la operativa</h2><div class="grid"><div class="card"><strong>Menos revisión ciega</strong><p>La incidencia quedaría registrada y asignada, sin depender de revisar manualmente la misma factura durante días o semanas.</p></div><div class="card"><strong>Más previsión financiera</strong><p>Reducir facturas retenidas mejora el cierre, la previsión de cartera y la preparación de pagarés.</p></div><div class="card"><strong>Responsabilidad visible</strong><p>Cada error iría al área que debe resolverlo, con estado y trazabilidad, no solo por correo o captura.</p></div><div class="card"><strong>Lectura de causas</strong><p>El histórico permitiría ver qué casuísticas se repiten más: entradas mal hechas, precios erróneos, recepciones pendientes u otros fallos recurrentes.</p></div></div></section>
+<section><h2>Por qué importa</h2><p>La propuesta no busca solo ahorrar tiempo administrativo. Busca sacar de la invisibilidad un cuello de botella que hoy impacta en contabilidad, previsiones de pagos y coordinación interdepartamental.</p><p>Si la incidencia se convierte en dato estructurado, la IA y la automatización podrían después priorizar casos, agrupar patrones y acelerar la resolución.</p></section>
+<section><h2>Acceso al contenido completo</h2><div class="linkbox">Anexo completo de la píldora:<br /><a class="pdf-link" href="./colaborativa-30-full-text-es.pdf" target="_blank" rel="noopener noreferrer">Ver texto completo en PDF</a></div></section>
+<section class="highlight"><strong>Conclusión colaborativa:</strong> esta propuesta traslada la gestión de facturas bloqueadas desde una carpeta personal y reactiva hacia un circuito visible, trazable y escalable de resolución interdepartamental.</section>
+</main><footer>Píldora colaborativa 30 · Documento interno Isaval.</footer></article><script src="/assets/js/hub-interactions.js" defer></script></body></html>
