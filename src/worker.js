@@ -66,12 +66,13 @@ const PUBLISHED_PILLS = [
   { slug: "colaborativa-26", lang: "es", type: "collaborative", title: "De perseguir el dato a gestionar la acción", author: "Francisco Gomis Bayona", authorEmail: "pgomis@isaval.es", avatar: "/assets/profile/paco-gomis-360.jpg", publishedAt: "2026-03-31T08:30:00Z", urlPath: "/projects/colaborativa-26/es/" },
   { slug: "colaborativa-27", lang: "es", type: "collaborative", title: "Del control puntual al autocontrol distribuido", author: "Francisco Gomis Bayona", authorEmail: "pgomis@isaval.es", avatar: "/assets/profile/paco-gomis-360.jpg", publishedAt: "2026-03-31T08:35:00Z", urlPath: "/projects/colaborativa-27/es/" },
   { slug: "colaborativa-28", lang: "es", type: "collaborative", title: "De rehacer el modelo a escalarlo", author: "Francisco Gomis Bayona", authorEmail: "pgomis@isaval.es", avatar: "/assets/profile/paco-gomis-360.jpg", publishedAt: "2026-03-31T08:40:00Z", urlPath: "/projects/colaborativa-28/es/" },
+  { slug: "colaborativa-29", lang: "es", type: "collaborative", title: "Del control diario al criterio preventivo del color", author: "Pedro José Expósito Navarro", authorEmail: "pexposito@isaval.es", avatar: "/assets/profile/pedro-exposito-360.jpg", publishedAt: "2026-03-31T11:30:00Z", urlPath: "/projects/colaborativa-29/es/" },
 ];
 const COLLABORATIVE_PILLS = PUBLISHED_PILLS.filter((item) => item.type === "collaborative");
 const DEMO_EXECUTIVE_SLUG_ORDER = [
   "pildora-5",
   "pildora-6",
-  ...Array.from({ length: 28 }, (_, idx) => `colaborativa-${idx + 1}`),
+  ...Array.from({ length: 29 }, (_, idx) => `colaborativa-${idx + 1}`),
 ];
 const DEMO_CORPORATE_SLUG_ORDER = ["pildora-1", "pildora-2", "pildora-3", "pildora-4"];
 const DEMO_EXCLUDED_SLUGS = new Set(["tenantflow"]);
@@ -2141,6 +2142,7 @@ export class HubData extends DurableObject {
       "colaborativa-26": "Centralización y automatización de alertas en tiendas mediante una tabla unificada en Power BI y distribución automática de incidencias por usuario y zona.",
       "colaborativa-27": "Modelo recurrente de alertas sobre precios, descuentos y ventas bajo coste para distribuir el control comercial y fomentar autocontrol en la red.",
       "colaborativa-28": "Capa lógica en Tabular Editor para consolidar ventas España-Portugal en Power BI sin rehacer 200 medidas ni duplicar operaciones internas.",
+      "colaborativa-29": "Histórico de controles y calibraciones Dromont para convertir una Excel operativa en criterio preventivo, alertas y conocimiento técnico sobre colorantes y válvulas.",
     };
     return descriptions[slug] || "";
   }
