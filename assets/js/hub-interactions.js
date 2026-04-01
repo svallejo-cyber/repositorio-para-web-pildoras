@@ -48,8 +48,26 @@
     },
   }[lang];
 
+  const header = document.querySelector('article.sheet > header');
+  if (header && !header.querySelector('[data-hub-brand-inline]')) {
+    const topnav = header.querySelector('.topnav');
+    const brand = document.createElement('div');
+    brand.className = 'hub-brand-inline';
+    brand.setAttribute('data-hub-brand-inline', 'true');
+    brand.innerHTML = '<img src="/assets/brand/isaval-global-logo.png" alt="Isaval Global" />';
+    if (topnav && topnav.nextSibling) {
+      header.insertBefore(brand, topnav.nextSibling);
+    } else if (topnav) {
+      header.appendChild(brand);
+    } else {
+      header.insertBefore(brand, header.firstChild);
+    }
+  }
+
   const style = document.createElement('style');
   style.textContent = `
+    .hub-brand-inline{margin:0 0 12px}
+    .hub-brand-inline img{display:block;width:min(220px,100%);height:auto;opacity:.96}
     .hub-panel{margin-top:26px;border:1px solid #d8e0e8;border-radius:12px;background:#fbfdff;padding:16px}
     .hub-panel h2{margin:0 0 12px;color:#0f5f94;font-size:1.08rem}
     .hub-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:16px}
