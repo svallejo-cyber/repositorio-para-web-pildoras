@@ -69,12 +69,13 @@ const PUBLISHED_PILLS = [
   { slug: "colaborativa-29", lang: "es", type: "collaborative", title: "Del control diario al criterio preventivo del color", author: "Pedro José Expósito Navarro", authorEmail: "pexposito@isaval.es", avatar: "/assets/profile/pedro-exposito-360.jpg", publishedAt: "2026-03-31T11:30:00Z", urlPath: "/projects/colaborativa-29/es/" },
   { slug: "colaborativa-30", lang: "es", type: "collaborative", title: "De la factura retenida al circuito trazable de resolución", author: "Ruth Murgui López", authorEmail: "rmurgui@isaval.es", avatar: "/assets/profile/ruth-murgui-360.jpg", publishedAt: "2026-03-31T13:10:00Z", urlPath: "/projects/colaborativa-30/es/" },
   { slug: "colaborativa-31", lang: "es", type: "collaborative", title: "De la transcripción diaria al calendario vivo de personal", author: "Raquel Esparza", authorEmail: "resparza@isaval.es", avatar: "/assets/profile/raquel-esparza-360.jpg", publishedAt: "2026-03-31T18:30:00Z", urlPath: "/projects/colaborativa-31/es/" },
+  { slug: "colaborativa-32", lang: "es", type: "collaborative", title: "De la carpeta dispersa al proyecto Rhonatherm compartido", author: "José Manuel Segundo Santiago", authorEmail: "jmsegundo@saterhonatherm.com", avatar: "/assets/profile/jose-manuel-segundo-360.jpg", publishedAt: "2026-04-01T17:00:00Z", urlPath: "/projects/colaborativa-32/es/" },
 ];
 const COLLABORATIVE_PILLS = PUBLISHED_PILLS.filter((item) => item.type === "collaborative");
 const DEMO_EXECUTIVE_SLUG_ORDER = [
   "pildora-5",
   "pildora-6",
-  ...Array.from({ length: 31 }, (_, idx) => `colaborativa-${idx + 1}`),
+  ...Array.from({ length: 32 }, (_, idx) => `colaborativa-${idx + 1}`),
 ];
 const DEMO_CORPORATE_SLUG_ORDER = ["pildora-1", "pildora-2", "pildora-3", "pildora-4"];
 const DEMO_EXCLUDED_SLUGS = new Set(["tenantflow"]);
@@ -2147,6 +2148,7 @@ export class HubData extends DurableObject {
       "colaborativa-29": "Histórico de controles y calibraciones Dromont para convertir una Excel operativa en criterio preventivo, alertas y conocimiento técnico sobre colorantes y válvulas.",
       "colaborativa-30": "Circuito trazable de incidencias con proveedor para ordenar facturas bloqueadas, asignar resolución y reducir retrasos en contabilización y previsión financiera.",
       "colaborativa-31": "Calendario vivo de personal para conectar solicitudes de Sebastian, cobertura por centro y bolsa de horas sin transcripción manual y con mejor trazabilidad operativa.",
+      "colaborativa-32": "Registro compartido de proyectos Rhonatherm con codificación única y carpetas en OneDrive para convertir documentación dispersa en una base explotable con IA.",
     };
     return descriptions[slug] || "";
   }
