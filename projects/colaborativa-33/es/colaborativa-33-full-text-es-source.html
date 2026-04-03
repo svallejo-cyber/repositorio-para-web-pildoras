@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Colaborativa 33 · Texto completo</title>
+  <style>
+    body { font-family: Arial, sans-serif; color: #1f2c3a; margin: 0; padding: 24px; line-height: 1.58; }
+    h1, h2 { color: #10314d; }
+    h1 { font-size: 26px; margin: 0 0 18px; }
+    h2 { font-size: 18px; margin: 22px 0 10px; }
+    p { margin: 0 0 12px; }
+    ul { margin: 8px 0 12px 22px; }
+    li { margin: 6px 0; }
+    .quote { background:#edf5fb; border-left:4px solid #95c1de; padding:12px 14px; border-radius:0 10px 10px 0; font-weight:700; color:#24445c; margin:12px 0; }
+    .image-block { margin: 14px 0 18px; text-align: center; }
+    .image-block img { display:block; width:470px; max-width:100%; height:auto; margin:0 auto; border:1px solid #d8e0e8; border-radius:8px; }
+    .caption { font-size:12px; color:#5c6b79; margin-top:6px; }
+    .box { background:#f3f8fd; border:1px solid #cddff0; border-radius:10px; padding:14px; margin:14px 0; }
+    .link { font-size:13px; color:#0f5f94; }
+  </style>
+</head>
+<body>
+  <h1>Calculadora interna de huella de carbono para Isaval</h1>
+  <p><strong>Objetivo:</strong> sustituir un cálculo anual externalizado a consultora por una aplicación interna capaz de calcular Alcances 1, 2 y 3, generar un informe técnico y preparar el terreno para automatizar el proceso con datos internos.</p>
+  <div class="quote">El proyecto nace por tres motivos claros: ahorrar un coste recurrente de consultoría, reducir tiempo administrativo interno y ganar autonomía sobre una obligación legal y de sostenibilidad.</div>
+
+  <h2>Qué se ha construido</h2>
+  <p>La aplicación se ha confeccionado mediante el estudio de las reglas del MITECO para los Alcances 1 y 2, y apoyándose en los criterios históricos presentes en los informes de huella emitidos hasta ahora para Alcance 3.</p>
+  <p>El sistema permite introducir manualmente consumos, ejecutar el cálculo de emisiones y generar un informe final similar al entregado por una consultora externa. La intención posterior es conectarlo con ERP y Docuware para llevar el cálculo hacia una lógica más automática y continua.</p>
+
+  <h2>Qué confirma la bitácora</h2>
+  <ul>
+    <li>El backend metodológico cubre Alcances 1, 2 y 3 con validaciones y motor de cálculo ya implementados.</li>
+    <li>La aplicación ya genera PDF corporativo con metodología, resultados, trazabilidad y anexos.</li>
+    <li>Se han cerrado bloques técnicos como OCR, dual reporting de Scope 2 y conectores base ETL.</li>
+    <li>La validación más reciente refleja diferencias no superiores al 0,001% frente a informes ya entregados por consultoras.</li>
+  </ul>
+
+  <h2>Por qué es relevante</h2>
+  <ul>
+    <li>Reduce gasto recurrente anual de 5.000-6.000 euros.</li>
+    <li>Reduce tiempo administrativo para reunir y procesar datos.</li>
+    <li>Internaliza una capacidad sensible de cumplimiento y sostenibilidad.</li>
+    <li>Prepara una futura lectura de emisiones mucho más cercana al tiempo real.</li>
+  </ul>
+
+  <h2>Capturas del sistema</h2>
+  <div class="image-block"><img src="./media/image001.jpg" alt="Pantalla principal de la calculadora de huella de carbono" /><div class="caption">Vista de captura por criterios y centro de control del cálculo por Alcances 1, 2 y 3.</div></div>
+  <div class="image-block"><img src="./media/image002.jpg" alt="Pantalla de captura de Alcance 1" /><div class="caption">Captura manual de consumos y parámetros para Alcance 1.</div></div>
+  <div class="image-block"><img src="./media/image003.jpg" alt="Pantalla de captura de Alcance 2" /><div class="caption">Captura de datos de electricidad y criterios metodológicos para Alcance 2.</div></div>
+  <div class="image-block"><img src="./media/image004.jpg" alt="Pantalla de captura de Alcance 3" /><div class="caption">Captura por subactividad y unidad de actividad para Alcance 3.</div></div>
+  <div class="image-block"><img src="./media/image005.jpg" alt="Pantalla de resultados y generación de informe" /><div class="caption">Resultados consolidados del cálculo y generación del informe PDF final desde la aplicación.</div></div>
+
+  <h2>Informe generado</h2>
+  <p>La aplicación no se queda en el cálculo. También genera un informe técnico propio con portada, índice, resultados, metodología, trazabilidad y anexos, en un formato ya muy próximo al entregable que antes hacía la consultora.</p>
+  <div class="box">
+    <strong>Informe de ejemplo adjunto:</strong><br />
+    <span class="link">media/informe-huella-organizacion-2026.pdf</span>
+  </div>
+
+  <h2>Conclusión</h2>
+  <p>La propuesta convierte una obligación externa y periódica en una capacidad interna, precisa y escalable. Su valor está en el ahorro, en la agilidad y en la autonomía que gana la compañía sobre un proceso cada vez más relevante para regulación, sostenibilidad y reputación.</p>
+</body>
+</html>
