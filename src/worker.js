@@ -502,6 +502,17 @@ window.__DEMO_COLLABORATIVE_PODIUM__=${serializeForInlineScript(podiumData)};
     backdrop-filter: blur(8px);
     font-family: Arial, sans-serif;
   }
+  .demo-project-brand {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 6px;
+  }
+  .demo-project-brand img {
+    height: 26px;
+    width: auto;
+    display: block;
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,.14));
+  }
   .demo-project-nav a {
     text-decoration: none;
     color: #fff;
@@ -550,11 +561,16 @@ window.__DEMO_COLLABORATIVE_PODIUM__=${serializeForInlineScript(podiumData)};
   }
 </style>
 <div class="demo-project-nav">
+  <a class="demo-project-brand" href="/demo/" aria-label="Volver a la portada DEMO">
+    <img src="/assets/brand/isaval-global-logo.png" alt="Isaval" />
+  </a>
   <a href="/demo/">Inicio DEMO</a>
   <a href="/demo/pildoras-corporativas/">Corporativas</a>
   <a href="/demo/pildoras-ejecutivas/">Ejecutivas</a>
   <a href="/demo/pildoras-express/">Express</a>
   <a href="/demo/radar/">Radar</a>
+  <a href="/demo/academy-ai/">Academy AI</a>
+  <a href="/demo/eventos-ai-isaval/">Eventos AI Isaval</a>
   <a href="/demo/termometro-ai/">Termómetro AI</a>
   <a href="/demo/actividad-hub/">Actividad Hub</a>
 </div>
