@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Collaborative pill 34 · From isolated data to a useful reading of people behavior</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Lora:wght@600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root { --bg: #f4f8f5; --panel: #ffffff; --ink: #1f2c3a; --muted: #5c6b79; --accent: #1f7a5a; --accent-dark: #18493b; --line: #d8e0e8; --soft: #edf7f2; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "IBM Plex Sans", sans-serif; color: var(--ink); line-height: 1.56; background: radial-gradient(circle at 8% 5%, #d7ebdf 0, transparent 22%), radial-gradient(circle at 90% 0%, #e7f1eb 0, transparent 24%), var(--bg); }
+    .sheet { max-width: 980px; margin: 36px auto; border: 1px solid var(--line); border-radius: 16px; background: var(--panel); overflow: hidden; box-shadow: 0 14px 36px rgba(18, 37, 54, 0.08); }
+    header { padding: 22px 38px 30px; color: #fff; background: linear-gradient(110deg, var(--accent-dark) 0%, var(--accent) 56%, #2a9a73 100%); }
+    .topnav { display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
+    .navbtn { text-decoration:none; background: rgba(255,255,255,0.15); color:#fff; border:1px solid rgba(255,255,255,0.4); padding:7px 10px; border-radius:8px; font-size:.85rem; font-weight:600; }
+    .hero { display:grid; grid-template-columns:120px 1fr; gap:18px; align-items:center; margin-top:8px; }
+    .avatar { width:120px; height:120px; border-radius:22px; overflow:hidden; border:3px solid rgba(255,255,255,.25); box-shadow:0 10px 24px rgba(0,0,0,.15); background:linear-gradient(135deg, rgba(255,255,255,.28), rgba(255,255,255,.08)); }
+    .avatar img { width:100%; height:100%; object-fit:cover; object-position:center 18%; display:block; }
+    .kicker { font-size:.76rem; letter-spacing:.09em; text-transform:uppercase; opacity:.92; font-weight:600; }
+    h1 { margin:8px 0 10px; font-family:"Lora", serif; font-size:clamp(1.85rem,2.8vw,2.3rem); line-height:1.2; }
+    .meta { font-size:.95rem; opacity:.94; }
+    main { padding:30px 38px 34px; }
+    section + section { margin-top:24px; }
+    h2 { margin:0 0 10px; font-size:1.12rem; color:var(--accent); }
+    p { margin:0 0 10px; }
+    .quote { border-left:4px solid #8cc5ad; background:var(--soft); color:#1f5643; padding:12px 14px; border-radius:0 10px 10px 0; font-weight:500; margin-top:10px; }
+    .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-top:10px; }
+    .card { border:1px solid var(--line); border-radius:11px; padding:12px; background:#fbfdfc; }
+    .tag { display:inline-block; text-transform:uppercase; letter-spacing:.07em; font-size:.74rem; color:#245a47; font-weight:700; margin-bottom:6px; }
+    ul { margin:8px 0 0; padding-left:18px; }
+    li { margin:6px 0; }
+    .highlight { border:1px solid #d2e6db; background:#f2faf6; border-radius:11px; padding:14px; margin-top:10px; }
+    .highlight strong { color:var(--accent); }
+    .linkbox { border:1px solid #d2e6db; background:#f2faf6; border-radius:10px; padding:12px; word-break:break-word; }
+    .pdf-link { display:inline-block; margin-top:10px; text-decoration:none; background:var(--accent); color:#fff; border:1px solid #196549; border-radius:8px; padding:8px 12px; font-size:.9rem; font-weight:600; }
+    .linkbox a.pdf-link, .linkbox a.pdf-link:visited, .linkbox a.pdf-link:hover, .linkbox a.pdf-link:focus { color:#fff; }
+    footer { border-top:1px solid var(--line); color:var(--muted); font-size:.87rem; padding:14px 38px 22px; background:#fafcfe; }
+    @media (max-width:760px) { header, main, footer { padding-left:18px; padding-right:18px; } .hero { grid-template-columns:1fr; } .grid { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <article class="sheet">
+    <header>
+      <div class="topnav">
+        <a class="navbtn" href="/projects/pildoras-colaborativas/en/">Back to collaborative pills</a>
+        <a class="navbtn" href="/en/">Go to main hub</a>
+        <a class="navbtn" href="../es/">Leer en español</a>
+      </div>
+      <div class="hero">
+        <div class="avatar" aria-label="Laura Mestre"><img src="/assets/profile/laura-mestre-360.jpg" alt="Laura Mestre" width="120" height="120" loading="eager" decoding="async" /></div>
+        <div>
+          <div class="kicker">Collaborative pill · Isaval team</div>
+          <h1>From isolated data to a useful reading of people behavior</h1>
+          <div class="meta">Laura Mestre · Thirty-fourth collaborative contribution to the hub on integrated people-data reading so HR can move from scattered records to useful management insight.</div>
+        </div>
+      </div>
+    </header>
+    <main>
+      <section>
+        <h2>The problem</h2>
+        <p>The company already has relevant information about people: absences, clocking incidents, training, targets, productivity and compensation context. The problem is that those data points live in different systems and are read separately.</p>
+        <p>That makes it possible to know who is absent more often, who trains more or who has variable pay. But on their own those signals do not explain actual behavior or support better management decisions.</p>
+        <div class="quote">The opportunity is not to collect more data. It is to organize the data that already exists and read it together to build a more useful management view.</div>
+      </section>
+      <section>
+        <h2>How the reading is structured</h2>
+        <div class="grid">
+          <div class="card"><span class="tag">Block 01</span><p><strong>Presence and absence pattern</strong><br />Common illness, accidents, other leave and general clocking behavior.</p></div>
+          <div class="card"><span class="tag">Block 02</span><p><strong>Training and development attitude</strong><br />Training volume and recurrence as a signal of learning interest.</p></div>
+          <div class="card"><span class="tag">Block 03</span><p><strong>Results and productivity</strong><br />Targets, variable compensation and productivity wherever measurement exists.</p></div>
+          <div class="card"><span class="tag">Block 04</span><p><strong>Compensation positioning</strong><br />Salary level and weight of variable pay to give context around role demands and consistency.</p></div>
+        </div>
+      </section>
+      <section>
+        <h2>What it enables</h2>
+        <p>By connecting these four blocks, HR stops seeing isolated data and starts identifying behavior patterns. The reading can be simplified around two axes:</p>
+        <ul>
+          <li><strong>Behavior:</strong> presence, clocking and training.</li>
+          <li><strong>Contribution:</strong> results, productivity and role context.</li>
+        </ul>
+        <p>That creates a useful matrix to distinguish solid profiles, profiles with development margin, high-impact cases with signs of misalignment and profiles requiring closer follow-up.</p>
+      </section>
+      <section>
+        <h2>From data to action</h2>
+        <p>The value appears when the reading is delivered to managers in a simple way:</p>
+        <ul>
+          <li>clear view by person or team</li>
+          <li>pattern detection</li>
+          <li>action focus: maintain, develop, review or support</li>
+        </ul>
+        <p>The point is not to analyze more. The point is to decide better.</p>
+      </section>
+      <section>
+        <h2>Why it fits the Hub</h2>
+        <p>This proposal does not need a spectacular AI layer to be valuable. First it organizes a real management need. Then it prepares the base for smarter comparative and actionable readings for HR and managers.</p>
+      </section>
+      <section class="highlight">
+        <strong>Collaborative conclusion:</strong> Laura proposes moving from isolated people data to an integrated reading of behavior and contribution, so HR can provide useful management insight instead of fragmented administrative reporting.
+      </section>
+      <section>
+        <h2>Access to full content</h2>
+        <div class="linkbox">
+          Full collaborative pill text:<br />
+          <a class="pdf-link" href="./colaborativa-34-full-text-en.pdf" target="_blank" rel="noopener noreferrer">Open full PDF</a>
+        </div>
+      </section>
+    </main>
+    <footer>Collaborative pill 34 · Internal Isaval document.</footer>
+  </article>
+  <script src="/assets/js/hub-interactions.js" defer></script>
+</body>
+</html>
