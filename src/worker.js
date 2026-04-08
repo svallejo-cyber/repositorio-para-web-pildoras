@@ -74,12 +74,13 @@ const PUBLISHED_PILLS = [
   { slug: "colaborativa-34", lang: "es", type: "collaborative", title: "De los datos aislados a una lectura útil del comportamiento de las personas", author: "Laura Mestre", authorEmail: "lmestre@isaval.es", avatar: "/assets/profile/laura-mestre-360.jpg", publishedAt: "2026-04-07T11:30:00Z", urlPath: "/projects/colaborativa-34/es/" },
   { slug: "colaborativa-35", lang: "es", type: "collaborative", title: "De la conciliación manual en Excel a la automatización en un clic", author: "Lenin Cabrera", authorEmail: "lcabrera@isaval.pe", avatar: "/assets/profile/lenin-cabrera-360.jpg", publishedAt: "2026-04-08T10:00:00Z", urlPath: "/projects/colaborativa-35/es/" },
   { slug: "colaborativa-36", lang: "es", type: "collaborative", title: "Control de mantenimiento de equipos tintométricos: de formatos manuales a gestión estructurada", author: "Lenin Cabrera", authorEmail: "lcabrera@isaval.pe", avatar: "/assets/profile/lenin-cabrera-360.jpg", publishedAt: "2026-04-08T10:10:00Z", urlPath: "/projects/colaborativa-36/es/" },
+  { slug: "colaborativa-37", lang: "es", type: "collaborative", title: "De la vigilancia dispersa al agente de innovación con criterio de comité", author: "Sergio Huertas", authorEmail: "shuertas@isaval.es", avatar: "/assets/profile/sergio-huertas-360.jpg", publishedAt: "2026-04-09T10:20:00Z", urlPath: "/projects/colaborativa-37/es/" },
 ];
 const COLLABORATIVE_PILLS = PUBLISHED_PILLS.filter((item) => item.type === "collaborative");
 const DEMO_EXECUTIVE_SLUG_ORDER = [
   "pildora-5",
   "pildora-6",
-  ...Array.from({ length: 36 }, (_, idx) => `colaborativa-${idx + 1}`),
+  ...Array.from({ length: 37 }, (_, idx) => `colaborativa-${idx + 1}`),
 ];
 const DEMO_CORPORATE_SLUG_ORDER = ["pildora-1", "pildora-2", "pildora-3", "pildora-4"];
 const DEMO_EXCLUDED_SLUGS = new Set(["tenantflow"]);
@@ -2182,6 +2183,7 @@ export class HubData extends DurableObject {
       "colaborativa-34": "Lectura integrada de presencia, formación, resultados y retribución para que RRHH y managers identifiquen patrones de comportamiento y decidan mejor.",
       "colaborativa-35": "Automatización de la conciliación bancaria para cruzar ERP y banco en segundos, reducir el trabajo manual y devolver trazabilidad al control financiero.",
       "colaborativa-36": "Sistema estructurado de mantenimiento tintométrico por frecuencias para pasar de formatos manuales aislados a una gestión trazable y preparada para digitalizarse.",
+      "colaborativa-37": "Agente de innovación on-prem para convertir vigilancia dispersa y actas de comité en oportunidades priorizadas, dossiers votables y aprendizaje real sobre decisiones.",
     };
     return descriptions[slug] || "";
   }
