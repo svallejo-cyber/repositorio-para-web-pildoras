@@ -256,6 +256,11 @@ function isValidEmail(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
 
+function isHtmlResponse(response) {
+  const contentType = String(response.headers.get("content-type") || "").toLowerCase();
+  return contentType.includes("text/html");
+}
+
 function getHubBaseUrl(env) {
   return String(env.HUB_BASE_URL || DEFAULT_HUB_BASE_URL).replace(/\/+$/, "");
 }
@@ -730,7 +735,11 @@ export default {
       });
     }
 
-    return env.ASSETS.fetch(request);
+    const response = await env.ASSETS.fetch(request);
+    if (request.method === "GET" && isHtmlResponse(response)) {
+      return withNoStore(response);
+    }
+    return response;
   },
 
   async scheduled(controller, env, ctx) {
