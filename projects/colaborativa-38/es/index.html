@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Píldora colaborativa 38 · Del catálogo hipertrofiado al portfolio con criterio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Lora:wght@600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root { --bg: #f3f6f9; --panel: #ffffff; --ink: #1f2c3a; --muted: #5c6b79; --accent: #0f5f94; --accent-dark: #10314d; --line: #d8e0e8; --soft: #edf5fb; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "IBM Plex Sans", sans-serif; color: var(--ink); line-height: 1.56; background: radial-gradient(circle at 8% 5%, #d9e8f4 0, transparent 22%), radial-gradient(circle at 90% 0%, #e9eef3 0, transparent 24%), var(--bg); }
+    .sheet { max-width: 980px; margin: 36px auto; border: 1px solid var(--line); border-radius: 16px; background: var(--panel); overflow: hidden; box-shadow: 0 14px 36px rgba(18, 37, 54, 0.08); }
+    header { padding: 22px 38px 30px; color: #fff; background: linear-gradient(110deg, var(--accent-dark) 0%, var(--accent) 56%, #1577af 100%); }
+    .topnav { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+    .navbtn { text-decoration: none; background: rgba(255, 255, 255, 0.15); color: #fff; border: 1px solid rgba(255, 255, 255, 0.4); padding: 7px 10px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; }
+    .hero { display: grid; grid-template-columns: 120px 1fr; gap: 18px; align-items: center; margin-top: 8px; }
+    .avatar { width: 120px; height: 120px; border-radius: 22px; overflow: hidden; border: 3px solid rgba(255,255,255,.25); box-shadow: 0 10px 24px rgba(0,0,0,.15); background: linear-gradient(135deg, rgba(255,255,255,.28), rgba(255,255,255,.08)); }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; object-position: center 22%; display: block; }
+    .kicker { font-size: 0.76rem; letter-spacing: 0.09em; text-transform: uppercase; opacity: 0.92; font-weight: 600; }
+    h1 { margin: 8px 0 10px; font-family: "Lora", serif; font-size: clamp(1.85rem, 2.8vw, 2.3rem); line-height: 1.2; }
+    .meta { font-size: 0.95rem; opacity: 0.94; }
+    main { padding: 30px 38px 34px; }
+    section + section { margin-top: 24px; }
+    h2 { margin: 0 0 10px; font-size: 1.12rem; color: var(--accent); }
+    p { margin: 0 0 10px; }
+    .quote { border-left: 4px solid #95c1de; background: var(--soft); color: #24445c; padding: 12px 14px; border-radius: 0 10px 10px 0; font-weight: 500; margin-top: 10px; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 10px; }
+    .card { border: 1px solid var(--line); border-radius: 11px; padding: 12px; background: #fbfdff; }
+    .tag { display: inline-block; text-transform: uppercase; letter-spacing: 0.07em; font-size: 0.74rem; color: #2d536f; font-weight: 700; margin-bottom: 6px; }
+    .highlight { border: 1px solid #cddff0; background: #f3f8fd; border-radius: 11px; padding: 14px; margin-top: 10px; }
+    .highlight strong { color: var(--accent); }
+    .linkbox { border: 1px solid #cddff0; background: #f3f8fd; border-radius: 10px; padding: 12px; word-break: break-word; }
+    .pdf-link { display: inline-block; margin-top: 10px; text-decoration: none; background: var(--accent); color: #fff; border: 1px solid #0f5a8c; border-radius: 8px; padding: 8px 12px; font-size: 0.9rem; font-weight: 600; }
+    .linkbox a.pdf-link, .linkbox a.pdf-link:visited, .linkbox a.pdf-link:hover, .linkbox a.pdf-link:focus { color: #fff; }
+    footer { border-top: 1px solid var(--line); color: var(--muted); font-size: 0.87rem; padding: 14px 38px 22px; background: #fafcfe; }
+    @media (max-width: 760px) { header, main, footer { padding-left: 18px; padding-right: 18px; } .hero { grid-template-columns: 1fr; } .grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <article class="sheet">
+    <header>
+      <div class="topnav">
+        <a class="navbtn" href="/projects/pildoras-colaborativas/es/">Volver a colaborativas</a>
+        <a class="navbtn" href="/">Ir a la principal</a>
+        <a class="navbtn" href="../en/">Read in English</a>
+      </div>
+      <div class="hero">
+        <div class="avatar" aria-label="Iván Morales"><img src="/assets/profile/ivan-morales-360.jpg" alt="Iván Morales" width="120" height="120" loading="eager" decoding="async" /></div>
+        <div>
+          <div class="kicker">Píldora colaborativa · Equipo Isaval</div>
+          <h1>Del catálogo hipertrofiado al portfolio con criterio</h1>
+          <div class="meta">Iván Morales · Trigésima octava aportación colaborativa del hub sobre una herramienta para leer mejor el portfolio, detectar solapamientos y ordenar el catálogo con criterio económico y técnico</div>
+        </div>
+      </div>
+    </header>
+    <main>
+      <section>
+        <h2>El problema</h2>
+        <p>Cuando un catálogo crece durante años sin una lectura periódica suficientemente rigurosa, la compañía puede terminar sosteniendo complejidad que no siempre aporta valor proporcional. Según plantea Iván, hoy existen zonas de posible solapamiento entre referencias que compiten entre sí sin una diferenciación suficientemente clara en técnica, precio o canal.</p>
+        <div class="quote">La oportunidad no está solo en recortar referencias. Está en ordenar el portfolio para que cada producto tenga una lógica más clara dentro del mercado y dentro de la propia compañía.</div>
+      </section>
+      <section>
+        <h2>Qué propone la pieza</h2>
+        <p>La idea es desarrollar una herramienta capaz de cruzar datos de ventas, información técnica y pautas definidas por la empresa para devolver una lectura más útil del catálogo. El objetivo sería identificar solapamientos, incoherencias de posicionamiento y oportunidades de racionalización sin comprometer una parte relevante de la facturación.</p>
+        <div class="grid">
+          <div class="card"><span class="tag">Diagnóstico</span><p>Detectar productos que compiten entre sí, huecos de posicionamiento y zonas de canibalización interna.</p></div>
+          <div class="card"><span class="tag">Decisión</span><p>Dar criterio para mantener, revisar o racionalizar referencias con una base más objetiva.</p></div>
+          <div class="card"><span class="tag">Velocidad</span><p>Hacer viable un análisis que manualmente sería largo, tedioso y difícil de sostener.</p></div>
+          <div class="card"><span class="tag">Escalabilidad</span><p>Preparar una base conectable con análisis de márgenes y rentabilidad ya en marcha.</p></div>
+        </div>
+      </section>
+      <section>
+        <h2>Por qué tiene sentido desde IA</h2>
+        <p>La IA no reemplaza aquí el criterio de negocio. Lo acelera. Permite analizar grandes volúmenes de datos bajo reglas definidas por la empresa y devolver una representación visual mucho más útil para detectar problemas y oportunidades dentro del portfolio.</p>
+        <p>Su valor está en convertir un ejercicio que hoy sería lento y manual en una capacidad analítica mucho más recurrente y gobernable.</p>
+      </section>
+      <section>
+        <h2>Lectura de fondo</h2>
+        <p>Esta propuesta apunta a una cuestión estructural: un catálogo demasiado extenso no solo complica la gestión comercial. También dificulta la lectura estratégica de qué vende, qué se solapa, qué margen deja cada familia y qué merece mantenerse por posición real de mercado.</p>
+        <p>La lógica de la pieza no es simplificar por simplificar. Es dar coherencia al portfolio para que técnica, ventas, precio y rentabilidad puedan leerse de forma integrada.</p>
+      </section>
+      <section class="highlight">
+        <strong>Conclusión colaborativa:</strong> la propuesta de Iván Morales plantea convertir la revisión del catálogo en una capacidad analítica recurrente, apoyada en datos y preparada para reducir complejidad, detectar solapamientos y decidir con más criterio económico y estratégico.
+      </section>
+      <section>
+        <h2>Acceso al contenido completo</h2>
+        <div class="linkbox">
+          Texto completo de la píldora colaborativa:<br />
+          <a class="pdf-link" href="./colaborativa-38-full-text-es.pdf" target="_blank" rel="noopener noreferrer">Ver texto completo en PDF</a>
+        </div>
+      </section>
+    </main>
+    <footer>Píldora colaborativa 38 · Documento interno Isaval.</footer>
+  </article>
+  <script src="/assets/js/hub-interactions.js" defer></script>
+</body>
+</html>

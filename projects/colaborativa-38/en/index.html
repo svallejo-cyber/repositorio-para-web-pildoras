@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Collaborative pill 38 · From an overgrown catalog to a portfolio with judgment</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Lora:wght@600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root { --bg: #f3f6f9; --panel: #ffffff; --ink: #1f2c3a; --muted: #5c6b79; --accent: #0f5f94; --accent-dark: #10314d; --line: #d8e0e8; --soft: #edf5fb; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "IBM Plex Sans", sans-serif; color: var(--ink); line-height: 1.56; background: radial-gradient(circle at 8% 5%, #d9e8f4 0, transparent 22%), radial-gradient(circle at 90% 0%, #e9eef3 0, transparent 24%), var(--bg); }
+    .sheet { max-width: 980px; margin: 36px auto; border: 1px solid var(--line); border-radius: 16px; background: var(--panel); overflow: hidden; box-shadow: 0 14px 36px rgba(18, 37, 54, 0.08); }
+    header { padding: 22px 38px 30px; color: #fff; background: linear-gradient(110deg, var(--accent-dark) 0%, var(--accent) 56%, #1577af 100%); }
+    .topnav { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+    .navbtn { text-decoration: none; background: rgba(255, 255, 255, 0.15); color: #fff; border: 1px solid rgba(255, 255, 255, 0.4); padding: 7px 10px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; }
+    .hero { display: grid; grid-template-columns: 120px 1fr; gap: 18px; align-items: center; margin-top: 8px; }
+    .avatar { width: 120px; height: 120px; border-radius: 22px; overflow: hidden; border: 3px solid rgba(255,255,255,.25); box-shadow: 0 10px 24px rgba(0,0,0,.15); background: linear-gradient(135deg, rgba(255,255,255,.28), rgba(255,255,255,.08)); }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; object-position: center 22%; display: block; }
+    .kicker { font-size: 0.76rem; letter-spacing: 0.09em; text-transform: uppercase; opacity: 0.92; font-weight: 600; }
+    h1 { margin: 8px 0 10px; font-family: "Lora", serif; font-size: clamp(1.85rem, 2.8vw, 2.3rem); line-height: 1.2; }
+    .meta { font-size: 0.95rem; opacity: 0.94; }
+    main { padding: 30px 38px 34px; }
+    section + section { margin-top: 24px; }
+    h2 { margin: 0 0 10px; font-size: 1.12rem; color: var(--accent); }
+    p { margin: 0 0 10px; }
+    .quote { border-left: 4px solid #95c1de; background: var(--soft); color: #24445c; padding: 12px 14px; border-radius: 0 10px 10px 0; font-weight: 500; margin-top: 10px; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 10px; }
+    .card { border: 1px solid var(--line); border-radius: 11px; padding: 12px; background: #fbfdff; }
+    .tag { display: inline-block; text-transform: uppercase; letter-spacing: 0.07em; font-size: 0.74rem; color: #2d536f; font-weight: 700; margin-bottom: 6px; }
+    .highlight { border: 1px solid #cddff0; background: #f3f8fd; border-radius: 11px; padding: 14px; margin-top: 10px; }
+    .highlight strong { color: var(--accent); }
+    .linkbox { border: 1px solid #cddff0; background: #f3f8fd; border-radius: 10px; padding: 12px; word-break: break-word; }
+    .pdf-link { display: inline-block; margin-top: 10px; text-decoration: none; background: var(--accent); color: #fff; border: 1px solid #0f5a8c; border-radius: 8px; padding: 8px 12px; font-size: 0.9rem; font-weight: 600; }
+    .linkbox a.pdf-link, .linkbox a.pdf-link:visited, .linkbox a.pdf-link:hover, .linkbox a.pdf-link:focus { color: #fff; }
+    footer { border-top: 1px solid var(--line); color: var(--muted); font-size: 0.87rem; padding: 14px 38px 22px; background: #fafcfe; }
+    @media (max-width: 760px) { header, main, footer { padding-left: 18px; padding-right: 18px; } .hero { grid-template-columns: 1fr; } .grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <article class="sheet">
+    <header>
+      <div class="topnav">
+        <a class="navbtn" href="/projects/pildoras-colaborativas/en/">Back to collaborative pills</a>
+        <a class="navbtn" href="/">Go to main hub</a>
+        <a class="navbtn" href="../es/">Ver en español</a>
+      </div>
+      <div class="hero">
+        <div class="avatar" aria-label="Iván Morales"><img src="/assets/profile/ivan-morales-360.jpg" alt="Iván Morales" width="120" height="120" loading="eager" decoding="async" /></div>
+        <div>
+          <div class="kicker">Collaborative pill · Isaval team</div>
+          <h1>From an overgrown catalog to a portfolio with judgment</h1>
+          <div class="meta">Iván Morales · Thirty-eighth collaborative contribution to the hub on a tool designed to read the portfolio better, detect overlap, and organize the catalog with technical and economic judgment</div>
+        </div>
+      </div>
+    </header>
+    <main>
+      <section>
+        <h2>The problem</h2>
+        <p>When a catalog grows for years without a sufficiently rigorous review, the company can end up carrying complexity that does not always provide proportional value. As Iván points out, there are likely overlap zones where products compete with each other without enough differentiation in technical performance, price, or channel.</p>
+        <div class="quote">The opportunity is not only to cut references. It is to organize the portfolio so each product has a clearer logic in the market and inside the company itself.</div>
+      </section>
+      <section>
+        <h2>What the piece proposes</h2>
+        <p>The idea is to develop a tool able to cross sales data, technical information, and company-defined criteria in order to return a much more useful reading of the catalog. The goal is to identify overlap, positioning inconsistencies, and rationalization opportunities without putting a relevant part of current revenue at risk.</p>
+        <div class="grid">
+          <div class="card"><span class="tag">Diagnosis</span><p>Detect products that compete against each other, positioning gaps, and internal cannibalization zones.</p></div>
+          <div class="card"><span class="tag">Decision</span><p>Provide criteria to keep, review, or rationalize references on a more objective basis.</p></div>
+          <div class="card"><span class="tag">Speed</span><p>Make viable an analysis that would otherwise be long, tedious, and hard to sustain manually.</p></div>
+          <div class="card"><span class="tag">Scalability</span><p>Prepare a base that can connect with margin and profitability analyses already under development.</p></div>
+        </div>
+      </section>
+      <section>
+        <h2>Why AI makes sense here</h2>
+        <p>AI does not replace business judgment here. It accelerates it. It allows large volumes of data to be analyzed under company-defined rules and turned into a much more useful visual reading of problems and opportunities inside the portfolio.</p>
+        <p>Its value lies in turning a slow and manual exercise into a much more recurrent and governable analytical capability.</p>
+      </section>
+      <section>
+        <h2>Strategic reading</h2>
+        <p>This proposal points to a structural issue: an overly large catalog does not only complicate commercial management. It also makes it harder to read what really sells, where overlap exists, what each family contributes in margin terms, and what deserves to remain because of its true market position.</p>
+        <p>The logic of the piece is not simplification for its own sake. It is portfolio coherence so technical performance, sales, price, and profitability can be read together.</p>
+      </section>
+      <section class="highlight">
+        <strong>Collaborative conclusion:</strong> Iván Morales proposes turning catalog review into a recurring analytical capability, supported by data and ready to reduce complexity, detect overlap, and support more informed economic and strategic decisions.
+      </section>
+      <section>
+        <h2>Access full content</h2>
+        <div class="linkbox">
+          Full collaborative pill text:<br />
+          <a class="pdf-link" href="./colaborativa-38-full-text-en.pdf" target="_blank" rel="noopener noreferrer">Open full PDF</a>
+        </div>
+      </section>
+    </main>
+    <footer>Collaborative pill 38 · Internal Isaval document.</footer>
+  </article>
+  <script src="/assets/js/hub-interactions.js" defer></script>
+</body>
+</html>
