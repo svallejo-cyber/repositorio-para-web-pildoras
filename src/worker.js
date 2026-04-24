@@ -38,6 +38,7 @@ const PUBLISHED_PILLS = [
   { slug: "pildora-4", lang: "es", type: "executive", title: "Publicación web", author: "Santiago Vallejo", authorEmail: "svallejo@isaval.es", avatar: "/assets/profile/santiago2-360.jpg", publishedAt: "2026-03-07T23:07:31Z", urlPath: "/projects/pildora-4/es/" },
   { slug: "pildora-5", lang: "es", type: "executive", title: "IA y control de gastos", author: "Santiago Vallejo", authorEmail: "svallejo@isaval.es", avatar: "/assets/profile/santiago2-360.jpg", publishedAt: "2026-03-11T23:58:07Z", urlPath: "/projects/pildora-5/es/" },
   { slug: "pildora-6", lang: "es", type: "executive", title: "IA: no va de escribir bonito", author: "Santiago Vallejo", authorEmail: "svallejo@isaval.es", avatar: "/assets/profile/santiago2-360.jpg", publishedAt: "2026-03-17T19:48:13Z", urlPath: "/projects/pildora-6/es/" },
+  { slug: "pildora-7", lang: "es", type: "executive", title: "Cuando una gran compañía te confirma que no vas desencaminado", author: "Santiago Vallejo", authorEmail: "svallejo@isaval.es", avatar: "/assets/profile/santiago2-360.jpg", publishedAt: "2026-04-24T16:00:00Z", urlPath: "/projects/pildora-7/es/" },
   { slug: "colaborativa-1", lang: "es", type: "collaborative", title: "Del pliego al dato útil", author: "Luis Merelo", authorEmail: "lmerelo@isaval.es", avatar: "/assets/profile/luis2-360.jpg", publishedAt: "2026-03-14T12:33:48Z", urlPath: "/projects/colaborativa-1/es/" },
   { slug: "colaborativa-2", lang: "es", type: "collaborative", title: "De la factura al criterio de gestión", author: "Javier Valencia", authorEmail: "jvalencia@isaval.es", avatar: "/assets/profile/javi2-360.jpg", publishedAt: "2026-03-17T16:48:17Z", urlPath: "/projects/colaborativa-2/es/" },
   { slug: "colaborativa-3", lang: "es", type: "collaborative", title: "De Excel a dashboard OEE", author: "Silvia Soriano", authorEmail: "ssoriano@isaval.es", avatar: "/assets/profile/silvia-soriano-2-320.jpg", publishedAt: "2026-03-17T17:04:26Z", urlPath: "/projects/colaborativa-3/es/" },
@@ -83,7 +84,7 @@ const DEMO_EXECUTIVE_SLUG_ORDER = [
   "pildora-6",
   ...Array.from({ length: 38 }, (_, idx) => `colaborativa-${idx + 1}`),
 ];
-const DEMO_CORPORATE_SLUG_ORDER = ["pildora-1", "pildora-2", "pildora-3", "pildora-4"];
+const DEMO_CORPORATE_SLUG_ORDER = ["pildora-1", "pildora-2", "pildora-3", "pildora-4", "pildora-7"];
 const DEMO_EXCLUDED_SLUGS = new Set(["tenantflow"]);
 
 function buildDemoLibraryEntries(kind) {
@@ -2148,6 +2149,7 @@ export class HubData extends DurableObject {
       "pildora-4": "Cómo convertir reflexión propia en una pieza web publicable dentro del Hub.",
       "pildora-5": "Primer caso real de aplicación operativa de IA en Pinturas Isaval.",
       "pildora-6": "Por qué el verdadero impacto de la IA no está en redactar mejor, sino en cambiar cómo se trabaja.",
+      "pildora-7": "La lectura del caso Repsol como confirmación de que Isaval ya ha activado una transformación propia, temprana y muy pegada al negocio.",
       "colaborativa-1": "Lectura asistida de licitaciones orientada a oportunidad comercial.",
       "colaborativa-2": "Uso de IA para transformar documentación financiera en lectura útil para decisión.",
       "colaborativa-3": "Caso práctico de visualización operativa y mejora de lectura productiva.",
