@@ -78,12 +78,13 @@ const PUBLISHED_PILLS = [
   { slug: "colaborativa-37", lang: "es", type: "collaborative", title: "De la vigilancia dispersa al agente de innovación con criterio de comité", author: "Sergio Huertas", authorEmail: "shuertas@isaval.es", avatar: "/assets/profile/sergio-huertas-360.jpg", publishedAt: "2026-04-09T10:20:00Z", urlPath: "/projects/colaborativa-37/es/" },
   { slug: "colaborativa-38", lang: "es", type: "collaborative", title: "Del catálogo hipertrofiado al portfolio con criterio", author: "Ivan Morales Noé", authorEmail: "imorales@isaval.es", avatar: "/assets/profile/ivan-morales-360.jpg", publishedAt: "2026-04-14T08:30:00Z", urlPath: "/projects/colaborativa-38/es/" },
   { slug: "colaborativa-39", lang: "es", type: "collaborative", title: "Del sondeo manual al posicionamiento inteligente de precios", author: "Salvador Domingo", authorEmail: "sdomingo@isaval.es", avatar: "/assets/profile/salvador-domingo-360.jpg", publishedAt: "2026-04-25T22:00:00Z", urlPath: "/projects/colaborativa-39/es/" },
+  { slug: "colaborativa-40", lang: "es", type: "collaborative", title: "De la planilla manual a la gestión inteligente de estados de pedidos", author: "Cristian Rodríguez Ferreira", authorEmail: "crodriguez@isaval.es", avatar: "/assets/profile/cristian-rodriguez-360.jpg", publishedAt: "2026-04-26T00:10:00Z", urlPath: "/projects/colaborativa-40/es/" },
 ];
 const COLLABORATIVE_PILLS = PUBLISHED_PILLS.filter((item) => item.type === "collaborative");
 const DEMO_EXECUTIVE_SLUG_ORDER = [
   "pildora-5",
   "pildora-6",
-  ...Array.from({ length: 39 }, (_, idx) => `colaborativa-${idx + 1}`),
+  ...Array.from({ length: 40 }, (_, idx) => `colaborativa-${idx + 1}`),
 ];
 const DEMO_CORPORATE_SLUG_ORDER = ["pildora-1", "pildora-2", "pildora-3", "pildora-4", "pildora-7"];
 const DEMO_EXCLUDED_SLUGS = new Set(["tenantflow"]);
@@ -2190,6 +2191,7 @@ export class HubData extends DurableObject {
       "colaborativa-37": "Agente de innovación on-prem para convertir vigilancia dispersa y actas de comité en oportunidades priorizadas, dossiers votables y aprendizaje real sobre decisiones.",
       "colaborativa-38": "Herramienta de análisis de catálogo para detectar solapamientos, ordenar el portfolio y dar criterio económico y técnico a la racionalización de referencias.",
       "colaborativa-39": "Herramienta interna para comparar precios Expaint con el mercado, detectar movimientos y dar criterio continuo al posicionamiento comercial y de margen.",
+      "colaborativa-40": "Automatización de la planilla de pedidos de exportación para leer PDFs, cruzar stock y producción y devolver estados homogéneos con más rapidez y menos error.",
     };
     return descriptions[slug] || "";
   }
