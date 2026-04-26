@@ -218,15 +218,18 @@
     }
     .list-item strong { color:#10314d; }
     .podium-illustration {
-      margin: 2px 0 4px;
+      margin: 0;
       display: flex;
       justify-content: center;
     }
     .podium-illustration img {
       width: 100%;
-      max-width: 520px;
+      max-width: 560px;
       height: auto;
       display: block;
+    }
+    .podium-card {
+      gap: 8px;
     }
     .podium-item {
       grid-template-columns: auto minmax(0, 1fr) auto;
@@ -402,11 +405,11 @@
       </section>
       <section class="stats-grid" id="activity-stats"></section>
       <section class="grid">
-        <article class="card">
+        <article class="card podium-card">
           <div class="kicker">Autores con más publicaciones</div>
           <h3>Podio de aportación</h3>
           <div class="podium-illustration">
-            <img src="/podium.png?v=20260426f" alt="Podio del Hub" />
+            <img src="/assets/illustrations/podium-hub.png?v=20260426g" alt="Podio del Hub" />
           </div>
           <div class="list" id="activity-podium"></div>
         </article>
