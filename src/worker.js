@@ -8,8 +8,9 @@ const ADMIN_EMAILS = new Set(["svallejoi@icloud.com"]);
 const EXCLUDED_TRACKING_EMAILS = new Set(["svallejo@isaval.es", "svallejoi@icloud.com"]);
 const NOTIFICATION_TIMEZONE = "Europe/Madrid";
 const DEFAULT_HUB_BASE_URL = "https://repositorio-para-web-pildoras.svallejo-351.workers.dev";
+const DEFAULT_PROFILE_AVATAR = "/assets/profile/santiago2-360.jpg";
 const DEFAULT_INVITED_AVATARS = {
-  "svallejo@isaval.es": "/assets/profile/santiago2-360.jpg",
+  "svallejo@isaval.es": DEFAULT_PROFILE_AVATAR,
   "lmerelo@isaval.es": "/assets/profile/luis2-360.jpg",
   "jvalencia@isaval.es": "/assets/profile/javi2-360.jpg",
   "ssoriano@isaval.es": "/assets/profile/silvia-soriano-2-320.jpg",
@@ -3056,6 +3057,30 @@ export class HubData extends DurableObject {
   async getRecentComments({ lang = "es", limit = 40, hubBaseUrl }) {
     const entries = await this.ctx.storage.list({ prefix: "comments:" });
     const pillsBySlug = new Map(PUBLISHED_PILLS.filter((pill) => pill.lang === "es").map((pill) => [pill.slug, pill]));
+    const invitedUsers = await this.getInvitedUsers();
+    const invitedByEmail = new Map(
+      invitedUsers
+        .filter((user) => cleanEmail(user.email))
+        .map((user) => [cleanEmail(user.email), user]),
+    );
+    const publishedAuthorsByEmail = new Map();
+    const publishedAuthorsByName = new Map();
+    for (const pill of PUBLISHED_PILLS) {
+      const emailKey = cleanEmail(pill.authorEmail);
+      const nameKey = cleanName(pill.author).toLocaleLowerCase("es");
+      if (emailKey && !publishedAuthorsByEmail.has(emailKey)) {
+        publishedAuthorsByEmail.set(emailKey, {
+          name: pill.author,
+          avatar: pill.avatar || DEFAULT_PROFILE_AVATAR,
+        });
+      }
+      if (nameKey && !publishedAuthorsByName.has(nameKey)) {
+        publishedAuthorsByName.set(nameKey, {
+          name: pill.author,
+          avatar: pill.avatar || DEFAULT_PROFILE_AVATAR,
+        });
+      }
+    }
     const items = [];
 
     for (const [key, comments] of entries) {
@@ -3066,6 +3091,12 @@ export class HubData extends DurableObject {
       for (const comment of comments || []) {
         const timestamp = comment.updatedAt || comment.createdAt || null;
         if (!timestamp) continue;
+        const commenterEmail = cleanEmail(comment.email || "");
+        const commenterName = comment.name || comment.email || "Comentario sin firma";
+        const commenterNameKey = cleanName(commenterName).toLocaleLowerCase("es");
+        const invitedProfile = commenterEmail ? invitedByEmail.get(commenterEmail) : null;
+        const publishedProfile = (commenterEmail ? publishedAuthorsByEmail.get(commenterEmail) : null) || publishedAuthorsByName.get(commenterNameKey) || null;
+        const profile = invitedProfile || publishedProfile || null;
         items.push({
           id: comment.id,
           slug,
@@ -3073,8 +3104,10 @@ export class HubData extends DurableObject {
           pillType: pill.type,
           pillAuthor: pill.author,
           pillUrl: `${hubBaseUrl}/projects/${slug}/${lang}/`,
-          commenterName: comment.name || comment.email || "Comentario sin firma",
-          commenterEmail: comment.email || null,
+          commenterName,
+          commenterDisplayName: profile?.name || commenterName,
+          commenterEmail: commenterEmail || null,
+          commenterAvatar: profile?.avatar || DEFAULT_PROFILE_AVATAR,
           message: comment.message || "",
           createdAt: comment.createdAt || null,
           updatedAt: comment.updatedAt || null,

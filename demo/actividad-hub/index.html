@@ -218,7 +218,6 @@
     }
     .list-item strong { color:#10314d; }
     .podium-illustration {
-      margin-top: 10px;
       border: 1px solid var(--line);
       border-radius: 16px;
       background: linear-gradient(180deg, #fffaf4 0%, #f8fbfe 100%);
@@ -229,7 +228,7 @@
       text-align: center;
     }
     .podium-illustration img {
-      width: min(100%, 320px);
+      width: min(100%, 260px);
       height: auto;
       display: block;
     }
@@ -272,6 +271,36 @@
       font-size: 13px;
       font-weight: 700;
       white-space: nowrap;
+    }
+    .comment-item {
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 16px;
+      align-items: start;
+    }
+    .comment-copy {
+      min-width: 0;
+      display: grid;
+      gap: 8px;
+    }
+    .comment-author {
+      min-width: 96px;
+      display: grid;
+      gap: 8px;
+      justify-items: center;
+      text-align: center;
+    }
+    .comment-author img {
+      width: 54px;
+      height: 54px;
+      border-radius: 16px;
+      object-fit: cover;
+      display: block;
+      border: 1px solid #d8e0e8;
+      background: #eef3f7;
+    }
+    .comment-author strong {
+      font-size: 13px;
+      line-height: 1.35;
     }
     .hashtags {
       color:#0f5f94;
@@ -317,6 +346,15 @@
       header, main, footer { padding-left:18px; padding-right:18px; }
       .hero h1 { font-size: 2.2rem; }
       .card h3 { font-size: 21px; }
+      .comment-item {
+        grid-template-columns: 1fr;
+      }
+      .comment-author {
+        justify-items: start;
+        text-align: left;
+        grid-template-columns: auto 1fr;
+        min-width: 0;
+      }
     }
   </style>
 
@@ -372,11 +410,11 @@
         <article class="card">
           <div class="kicker">Autores con más publicaciones</div>
           <h3>Podio de aportación</h3>
-          <div class="list" id="activity-podium"></div>
           <div class="podium-illustration">
             <img src="/podium.png" alt="Podio del Hub" />
             <span>La aportación visible del Hub también construye comunidad.</span>
           </div>
+          <div class="list" id="activity-podium"></div>
         </article>
         <article class="card">
           <div class="kicker">Conversación reciente</div>
@@ -425,10 +463,16 @@
         `).join('');
 
         commentsEl.innerHTML = comments.map((item) => `
-          <div class="list-item">
-            <strong>${item.authorName || item.name || 'Comentario'}</strong>
-            <div class="meta">${item.relativeTime || item.publishedLabel || ''}</div>
-            <div>${item.message}</div>
+          <div class="list-item comment-item">
+            <div class="comment-copy">
+              <strong>${item.pillTitle || 'Comentario'}</strong>
+              <div class="meta">${item.relativeTime || item.publishedLabel || ''}</div>
+              <div>${item.message}</div>
+            </div>
+            <div class="comment-author">
+              <img src="${item.commenterAvatar || '/assets/profile/santiago2-360.jpg'}" alt="${item.commenterDisplayName || item.commenterName || 'Autor'}" />
+              <strong>${item.commenterDisplayName || item.commenterName || 'Comentario'}</strong>
+            </div>
           </div>
         `).join('');
       }
