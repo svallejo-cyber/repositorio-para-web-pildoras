@@ -285,71 +285,30 @@
         </div>
         <div class="focus">
           <h2>Qué muestra hoy</h2>
-          <p>Mientras no exista aún un modelo propio de microcontenidos, esta sección usa el estado real de las ejecutivas para generar updates cortos y visibles.</p>
+          <p>De momento no tiene contenido cargado. Se irá llenando con nuevas aportaciones breves de la comunidad del Hub.</p>
         </div>
       </section>
-      <section class="grid" id="express-grid"></section>
+      <section class="grid" id="express-grid">
+        <article class="card">
+          <div class="kicker">Espacio abierto</div>
+          <h3>Sección en construcción comunitaria</h3>
+          <p>Aquí irán entrando píldoras cortas, hallazgos rápidos y señales útiles que merezca compartir sin esperar a una pieza larga.</p>
+          <div class="hashtags">#IdeaEnMarcha #AvanceRapido #SeñalUtil</div>
+        </article>
+        <article class="card">
+          <div class="kicker">Próxima lógica</div>
+          <h3>Contenido breve y nativo</h3>
+          <p>El objetivo es que esta sección recoja aportaciones nuevas de la comunidad del Hub con entidad propia, no resúmenes automáticos de otras bibliotecas.</p>
+          <div class="actions">
+            <a class="btn secondary" href="/demo/pildoras-ejecutivas/">Ir a ejecutivas</a>
+          </div>
+        </article>
+      </section>
       <div class="actions">
         <a class="btn" href="/demo/">Volver al inicio</a>
       </div>
     </main>
     <footer>Píldoras express · Hub IA Isaval.</footer>
   </article>
-<script>
-  (function () {
-    const expressGrid = document.getElementById('express-grid');
-
-    function badgeClass(status) {
-      if (status === 'working') return 'badge-working';
-      if (status === 'in_progress') return 'badge-progress';
-      return 'badge-idea';
-    }
-
-    function statusCopy(pill) {
-      if (pill.status === 'working') return 'Proyecto ya en uso real. Esta express funciona como update visible de implantación.';
-      if (pill.status === 'in_progress') return 'Proyecto en despliegue. Esta express resume una línea de trabajo que ya ha pasado de idea a ejecución.';
-      return 'Proyecto planteado y ordenado. Esta express ayuda a poner la idea en circulación mientras madura la pieza larga.';
-    }
-
-    async function load() {
-      const embedded = window.__DEMO_EXECUTIVE_PILLS__;
-      function renderFrom(data) {
-        const pills = (data.pills || []).slice().sort((a, b) => {
-          const order = { working: 0, in_progress: 1, idea: 2 };
-          return (order[a.status] ?? 9) - (order[b.status] ?? 9) || (a.demoOrdinal || 999) - (b.demoOrdinal || 999);
-        }).slice(0, 8);
-
-        expressGrid.innerHTML = pills.map((pill) => `
-          <article class="card">
-            <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;">
-              <div class="kicker">${pill.demoOrdinalLabel || ''}</div>
-              <span class="badge ${badgeClass(pill.status)}">${pill.statusLabel}</span>
-            </div>
-            <h3>${pill.title}</h3>
-            <div class="meta">${pill.author}</div>
-            <p>${statusCopy(pill)}</p>
-            <div class="actions">
-              <a class="btn" href="${pill.demoUrl}">Abrir ejecutiva</a>
-            </div>
-          </article>
-        `).join('');
-      }
-
-      if (embedded) {
-        renderFrom(embedded);
-      }
-      try {
-        const response = await fetch('/api/demo/executive-pills', { credentials: 'same-origin', cache: 'no-store' });
-        if (!response.ok) throw new Error('load_failed');
-        const data = await response.json();
-        renderFrom(data);
-      } catch (error) {
-        if (!embedded) expressGrid.innerHTML = '<article class="card"><h3>No se ha podido cargar el feed express.</h3><p>Esta sección necesita leer el cuerpo ejecutivo para construir este flujo corto.</p></article>';
-      }
-    }
-
-    load();
-  })();
-</script>
 </body>
 </html>
