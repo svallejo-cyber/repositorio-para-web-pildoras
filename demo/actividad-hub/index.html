@@ -177,7 +177,7 @@
     .card p {
       margin:0;
       color:#32485b;
-      min-height:72px;
+      min-height:0;
     }
     .meta {
       color:#5c6b79;
@@ -217,6 +217,41 @@
       gap:6px;
     }
     .list-item strong { color:#10314d; }
+    .podium-item {
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 14px;
+    }
+    .podium-item img {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      object-fit: cover;
+      display: block;
+      border: 1px solid #d8e0e8;
+      background: #eef3f7;
+    }
+    .podium-copy {
+      min-width: 0;
+      display: grid;
+      gap: 4px;
+    }
+    .podium-rank {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 42px;
+      height: 42px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: #edf5fb;
+      border: 1px solid #cfe0ec;
+      color: #10314d;
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
     .hashtags {
       color:#0f5f94;
       font-weight:700;
@@ -354,9 +389,13 @@
         `;
 
         podiumEl.innerHTML = ranking.slice(0, 6).map((item, index) => `
-          <div class="list-item">
-            <strong>#${index + 1} · ${item.author}</strong>
-            <div class="meta">${item.count} publicaciones · Última: ${item.latestTitle}</div>
+          <div class="list-item podium-item">
+            <img src="${item.avatar || '/assets/profile/santiago2-360.jpg'}" alt="${item.author}" />
+            <div class="podium-copy">
+              <strong>${item.author}</strong>
+              <div class="meta">${item.count} publicaciones · Última: ${item.latestTitle}</div>
+            </div>
+            <div class="podium-rank">#${index + 1}</div>
           </div>
         `).join('');
 
