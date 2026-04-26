@@ -909,6 +909,41 @@ window.__DEMO_VIEWER__=${serializeForInlineScript(demoViewer)};
     box-shadow: 0 14px 30px rgba(16, 27, 44, .18);
     font-family: Arial, sans-serif;
   }
+  .demo-project-author {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 6px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(16, 27, 44, .12);
+  }
+  .demo-project-author img {
+    width: 48px;
+    height: 48px;
+    border-radius: 16px;
+    object-fit: cover;
+    display: block;
+    border: 1px solid rgba(16, 27, 44, .14);
+    background: rgba(255,255,255,.64);
+  }
+  .demo-project-author-copy {
+    min-width: 0;
+    display: grid;
+    gap: 2px;
+  }
+  .demo-project-author-copy strong {
+    font-size: 14px;
+    line-height: 1.2;
+    letter-spacing: 0;
+    text-transform: none;
+    color: #10314d;
+  }
+  .demo-project-author-copy span {
+    font-size: 11px;
+    line-height: 1.3;
+    color: rgba(16, 49, 77, .76);
+  }
   .demo-project-status-badge strong {
     font-size: 12px;
     letter-spacing: .1em;
@@ -1038,6 +1073,13 @@ window.__DEMO_VIEWER__=${serializeForInlineScript(demoViewer)};
   <a href="/demo/actividad-hub/">Actividad Hub</a>
 </div>
 <div class="demo-project-status-badge">
+  <div class="demo-project-author">
+    <img src="${escapeHtml(pill.avatar || DEFAULT_PROFILE_AVATAR)}" alt="${escapeHtml(pill.author)}" />
+    <div class="demo-project-author-copy">
+      <strong>${escapeHtml(pill.author)}</strong>
+      <span>${pill.type === "collaborative" ? "Píldora colaborativa" : "Píldora corporativa"}</span>
+    </div>
+  </div>
   <strong id="demo-project-status-label">${escapeHtml(meta.label)}</strong>
   <span id="demo-project-status-helper">${escapeHtml(meta.helper)}</span>
   <div class="demo-project-radar">

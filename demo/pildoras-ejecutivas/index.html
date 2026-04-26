@@ -84,6 +84,31 @@
     .card h3 { margin:0; font-size:24px; line-height:1.18; color:#10314d; }
     .card p { margin:0; color:#32485b; }
     .meta { color:#5c6b79; font-size:14px; }
+    .author-row {
+      display:grid;
+      grid-template-columns:auto minmax(0, 1fr);
+      gap:12px;
+      align-items:center;
+    }
+    .author-row img {
+      width:56px;
+      height:56px;
+      border-radius:18px;
+      object-fit:cover;
+      display:block;
+      border:1px solid #d8e0e8;
+      background:#eef3f7;
+    }
+    .author-copy {
+      min-width:0;
+      display:grid;
+      gap:2px;
+    }
+    .author-copy strong {
+      color:#10314d;
+      font-size:16px;
+      line-height:1.2;
+    }
     .badge { display:inline-flex; align-items:center; border-radius:999px; padding:5px 10px; font-size:12px; font-weight:700; }
     .badge-idea { background:#eef2f6; color:#52606c; border:1px solid #cfd8e3; }
     .badge-progress { background:#fff1d6; color:#8a5a00; border:1px solid #f0d28d; }
@@ -208,7 +233,13 @@
             <div><span class="badge ${badgeClass(pill.status)}">${pill.statusLabel}</span></div>
             <div class="meta" style="font-weight:700; color:#10314d;">${pill.demoOrdinalLabel || ''}</div>
             <h3>${pill.title}</h3>
-            <div class="meta">${pill.author} · ${pill.publishedLabel}</div>
+            <div class="author-row">
+              <img src="${pill.avatar || '/assets/profile/santiago2-360.jpg'}" alt="${pill.author}" />
+              <div class="author-copy">
+                <strong>${pill.author}</strong>
+                <div class="meta">${pill.publishedLabel}</div>
+              </div>
+            </div>
             <p>${pill.statusHelper}. La ficha muestra el badge y, para su autor, el control directo para actualizar estado.</p>
             <div class="actions">
               <a class="btn" href="${pill.demoUrl}">Abrir ficha</a>
