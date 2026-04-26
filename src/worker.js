@@ -845,6 +845,7 @@ window.__DEMO_VIEWER__=${serializeForInlineScript(demoViewer)};
 
   const slug = getDemoProjectSlug(pathname);
   let badgeBlock = "";
+  let corporateAuthorBlock = "";
   const pill = slug ? PUBLISHED_PILLS.find((item) => item.lang === "es" && item.slug === slug) : null;
   if (pill) {
     const isCorporateDemoPill = DEMO_CORPORATE_LIBRARY.some((item) => item.slug === pill.slug);
@@ -946,44 +947,52 @@ window.__DEMO_VIEWER__=${serializeForInlineScript(demoViewer)};
     color: rgba(16, 49, 77, .76);
   }
   .demo-project-inline-author {
-    margin: 14px 18px 0;
-    padding: 14px 16px;
-    border-radius: 18px;
-    border: 1px solid rgba(16, 27, 44, .12);
-    background: rgba(255,255,255,.96);
-    box-shadow: 0 10px 24px rgba(16, 27, 44, .10);
+    margin: 14px 0 18px;
+    padding: 16px 18px;
+    border-radius: 22px;
+    border: 1px solid rgba(255,255,255,.22);
+    background: rgba(255,255,255,.10);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    gap: 14px;
+    grid-template-columns: 180px minmax(0, 1fr);
+    gap: 18px;
     align-items: center;
     font-family: Arial, sans-serif;
+    backdrop-filter: blur(6px);
   }
   .demo-project-inline-author img {
-    width: 64px;
-    height: 64px;
-    border-radius: 20px;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    border-radius: 28px;
     object-fit: cover;
     display: block;
-    border: 1px solid rgba(16, 27, 44, .12);
-    background: #eef3f7;
+    border: 1px solid rgba(255,255,255,.18);
+    background: rgba(255,255,255,.18);
   }
   .demo-project-inline-author-copy {
     min-width: 0;
     display: grid;
-    gap: 4px;
+    gap: 8px;
   }
   .demo-project-inline-author-copy strong {
-    font-size: 18px;
+    font-size: 28px;
     line-height: 1.15;
-    color: #10314d;
+    color: #ffffff;
   }
   .demo-project-inline-author-copy span {
     font-size: 12px;
     line-height: 1.35;
     text-transform: uppercase;
-    letter-spacing: .08em;
-    color: rgba(16, 49, 77, .72);
+    letter-spacing: .12em;
+    color: rgba(255,255,255,.78);
     font-weight: 700;
+  }
+  .demo-project-inline-author-copy p {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.5;
+    color: rgba(255,255,255,.92);
   }
   .demo-project-status-badge strong {
     font-size: 12px;
@@ -1090,6 +1099,12 @@ window.__DEMO_VIEWER__=${serializeForInlineScript(demoViewer)};
     color: #0f6b3c;
   }
   @media (max-width: 720px) {
+    .demo-project-inline-author {
+      grid-template-columns: 1fr;
+    }
+    .demo-project-inline-author img {
+      max-width: 220px;
+    }
     .demo-project-status-badge {
       top: auto;
       right: 12px;
@@ -1113,14 +1128,6 @@ window.__DEMO_VIEWER__=${serializeForInlineScript(demoViewer)};
   <a href="/demo/termometro-ai/">Termómetro AI</a>
   <a href="/demo/actividad-hub/">Actividad Hub</a>
 </div>
-${isCorporateDemoPill ? `
-<div class="demo-project-inline-author">
-  <img src="${escapeHtml(pill.avatar || DEFAULT_PROFILE_AVATAR)}" alt="${escapeHtml(pill.author)}" />
-  <div class="demo-project-inline-author-copy">
-    <strong>${escapeHtml(pill.author)}</strong>
-    <span>Píldora corporativa</span>
-  </div>
-</div>` : ""}
 <div class="demo-project-status-badge">
   <div class="demo-project-author">
     <img src="${escapeHtml(pill.avatar || DEFAULT_PROFILE_AVATAR)}" alt="${escapeHtml(pill.author)}" />
@@ -1209,6 +1216,15 @@ ${isCorporateDemoPill ? `
     })();
   </script>` : ""}
 </div>`;
+    corporateAuthorBlock = isCorporateDemoPill ? `
+<div class="demo-project-inline-author">
+  <img src="${escapeHtml(pill.avatar || DEFAULT_PROFILE_AVATAR)}" alt="${escapeHtml(pill.author)}" />
+  <div class="demo-project-inline-author-copy">
+    <span>Píldora corporativa · Autor del Hub</span>
+    <strong>${escapeHtml(pill.author)}</strong>
+    <p>Texto de dirección, criterio y marco común para ordenar la conversación del Hub.</p>
+  </div>
+</div>` : "";
   }
 
   const htmlWithStatus = html.includes("</head>")
@@ -1216,12 +1232,15 @@ ${isCorporateDemoPill ? `
     : html.includes("</body>")
       ? html.replace("</body>", `${statusScript}</body>`)
       : `${html}${statusScript}`;
-  const htmlWithNav = badgeBlock && htmlWithStatus.includes("<body")
-    ? htmlWithStatus.replace(/<body([^>]*)>/i, `<body$1>${badgeBlock}`)
+  const htmlWithAuthor = corporateAuthorBlock && htmlWithStatus.includes("<header>")
+    ? htmlWithStatus.replace(/<header>/i, `<header>${corporateAuthorBlock}`)
     : htmlWithStatus;
+  const htmlWithNav = badgeBlock && htmlWithAuthor.includes("<body")
+    ? htmlWithAuthor.replace(/<body([^>]*)>/i, `<body$1>${badgeBlock}`)
+    : htmlWithAuthor;
   const output = htmlWithNav
     ? htmlWithNav
-    : `${htmlWithStatus}${badgeBlock}`;
+    : `${htmlWithAuthor}${badgeBlock}`;
   const headers = new Headers(response.headers);
   headers.set("content-type", "text/html; charset=UTF-8");
   return new Response(output, {
