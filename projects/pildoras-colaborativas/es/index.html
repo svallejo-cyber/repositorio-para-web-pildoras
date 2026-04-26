@@ -186,10 +186,26 @@
       display: grid;
       gap: 24px;
     }
+    .author-chip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 2px 0 8px;
+    }
+    .author-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      object-fit: cover;
+      object-position: center 20%;
+      border: 1px solid var(--line);
+      background: #fff;
+      flex: 0 0 auto;
+    }
     .author-line {
       color: var(--muted);
       font-size: 0.92rem;
-      margin: 2px 0 6px;
+      margin: 0;
     }
     .highlight strong { color: var(--ok); }
     footer {
@@ -591,7 +607,7 @@
         <div class="card">
           <span class="tag">Publicada</span>
           <h2 style="margin:0 0 8px;font-size:1.08rem;">Colaborativa 39 · Del sondeo manual al posicionamiento inteligente de precios</h2>
-          <div class="author-line">Autor: Salvador Domingo</div>
+          <div class="author-chip"><img class="author-avatar" src="/assets/profile/salvador-domingo-360.jpg" alt="Salvador Domingo" loading="lazy" decoding="async" /><div class="author-line">Autor: Salvador Domingo</div></div>
           <p>Salvador Domingo propone dar a Expaint una herramienta interna para comparar precios con competencia, detectar oportunidades y fijar posicionamiento con más rapidez y mejor control de margen.</p>
           <a class="openbtn" href="/projects/colaborativa-39/es/">Abrir</a>
         </div>
@@ -600,7 +616,7 @@
         <div class="card">
           <span class="tag">Publicada</span>
           <h2 style="margin:0 0 8px;font-size:1.08rem;">Colaborativa 40 · De la planilla manual a la gestión inteligente de estados de pedidos</h2>
-          <div class="author-line">Autor: Cristian Rodríguez Ferreira</div>
+          <div class="author-chip"><img class="author-avatar" src="/assets/profile/cristian-rodriguez-360.jpg" alt="Cristian Rodríguez Ferreira" loading="lazy" decoding="async" /><div class="author-line">Autor: Cristian Rodríguez Ferreira</div></div>
           <p>Cristian Rodríguez Ferreira propone automatizar la planilla de pedidos de exportación para leer PDFs de clientes, cruzarlos con stock y producción y devolver un seguimiento homogéneo con criterio FIFO y mucha menos carga manual.</p>
           <a class="openbtn" href="/projects/colaborativa-40/es/">Abrir</a>
         </div>
@@ -609,7 +625,7 @@
         <div class="card">
           <span class="tag">Publicada</span>
           <h2 style="margin:0 0 8px;font-size:1.08rem;">Colaborativa 41 · Del forecast manual a la planificación inteligente y escalable</h2>
-          <div class="author-line">Autor: Cristian Rodríguez Ferreira</div>
+          <div class="author-chip"><img class="author-avatar" src="/assets/profile/cristian-rodriguez-360.jpg" alt="Cristian Rodríguez Ferreira" loading="lazy" decoding="async" /><div class="author-line">Autor: Cristian Rodríguez Ferreira</div></div>
           <p>Cristian Rodríguez Ferreira propone convertir la planificación manual de forecast de clientes estratégicos en una herramienta que consolide demanda, stock y producción y prepare una base escalable para compras y fabricación.</p>
           <a class="openbtn" href="/projects/colaborativa-41/es/">Abrir</a>
         </div>
