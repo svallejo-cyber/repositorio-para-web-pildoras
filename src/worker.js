@@ -844,6 +844,7 @@ window.__DEMO_VIEWER__=${serializeForInlineScript(demoViewer)};
   const pill = slug ? PUBLISHED_PILLS.find((item) => item.lang === "es" && item.slug === slug) : null;
   if (pill) {
     const statusEntry = await store.getProjectStatusEntry(slug);
+    const radarEntry = await store.getRadarClassificationForPill(pill, hubBaseUrl);
     const meta = statusEntry.meta;
     const editorEnabled = canEditProjectStatus(pill, demoViewer);
     badgeBlock = `
@@ -919,6 +920,44 @@ window.__DEMO_VIEWER__=${serializeForInlineScript(demoViewer)};
     border-top: 1px solid rgba(16, 27, 44, .12);
     display: grid;
     gap: 8px;
+  }
+  .demo-project-radar {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(16, 27, 44, .12);
+    display: grid;
+    gap: 8px;
+  }
+  .demo-project-radar-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    opacity: .72;
+  }
+  .demo-project-radar-grid {
+    display: grid;
+    gap: 8px;
+  }
+  .demo-project-radar-item {
+    display: grid;
+    gap: 3px;
+    padding: 9px 10px;
+    border-radius: 12px;
+    border: 1px solid rgba(16, 27, 44, .12);
+    background: rgba(255,255,255,.46);
+  }
+  .demo-project-radar-item strong {
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    opacity: .66;
+  }
+  .demo-project-radar-item span {
+    font-size: 13px;
+    line-height: 1.35;
+    color: #10314d;
+    font-weight: 700;
   }
   .demo-project-status-editor-label {
     font-size: 11px;
@@ -997,6 +1036,19 @@ window.__DEMO_VIEWER__=${serializeForInlineScript(demoViewer)};
 <div class="demo-project-status-badge">
   <strong id="demo-project-status-label">${escapeHtml(meta.label)}</strong>
   <span id="demo-project-status-helper">${escapeHtml(meta.helper)}</span>
+  <div class="demo-project-radar">
+    <div class="demo-project-radar-label">Radar de la píldora</div>
+    <div class="demo-project-radar-grid">
+      <div class="demo-project-radar-item">
+        <strong>Función</strong>
+        <span>${escapeHtml(radarEntry.functionLabel)}</span>
+      </div>
+      <div class="demo-project-radar-item">
+        <strong>Temática</strong>
+        <span>${escapeHtml(radarEntry.themeLabel)}</span>
+      </div>
+    </div>
+  </div>
   ${editorEnabled ? `
   <div class="demo-project-status-editor" data-demo-project-status-editor>
     <div class="demo-project-status-editor-label">${demoViewer.isAdmin ? "Edición admin" : "Actualiza tu estado"}</div>
