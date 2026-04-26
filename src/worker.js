@@ -766,6 +766,7 @@ function isPublicApi(pathname) {
   return pathname === "/api/collaborative-podium"
     || pathname === "/api/demo/thermometer"
     || pathname === "/api/demo/executive-pills"
+    || pathname === "/api/demo/activity-hub"
     || pathname === "/api/demo/radar"
     || pathname === "/api/demo/corporate-pills"
     || pathname === "/api/recent-comments";
@@ -822,6 +823,7 @@ async function decorateDemoProjectResponse(response, pathname, store, env, viewe
   const statusData = await store.getProjectStatusAdminData();
   const executiveData = await store.getDemoExecutivePills(hubBaseUrl);
   const corporateData = await store.getDemoCorporatePills(hubBaseUrl);
+  const activityHubData = await store.getDemoActivityHubData(hubBaseUrl);
   const commentsData = await store.getRecentComments({ lang: "es", limit: 6, hubBaseUrl });
   const podiumData = await store.getCollaborativePodium("es");
   const demoViewer = viewer ? {
@@ -834,6 +836,7 @@ window.__DEMO_BUILD__=${serializeForInlineScript(DEMO_BUILD)};
 window.__DEMO_PROJECT_STATUS__=${serializeForInlineScript(statusData)};
 window.__DEMO_EXECUTIVE_PILLS__=${serializeForInlineScript(executiveData)};
 window.__DEMO_CORPORATE_PILLS__=${serializeForInlineScript(corporateData)};
+window.__DEMO_ACTIVITY_HUB__=${serializeForInlineScript(activityHubData)};
 window.__DEMO_RECENT_COMMENTS__=${serializeForInlineScript(commentsData)};
 window.__DEMO_COLLABORATIVE_PODIUM__=${serializeForInlineScript(podiumData)};
 window.__DEMO_VIEWER__=${serializeForInlineScript(demoViewer)};
@@ -1394,6 +1397,10 @@ async function handlePublicApi(request, url, store, env) {
   }
   if (request.method === "GET" && url.pathname === "/api/demo/radar") {
     const data = await store.getDemoRadarData(getHubBaseUrl(env));
+    return json({ ok: true, ...data });
+  }
+  if (request.method === "GET" && url.pathname === "/api/demo/activity-hub") {
+    const data = await store.getDemoActivityHubData(getHubBaseUrl(env));
     return json({ ok: true, ...data });
   }
   if (request.method === "GET" && url.pathname === "/api/demo/thermometer") {
@@ -2529,6 +2536,36 @@ export class HubData extends DurableObject {
     };
   }
 
+  async getDemoActivityHubData(hubBaseUrl) {
+    const [executiveData, podiumData, commentsData, accessDashboard, totalCommentsCount] = await Promise.all([
+      this.getDemoExecutivePills(hubBaseUrl),
+      this.getCollaborativePodium("es"),
+      this.getRecentComments({ lang: "es", limit: 6, hubBaseUrl }),
+      this.getAccessDashboard(),
+      this.getTotalCommentsCount(),
+    ]);
+
+    const totalEntries = new Set(
+      PUBLISHED_PILLS
+        .filter((pill) => pill.lang === "es")
+        .map((pill) => pill.slug)
+    ).size;
+
+    return {
+      summary: {
+        totalEntries,
+        workingCount: Number(executiveData?.counts?.working || 0),
+        activeAuthorsCount: Array.isArray(podiumData?.ranking) ? podiumData.ranking.length : 0,
+        totalCommentsCount,
+        recentCommentsCount: Array.isArray(commentsData) ? commentsData.length : 0,
+        totalPdfReads: Number(accessDashboard?.summary?.pdfOpenCount || 0),
+      },
+      podium: podiumData?.ranking || [],
+      comments: commentsData || [],
+      updatedAt: executiveData?.updatedAt || null,
+    };
+  }
+
   async getDemoCorporatePills(hubBaseUrl) {
     const pills = DEMO_CORPORATE_LIBRARY.map((pill) => ({
       slug: pill.slug,
@@ -3049,6 +3086,15 @@ export class HubData extends DurableObject {
     return items
       .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
       .slice(0, limit);
+  }
+
+  async getTotalCommentsCount() {
+    const entries = await this.ctx.storage.list({ prefix: "comments:" });
+    let total = 0;
+    for (const [, comments] of entries) {
+      total += Array.isArray(comments) ? comments.length : 0;
+    }
+    return total;
   }
 
   async getAccessDashboard() {
