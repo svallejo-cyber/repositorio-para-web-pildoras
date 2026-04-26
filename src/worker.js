@@ -139,6 +139,316 @@ const PROJECT_STATUS_META = {
   },
 };
 
+const RADAR_FUNCTION_ORDER = [
+  "direction_transformation",
+  "commercial_export_portfolio",
+  "operations_plant_logistics",
+  "finance_admin_risk",
+  "quality_regulation_sustainability",
+  "people_organization_knowledge",
+];
+
+const RADAR_FUNCTION_META = {
+  direction_transformation: {
+    id: "direction_transformation",
+    label: "Direccion y transformacion",
+    shortLabel: "Direccion",
+    description: "Direccion, estrategia, criterio directivo y capacidad interna para convertir la AI en sistema de empresa.",
+  },
+  commercial_export_portfolio: {
+    id: "commercial_export_portfolio",
+    label: "Comercial, exportacion y portfolio",
+    shortLabel: "Comercial y exportacion",
+    description: "Mercado, clientes, pricing, exportacion, portfolio y decisiones comerciales con criterio de posicionamiento.",
+  },
+  operations_plant_logistics: {
+    id: "operations_plant_logistics",
+    label: "Operaciones, planta y logistica",
+    shortLabel: "Operaciones y logistica",
+    description: "Fabrica, almacen, mantenimiento, muelles y planificacion operativa del trabajo diario.",
+  },
+  finance_admin_risk: {
+    id: "finance_admin_risk",
+    label: "Finanzas, administracion y riesgo",
+    shortLabel: "Finanzas y riesgo",
+    description: "Facturas, conciliacion, gastos, impagos y circuitos administrativos donde importa el control economico.",
+  },
+  quality_regulation_sustainability: {
+    id: "quality_regulation_sustainability",
+    label: "Calidad, regulacion y sostenibilidad",
+    shortLabel: "Calidad y sostenibilidad",
+    description: "Calidad, formulacion, seguridad, SAT, residuos, huella de carbono y trazabilidad tecnico-regulatoria.",
+  },
+  people_organization_knowledge: {
+    id: "people_organization_knowledge",
+    label: "Personas, organizacion y conocimiento",
+    shortLabel: "Personas y organizacion",
+    description: "Onboarding, coordinacion de personas, conocimiento interno y procesos que mejoran como trabaja la organizacion.",
+  },
+};
+
+const RADAR_THEME_ORDER = [
+  "document_automation",
+  "workflow_traceability",
+  "control_alerts_compliance",
+  "dashboards_data_reading",
+  "operational_planning",
+  "market_pricing_intelligence",
+  "ai_culture_capability",
+];
+
+const RADAR_THEME_META = {
+  document_automation: {
+    id: "document_automation",
+    label: "Automatizacion documental",
+    description: "Lectura, extraccion o generacion automatica de documentos y datos atrapados en ficheros.",
+  },
+  workflow_traceability: {
+    id: "workflow_traceability",
+    label: "Workflow y trazabilidad",
+    description: "Procesos conectados de punta a punta, expedientes unicos, carpetas vivas y circuitos con memoria.",
+  },
+  control_alerts_compliance: {
+    id: "control_alerts_compliance",
+    label: "Control, alertas y compliance",
+    description: "Control automatico, validacion, alertas, permisos, desviaciones y criterio auditable.",
+  },
+  dashboards_data_reading: {
+    id: "dashboards_data_reading",
+    label: "Cuadros de mando y lectura de datos",
+    description: "Lectura visual y analitica de datos para entender mejor el negocio, la operacion o la realidad historica.",
+  },
+  operational_planning: {
+    id: "operational_planning",
+    label: "Planificacion operativa",
+    description: "Secuenciacion, turnos, carga de trabajo, citas, mantenimiento y planificacion del trabajo futuro.",
+  },
+  market_pricing_intelligence: {
+    id: "market_pricing_intelligence",
+    label: "Inteligencia comercial, mercado y pricing",
+    description: "Prospeccion, monitorizacion competitiva, pricing, portfolio y lectura de mercado para decidir mejor.",
+  },
+  ai_culture_capability: {
+    id: "ai_culture_capability",
+    label: "Cultura AI y capacidad interna",
+    description: "Construccion de criterio, aprendizaje, comunidad y capacidad organizativa alrededor de la AI.",
+  },
+};
+
+const RADAR_CLASSIFICATION_OVERRIDES = {
+  "pildora-5": { functionId: "finance_admin_risk", themeId: "control_alerts_compliance" },
+  "pildora-6": { functionId: "direction_transformation", themeId: "ai_culture_capability" },
+  "colaborativa-1": { functionId: "commercial_export_portfolio", themeId: "document_automation" },
+  "colaborativa-2": { functionId: "operations_plant_logistics", themeId: "dashboards_data_reading" },
+  "colaborativa-3": { functionId: "operations_plant_logistics", themeId: "dashboards_data_reading" },
+  "colaborativa-4": { functionId: "operations_plant_logistics", themeId: "control_alerts_compliance" },
+  "colaborativa-5": { functionId: "people_organization_knowledge", themeId: "ai_culture_capability" },
+  "colaborativa-6": { functionId: "operations_plant_logistics", themeId: "operational_planning" },
+  "colaborativa-7": { functionId: "direction_transformation", themeId: "market_pricing_intelligence" },
+  "colaborativa-8": { functionId: "direction_transformation", themeId: "dashboards_data_reading" },
+  "colaborativa-9": { functionId: "quality_regulation_sustainability", themeId: "document_automation" },
+  "colaborativa-10": { functionId: "commercial_export_portfolio", themeId: "workflow_traceability" },
+  "colaborativa-11": { functionId: "people_organization_knowledge", themeId: "workflow_traceability" },
+  "colaborativa-12": { functionId: "commercial_export_portfolio", themeId: "market_pricing_intelligence" },
+  "colaborativa-13": { functionId: "quality_regulation_sustainability", themeId: "workflow_traceability" },
+  "colaborativa-14": { functionId: "quality_regulation_sustainability", themeId: "control_alerts_compliance" },
+  "colaborativa-15": { functionId: "operations_plant_logistics", themeId: "operational_planning" },
+  "colaborativa-16": { functionId: "quality_regulation_sustainability", themeId: "control_alerts_compliance" },
+  "colaborativa-17": { functionId: "commercial_export_portfolio", themeId: "control_alerts_compliance" },
+  "colaborativa-18": { functionId: "finance_admin_risk", themeId: "workflow_traceability" },
+  "colaborativa-19": { functionId: "commercial_export_portfolio", themeId: "workflow_traceability" },
+  "colaborativa-20": { functionId: "commercial_export_portfolio", themeId: "control_alerts_compliance" },
+  "colaborativa-21": { functionId: "operations_plant_logistics", themeId: "operational_planning" },
+  "colaborativa-22": { functionId: "operations_plant_logistics", themeId: "workflow_traceability" },
+  "colaborativa-23": { functionId: "quality_regulation_sustainability", themeId: "document_automation" },
+  "colaborativa-24": { functionId: "quality_regulation_sustainability", themeId: "dashboards_data_reading" },
+  "colaborativa-25": { functionId: "people_organization_knowledge", themeId: "workflow_traceability" },
+  "colaborativa-26": { functionId: "operations_plant_logistics", themeId: "control_alerts_compliance" },
+  "colaborativa-27": { functionId: "commercial_export_portfolio", themeId: "control_alerts_compliance" },
+  "colaborativa-28": { functionId: "direction_transformation", themeId: "dashboards_data_reading" },
+  "colaborativa-29": { functionId: "operations_plant_logistics", themeId: "control_alerts_compliance" },
+  "colaborativa-30": { functionId: "finance_admin_risk", themeId: "workflow_traceability" },
+  "colaborativa-31": { functionId: "people_organization_knowledge", themeId: "operational_planning" },
+  "colaborativa-32": { functionId: "commercial_export_portfolio", themeId: "workflow_traceability" },
+  "colaborativa-33": { functionId: "quality_regulation_sustainability", themeId: "control_alerts_compliance" },
+  "colaborativa-34": { functionId: "people_organization_knowledge", themeId: "dashboards_data_reading" },
+  "colaborativa-35": { functionId: "finance_admin_risk", themeId: "document_automation" },
+  "colaborativa-36": { functionId: "operations_plant_logistics", themeId: "operational_planning" },
+  "colaborativa-37": { functionId: "direction_transformation", themeId: "ai_culture_capability" },
+  "colaborativa-38": { functionId: "commercial_export_portfolio", themeId: "market_pricing_intelligence" },
+  "colaborativa-39": { functionId: "commercial_export_portfolio", themeId: "market_pricing_intelligence" },
+  "colaborativa-40": { functionId: "commercial_export_portfolio", themeId: "workflow_traceability" },
+  "colaborativa-41": { functionId: "commercial_export_portfolio", themeId: "operational_planning" },
+};
+
+const RADAR_AUTO_RULES = {
+  functions: [
+    {
+      id: "direction_transformation",
+      terms: [
+        ["estrategic", 4], ["estrateg", 3], ["direccion", 3], ["directiv", 3], ["comite", 4], ["vigilancia", 3],
+        ["innovacion", 3], ["capacidad", 2], ["criterio", 2], ["ia generativa", 4], ["mercado sector", 2],
+      ],
+    },
+    {
+      id: "commercial_export_portfolio",
+      terms: [
+        ["export", 4], ["cliente", 3], ["clientes", 3], ["comercial", 3], ["mercado", 3], ["pricing", 5],
+        ["precio", 4], ["precios", 4], ["descuento", 4], ["portfolio", 5], ["portafolio", 4], ["licit", 3],
+        ["pedido", 4], ["forecast", 5], ["prospeccion", 4], ["rhonatherm", 5], ["competencia", 3],
+      ],
+    },
+    {
+      id: "operations_plant_logistics",
+      terms: [
+        ["planta", 4], ["almacen", 4], ["logistic", 4], ["muelle", 5], ["envasado", 5], ["oee", 5],
+        ["linea", 3], ["produccion", 4], ["mantenimiento", 5], ["tintometr", 5], ["turno", 3], ["stock", 3],
+      ],
+    },
+    {
+      id: "finance_admin_risk",
+      terms: [
+        ["factura", 5], ["facturas", 5], ["gasto", 5], ["gastos", 5], ["concili", 5], ["banco", 4],
+        ["impago", 5], ["proveedor", 4], ["contabil", 4], ["finanza", 4], ["extracto", 4], ["tickelia", 5],
+      ],
+    },
+    {
+      id: "quality_regulation_sustainability",
+      terms: [
+        ["calidad", 5], ["sat", 5], ["seguridad", 4], ["ficha de seguridad", 6], ["documento de transporte", 6],
+        ["formul", 4], ["carbon", 5], ["huella", 5], ["residuo", 4], ["scrap", 5], ["implica", 5], ["dcs", 4],
+        ["densidad", 4], ["colorante", 4],
+      ],
+    },
+    {
+      id: "people_organization_knowledge",
+      terms: [
+        ["onboarding", 6], ["persona", 4], ["personas", 4], ["rrhh", 5], ["fichaje", 4], ["calendario", 5],
+        ["incorporacion", 5], ["formacion", 4], ["repositorio", 4], ["conocimiento", 4], ["equipo", 3],
+      ],
+    },
+  ],
+  themes: [
+    {
+      id: "document_automation",
+      terms: [["ocr", 5], ["pdf", 3], ["document", 4], ["ficha", 4], ["lectura", 2], ["extra", 3], ["archivo", 2], ["correo", 2]],
+    },
+    {
+      id: "workflow_traceability",
+      terms: [["trazabilidad", 6], ["expediente", 5], ["flujo", 5], ["workflow", 5], ["circuito", 4], ["carpeta", 4], ["proceso", 3], ["validacion", 3]],
+    },
+    {
+      id: "control_alerts_compliance",
+      terms: [["alerta", 5], ["control", 4], ["desviacion", 4], ["permiso", 3], ["cumpl", 3], ["auditable", 4], ["riesgo", 3], ["maximo", 3]],
+    },
+    {
+      id: "dashboards_data_reading",
+      terms: [["dashboard", 6], ["dato", 4], ["datos", 4], ["cuadro de mando", 6], ["lectura", 3], ["historico", 3], ["mapa", 3], ["analiza", 3]],
+    },
+    {
+      id: "operational_planning",
+      terms: [["planific", 6], ["turno", 4], ["cita", 5], ["carga de trabajo", 5], ["forecast", 4], ["secuencia", 4], ["mantenimiento", 4], ["calendario", 3]],
+    },
+    {
+      id: "market_pricing_intelligence",
+      terms: [["mercado", 5], ["precio", 5], ["precios", 5], ["pricing", 6], ["competencia", 4], ["sector", 3], ["portfolio", 5], ["prospeccion", 4], ["licit", 3]],
+    },
+    {
+      id: "ai_culture_capability",
+      terms: [["ia", 2], ["codex", 6], ["repositorio", 3], ["aprendiz", 3], ["comunidad", 4], ["innovacion", 3], ["casos de exito", 5], ["comite", 4]],
+    },
+  ],
+};
+
+function normalizeRadarText(value) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+}
+
+function decodeHtmlEntities(value) {
+  return String(value || "")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">");
+}
+
+function stripHtmlToText(value) {
+  return decodeHtmlEntities(String(value || ""))
+    .replace(/<script[\s\S]*?<\/script>/gi, " ")
+    .replace(/<style[\s\S]*?<\/style>/gi, " ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function extractRadarSourceTextFromHtml(html) {
+  const title = (html.match(/<title>([^<]+)<\/title>/i) || [null, ""])[1];
+  const h1 = (html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i) || [null, ""])[1];
+  const paragraphs = Array.from(html.matchAll(/<p[^>]*>([\s\S]*?)<\/p>/gi))
+    .slice(0, 6)
+    .map((match) => stripHtmlToText(match[1]))
+    .filter(Boolean);
+  return [title, stripHtmlToText(h1), ...paragraphs].filter(Boolean).join(" | ");
+}
+
+function scoreRadarRules(titleText, bodyText, rules) {
+  let winner = null;
+  for (const rule of rules) {
+    let score = 0;
+    let hits = 0;
+    for (const [term, weight] of rule.terms) {
+      if (titleText.includes(term)) {
+        score += weight * 2;
+        hits += 1;
+      } else if (bodyText.includes(term)) {
+        score += weight;
+        hits += 1;
+      }
+    }
+    if (!winner || score > winner.score || (score === winner.score && hits > winner.hits)) {
+      winner = { id: rule.id, score, hits };
+    }
+  }
+  return winner || { id: rules[0]?.id || "", score: 0, hits: 0 };
+}
+
+function inferRadarClassification({ slug, title, text }) {
+  const override = RADAR_CLASSIFICATION_OVERRIDES[slug];
+  if (override) {
+    return {
+      functionId: override.functionId,
+      themeId: override.themeId,
+      source: "curated",
+      confidence: 1,
+    };
+  }
+
+  const normalizedTitle = normalizeRadarText(title);
+  const normalizedBody = normalizeRadarText(text);
+  const functionWinner = scoreRadarRules(normalizedTitle, normalizedBody, RADAR_AUTO_RULES.functions);
+  const themeWinner = scoreRadarRules(normalizedTitle, normalizedBody, RADAR_AUTO_RULES.themes);
+
+  const confidence = Math.max(
+    0.35,
+    Math.min(
+      0.9,
+      Number((((functionWinner.score + themeWinner.score) / 24) || 0).toFixed(2)),
+    ),
+  );
+
+  return {
+    functionId: functionWinner.id || "direction_transformation",
+    themeId: themeWinner.id || "workflow_traceability",
+    source: "auto",
+    confidence,
+  };
+}
+
 function json(data, status = 200, headers = {}) {
   return new Response(JSON.stringify(data), {
     status,
@@ -456,6 +766,7 @@ function isPublicApi(pathname) {
   return pathname === "/api/collaborative-podium"
     || pathname === "/api/demo/thermometer"
     || pathname === "/api/demo/executive-pills"
+    || pathname === "/api/demo/radar"
     || pathname === "/api/demo/corporate-pills"
     || pathname === "/api/recent-comments";
 }
@@ -1029,6 +1340,10 @@ async function handlePublicApi(request, url, store, env) {
     const data = await store.getDemoExecutivePills(getHubBaseUrl(env));
     return json({ ok: true, ...data });
   }
+  if (request.method === "GET" && url.pathname === "/api/demo/radar") {
+    const data = await store.getDemoRadarData(getHubBaseUrl(env));
+    return json({ ok: true, ...data });
+  }
   if (request.method === "GET" && url.pathname === "/api/demo/thermometer") {
     const data = await store.getProjectStatusAdminData();
     return json({ ok: true, ...data });
@@ -1571,6 +1886,52 @@ export class HubData extends DurableObject {
   constructor(ctx, env) {
     super(ctx, env);
     this.ctx = ctx;
+    this.env = env;
+  }
+
+  async getRadarSourceTextForPill(pill, hubBaseUrl) {
+    const key = `radar-source:${pill.slug}`;
+    const cached = await this.ctx.storage.get(key);
+    if (cached?.text) return cached.text;
+
+    const requestUrl = new URL(pill.urlPath, hubBaseUrl).toString();
+    const response = await this.env.ASSETS.fetch(new Request(requestUrl));
+    if (!response.ok) {
+      return pill.title;
+    }
+
+    const html = await response.text();
+    const text = extractRadarSourceTextFromHtml(html) || pill.title;
+    await this.ctx.storage.put(key, {
+      slug: pill.slug,
+      urlPath: pill.urlPath,
+      text,
+      updatedAt: new Date().toISOString(),
+    });
+    return text;
+  }
+
+  async getRadarClassificationForPill(pill, hubBaseUrl) {
+    const sourceText = await this.getRadarSourceTextForPill(pill, hubBaseUrl);
+    const inferred = inferRadarClassification({
+      slug: pill.slug,
+      title: pill.title,
+      text: sourceText,
+    });
+    const functionMeta = RADAR_FUNCTION_META[inferred.functionId] || RADAR_FUNCTION_META.direction_transformation;
+    const themeMeta = RADAR_THEME_META[inferred.themeId] || RADAR_THEME_META.workflow_traceability;
+    return {
+      sourceText,
+      source: inferred.source,
+      confidence: inferred.confidence,
+      functionId: functionMeta.id,
+      functionLabel: functionMeta.label,
+      functionShortLabel: functionMeta.shortLabel,
+      functionDescription: functionMeta.description,
+      themeId: themeMeta.id,
+      themeLabel: themeMeta.label,
+      themeDescription: themeMeta.description,
+    };
   }
 
   async getComments(slug) {
@@ -2041,26 +2402,77 @@ export class HubData extends DurableObject {
 
   async getDemoExecutivePills(hubBaseUrl) {
     const statusData = await this.getProjectStatusAdminData();
-    const pills = statusData.pills.map((pill) => ({
-      slug: pill.slug,
-      title: pill.title,
-      author: pill.author,
-      authorEmail: pill.authorEmail,
-      avatar: pill.avatar,
-      publishedAt: pill.publishedAt,
-      publishedLabel: formatDateTime(pill.publishedAt, NOTIFICATION_TIMEZONE),
-      demoOrdinal: pill.demoOrdinal,
-      demoOrdinalLabel: pill.demoOrdinalLabel,
-      demoUrl: pill.demoUrl,
-      liveUrl: `${hubBaseUrl}${pill.urlPath}`,
-      status: pill.status,
-      statusLabel: pill.statusLabel,
-      statusHelper: pill.statusHelper,
-      statusMeta: pill.statusMeta,
+    const pills = await Promise.all(statusData.pills.map(async (pill) => {
+      const radar = await this.getRadarClassificationForPill(pill, hubBaseUrl);
+      return {
+        slug: pill.slug,
+        title: pill.title,
+        author: pill.author,
+        authorEmail: pill.authorEmail,
+        avatar: pill.avatar,
+        publishedAt: pill.publishedAt,
+        publishedLabel: formatDateTime(pill.publishedAt, NOTIFICATION_TIMEZONE),
+        demoOrdinal: pill.demoOrdinal,
+        demoOrdinalLabel: pill.demoOrdinalLabel,
+        demoUrl: pill.demoUrl,
+        liveUrl: `${hubBaseUrl}${pill.urlPath}`,
+        status: pill.status,
+        statusLabel: pill.statusLabel,
+        statusHelper: pill.statusHelper,
+        statusMeta: pill.statusMeta,
+        radar,
+      };
     }));
     return {
       updatedAt: statusData.updatedAt,
       counts: statusData.counts,
+      pills,
+    };
+  }
+
+  async getDemoRadarData(hubBaseUrl) {
+    const executiveData = await this.getDemoExecutivePills(hubBaseUrl);
+    const pills = executiveData.pills.map((pill) => ({
+      slug: pill.slug,
+      title: pill.title,
+      author: pill.author,
+      avatar: pill.avatar,
+      publishedAt: pill.publishedAt,
+      publishedLabel: pill.publishedLabel,
+      demoOrdinal: pill.demoOrdinal,
+      demoOrdinalLabel: pill.demoOrdinalLabel,
+      demoUrl: pill.demoUrl,
+      liveUrl: pill.liveUrl,
+      status: pill.status,
+      statusLabel: pill.statusLabel,
+      radar: pill.radar,
+    }));
+
+    const functions = RADAR_FUNCTION_ORDER.map((id) => {
+      const meta = RADAR_FUNCTION_META[id];
+      const items = pills.filter((pill) => pill.radar.functionId === id);
+      return {
+        ...meta,
+        count: items.length,
+        pills: items,
+      };
+    });
+
+    const themes = RADAR_THEME_ORDER.map((id) => {
+      const meta = RADAR_THEME_META[id];
+      const items = pills.filter((pill) => pill.radar.themeId === id);
+      return {
+        ...meta,
+        count: items.length,
+        pills: items,
+      };
+    });
+
+    return {
+      updatedAt: executiveData.updatedAt,
+      counts: executiveData.counts,
+      functions,
+      themes,
       pills,
     };
   }
