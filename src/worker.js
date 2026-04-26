@@ -3071,13 +3071,13 @@ export class HubData extends DurableObject {
       if (emailKey && !publishedAuthorsByEmail.has(emailKey)) {
         publishedAuthorsByEmail.set(emailKey, {
           name: pill.author,
-          avatar: pill.avatar || DEFAULT_PROFILE_AVATAR,
+          avatar: cleanAvatar(pill.avatar || ""),
         });
       }
       if (nameKey && !publishedAuthorsByName.has(nameKey)) {
         publishedAuthorsByName.set(nameKey, {
           name: pill.author,
-          avatar: pill.avatar || DEFAULT_PROFILE_AVATAR,
+          avatar: cleanAvatar(pill.avatar || ""),
         });
       }
     }
@@ -3107,7 +3107,7 @@ export class HubData extends DurableObject {
           commenterName,
           commenterDisplayName: profile?.name || commenterName,
           commenterEmail: commenterEmail || null,
-          commenterAvatar: profile?.avatar || DEFAULT_PROFILE_AVATAR,
+          commenterAvatar: cleanAvatar(profile?.avatar || "") || null,
           message: comment.message || "",
           createdAt: comment.createdAt || null,
           updatedAt: comment.updatedAt || null,
