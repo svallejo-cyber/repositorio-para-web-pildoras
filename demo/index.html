@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>El hogar Isaval para la AI</title>
+  <title>Hub IA Isaval</title>
 
   <style>
     :root {
@@ -14,8 +14,6 @@
       --accent: #0f5f94;
       --accent-dark: #10314d;
       --line: #d8e0e8;
-      --soft: #edf5fb;
-      --warm: #f9efe4;
     }
     * { box-sizing: border-box; }
     body {
@@ -87,18 +85,18 @@
     .hero {
       display:grid;
       grid-template-columns: minmax(0, 1.35fr) minmax(280px, .8fr);
-      gap: 26px;
+      gap: 24px;
       align-items:end;
     }
     .hero h1 {
       margin: 10px 0 12px;
-      font-size: clamp(2.2rem, 4vw, 3.6rem);
+      font-size: clamp(2.3rem, 4vw, 3.8rem);
       line-height: 1.02;
       letter-spacing: -.03em;
     }
     .hero p {
       margin: 0;
-      max-width: 760px;
+      max-width: 720px;
       font-size: 17px;
       line-height: 1.6;
       color: rgba(255,255,255,.92);
@@ -107,7 +105,7 @@
       background: rgba(255,255,255,.1);
       border: 1px solid rgba(255,255,255,.18);
       border-radius: 18px;
-      padding: 18px 18px 16px;
+      padding: 18px;
       backdrop-filter: blur(6px);
     }
     .manifesto strong {
@@ -118,48 +116,19 @@
       text-transform:uppercase;
     }
     .manifesto p {
+      margin: 0;
       font-size:15px;
       line-height:1.6;
     }
     main { padding: 30px 34px 38px; }
-    .section-intro {
-      display:grid;
-      grid-template-columns: 1.15fr .85fr;
-      gap: 18px;
-      align-items:start;
-      margin-bottom: 24px;
-    }
-    .statement {
-      padding: 18px 20px;
-      border-radius: 18px;
-      border: 1px solid #cfddea;
-      background: linear-gradient(180deg, #f8fbfe 0%, #eef5fb 100%);
-    }
-    .statement h2, .focus h2 {
-      margin:0 0 10px;
-      color: var(--accent-dark);
-      font-size: 20px;
-    }
-    .statement p, .focus p { margin:0; color:#32485b; }
-    .focus {
-      padding: 18px 20px;
-      border-radius: 18px;
-      border: 1px solid #ead9c7;
-      background: linear-gradient(180deg, #fffaf4 0%, #f9efe4 100%);
-    }
-    .grid {
-      display:grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 16px;
-    }
     .quick-access {
-      margin-bottom: 24px;
+      margin-bottom: 22px;
       border: 1px solid #cfddea;
       border-radius: 18px;
       background: linear-gradient(180deg, #f8fbfe 0%, #eef5fb 100%);
       padding: 18px 20px 20px;
       display: grid;
-      gap: 14px;
+      gap: 10px;
     }
     .quick-access h2 {
       margin: 0;
@@ -193,56 +162,68 @@
       color: #5c6b79;
       font-size: 14px;
       line-height: 1.45;
-      min-height: 58px;
     }
-    .card {
+    .actions {
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:6px;
+    }
+    .btn {
+      text-decoration:none;
+      border-radius:10px;
+      padding:10px 13px;
+      font-size:14px;
+      font-weight:700;
+      border:1px solid #0f5a8c;
+      color:#fff;
+      background:#0f5f94;
+      display:inline-block;
+    }
+    .btn.secondary {
+      background:#fff;
+      color:#10314d;
+      border-color:#cad8e5;
+    }
+    .thermo-panel {
+      margin-top: 18px;
       border:1px solid var(--line);
       border-radius:18px;
       padding:18px;
       background:#fbfdff;
       box-shadow: inset 0 1px 0 rgba(255,255,255,.7);
       display:grid;
-      gap:12px;
+      gap:10px;
     }
-    .card .kicker {
-      font-size:12px;
-      font-weight:700;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      color:#31516a;
-    }
-    .card h3 {
+    .thermo-panel h2 {
       margin:0;
       font-size:24px;
-      line-height:1.12;
       color:#10314d;
     }
-    .card p {
+    .thermo-panel p {
       margin:0;
       color:#32485b;
-      min-height:72px;
     }
-    .meta {
-      color:#5c6b79;
-      font-size:14px;
-    }
-    .content-block {
-      margin-top: 26px;
-      display: grid;
-      gap: 18px;
-    }
+    .thermo-mini-metric { display:flex; align-items:baseline; gap:8px; margin-top:2px; }
+    .thermo-mini-metric strong { font-size:2rem; line-height:1; color:#10314d; }
+    .thermo-mini-metric span { color:#5c6b79; font-weight:700; }
+    .thermo-mini-track { display:grid; grid-template-columns:repeat(20, minmax(0,1fr)); gap:4px; margin-top:6px; }
+    .thermo-mini-segment { height:12px; border-radius:999px; background:#e6ecf2; border:1px solid #d6dee7; }
+    .thermo-mini-segment.filled.red { background:#c23f3f; border-color:#c23f3f; }
+    .thermo-mini-segment.filled.amber { background:#dda42f; border-color:#dda42f; }
+    .thermo-mini-segment.filled.green { background:#289763; border-color:#289763; }
     .secondary-block {
       margin-top: 18px;
       border: 1px solid var(--line);
       border-radius: 18px;
       background: #fafcfe;
-      padding: 18px 20px 20px;
+      padding: 16px 18px 18px;
       display: grid;
-      gap: 14px;
+      gap: 10px;
     }
     .secondary-block h2 {
       margin: 0;
-      font-size: 22px;
+      font-size: 19px;
       color: #10314d;
     }
     .secondary-block p {
@@ -271,99 +252,6 @@
       color: #5c6b79;
       font-size: 14px;
       line-height: 1.45;
-      min-height: 58px;
-    }
-    .content-split {
-      display:grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap:16px;
-    }
-    .content-panel {
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:18px;
-      background:#fbfdff;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.7);
-      display:grid;
-      gap:12px;
-    }
-    .content-panel h2 {
-      margin:0;
-      font-size:24px;
-      color:#10314d;
-    }
-    .mini-list {
-      display:grid;
-      gap:12px;
-    }
-    .mini-card {
-      border:1px solid var(--line);
-      border-radius:14px;
-      background:#fff;
-      padding:14px;
-      display:grid;
-      gap:8px;
-    }
-    .mini-card h3 {
-      margin:0;
-      font-size:18px;
-      line-height:1.2;
-      color:#10314d;
-    }
-    .mini-kicker {
-      font-size:12px;
-      font-weight:700;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      color:#31516a;
-    }
-    .badge {
-      display:inline-flex;
-      align-items:center;
-      border-radius:999px;
-      padding:5px 10px;
-      font-size:12px;
-      font-weight:700;
-    }
-    .badge-idea { background:#eef2f6; color:#52606c; border:1px solid #cfd8e3; }
-    .badge-progress { background:#fff1d6; color:#8a5a00; border:1px solid #f0d28d; }
-    .badge-working { background:#e5f6ec; color:#0f6b3c; border:1px solid #9fd0b0; }
-    .hashtags {
-      color:#0f5f94;
-      font-weight:700;
-      line-height:1.5;
-      font-size:14px;
-    }
-    .actions {
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:6px;
-    }
-    .thermo-card { position: relative; }
-    .thermo-mini-metric { display:flex; align-items:baseline; gap:8px; margin-top:4px; }
-    .thermo-mini-metric strong { font-size:2rem; line-height:1; color:#10314d; }
-    .thermo-mini-metric span { color:#5c6b79; font-weight:700; }
-    .thermo-mini-track { display:grid; grid-template-columns:repeat(20, minmax(0,1fr)); gap:4px; margin-top:8px; }
-    .thermo-mini-segment { height:12px; border-radius:999px; background:#e6ecf2; border:1px solid #d6dee7; }
-    .thermo-mini-segment.filled.red { background:#c23f3f; border-color:#c23f3f; }
-    .thermo-mini-segment.filled.amber { background:#dda42f; border-color:#dda42f; }
-    .thermo-mini-segment.filled.green { background:#289763; border-color:#289763; }
-    .btn {
-      text-decoration:none;
-      border-radius:10px;
-      padding:10px 13px;
-      font-size:14px;
-      font-weight:700;
-      border:1px solid #0f5a8c;
-      color:#fff;
-      background:#0f5f94;
-      display:inline-block;
-    }
-    .btn.secondary {
-      background:#fff;
-      color:#10314d;
-      border-color:#cad8e5;
     }
     footer {
       border-top:1px solid var(--line);
@@ -373,17 +261,15 @@
       background:#fafcfe;
     }
     @media (max-width: 900px) {
-      .hero, .section-intro, .grid, .content-split, .quick-access-grid, .secondary-grid { grid-template-columns: 1fr; }
+      .hero, .quick-access-grid, .secondary-grid { grid-template-columns: 1fr; }
       .hero { align-items:start; }
     }
     @media (max-width: 760px) {
       .page { margin: 14px; }
       header, main, footer { padding-left:18px; padding-right:18px; }
       .hero h1 { font-size: 2.2rem; }
-      .card h3 { font-size: 21px; }
     }
   </style>
-
 </head>
 <body>
   <article class="page">
@@ -392,7 +278,7 @@
         <div class="brand">
           <img src="/assets/brand/isaval-global-logo.png" alt="Isaval" />
           <div>
-            <div class="eyebrow">Hub interno AI</div>
+            <div class="eyebrow">Isaval Global</div>
             <div style="font-weight:700; font-size:14px; opacity:.9;">Hub IA Isaval</div>
           </div>
         </div>
@@ -411,146 +297,91 @@
       </div>
       <div class="hero">
         <div>
-          <div class="eyebrow">El hogar Isaval para la AI</div>
-          <h1>Un solo lugar para orientar, ejecutar y seguir la inteligencia artificial dentro de Isaval.</h1>
-          <p>El Hub se convierte en la casa común de la AI en la compañía: dirección, proyectos, avance real y conversación visible.</p>
+          <div class="eyebrow">Inicio</div>
+          <h1>Hub IA Isaval</h1>
+          <p>Dirección, proyectos, avance y actividad en un solo lugar.</p>
         </div>
         <aside class="manifesto">
-          <strong>Idea fuerza</strong>
-          <p>La AI no es una moda lateral ni un laboratorio sin consecuencias. Es una nueva capa de capacidad para decidir mejor, operar con más criterio, aprender antes y mover la compañía con más velocidad y menos fricción.</p>
+          <strong>Punto de partida</strong>
+          <p>Entra, orienta, ejecuta y sigue el progreso real del Hub sin pasar por capas innecesarias.</p>
         </aside>
       </div>
     </header>
     <main>
-      <section class="section-intro">
-        <div class="statement">
-          <h2>Qué encontrarás aquí</h2>
-          <p>El Hub se reorganiza para que la lectura sea más simple: dirección, proyectos, avance real y actividad visible.</p>
-        </div>
-        <div class="focus">
-          <h2>Qué queremos provocar</h2>
-          <p>Más claridad, más participación y una visión más útil de cómo Isaval está convirtiendo la AI en trabajo real.</p>
-        </div>
-      </section>
-
       <section class="quick-access">
         <div>
           <h2>Entrada rápida</h2>
-          <p>Si quieres usar ya el nuevo hub como espacio operativo, entra por aquí. Estas cuatro puertas son las importantes para navegar y trabajar.</p>
+          <p>Las cuatro puertas principales del Hub.</p>
         </div>
         <div class="quick-access-grid">
           <article class="quick-access-card">
-            <div class="kicker">Acceso clave 01</div>
-            <strong>Píldoras corporativas</strong>
-            <span>Marco de dirección, propósito y criterio general del Hub.</span>
+            <div class="eyebrow">Acceso 01</div>
+            <strong>Dirección</strong>
+            <span>Marco, criterio y mensajes corporativos del Hub.</span>
             <div class="actions"><a class="btn" href="/demo/pildoras-corporativas/">Abrir</a></div>
           </article>
           <article class="quick-access-card">
-            <div class="kicker">Acceso clave 02</div>
-            <strong>Píldoras ejecutivas</strong>
-            <span>Casos largos y fichas donde cada autor ya puede actualizar su estado.</span>
+            <div class="eyebrow">Acceso 02</div>
+            <strong>Proyectos</strong>
+            <span>Casos del equipo con ficha, estado y seguimiento.</span>
             <div class="actions"><a class="btn" href="/demo/pildoras-ejecutivas/">Abrir</a></div>
           </article>
           <article class="quick-access-card">
-            <div class="kicker">Acceso clave 03</div>
+            <div class="eyebrow">Acceso 03</div>
             <strong>Termómetro AI</strong>
-            <span>Lectura global de implantación real contando solo las píldoras en WORKING.</span>
+            <span>Lectura global del avance real del Hub.</span>
             <div class="actions"><a class="btn" href="/demo/termometro-ai/">Abrir</a></div>
           </article>
           <article class="quick-access-card">
-            <div class="kicker">Acceso clave 04</div>
+            <div class="eyebrow">Acceso 04</div>
             <strong>Actividad Hub</strong>
-            <span>Pulso visible de publicaciones, comentarios y participación real del equipo.</span>
+            <span>Publicaciones, lecturas, comentarios y participación.</span>
             <div class="actions"><a class="btn" href="/demo/actividad-hub/">Abrir</a></div>
           </article>
         </div>
       </section>
 
       <section data-project-status-strip data-project-status-variant="home"></section>
-      <section class="grid">
-        <article class="card">
-          <div class="kicker">Sección 01</div>
-          <h3>Píldoras corporativas</h3>
-          <p>Textos aportados por la propiedad para fijar propósito, criterio general y dirección de fondo del Hub.</p>
-          <div class="hashtags">#PropositoIsaval #DireccionYSentido #MarcoComun</div>
-          <div class="actions"><a class="btn" href="/demo/pildoras-corporativas/">Abrir sección</a></div>
-        </article>
 
-        <article class="card">
-          <div class="kicker">Sección 02</div>
-          <h3>Píldoras ejecutivas</h3>
-          <p>Aportaciones largas del equipo con proyecto estructurado, desarrollo serio o ejecución ya en marcha.</p>
-          <div class="hashtags">#CasosConTraccion #EjecucionReal #AprendizajeAplicado</div>
-          <div class="actions"><a class="btn" href="/demo/pildoras-ejecutivas/">Abrir sección</a></div>
-        </article>
-
-        <article class="card thermo-card" id="thermo-home-card">
-          <div class="kicker">Sección 03</div>
-          <h3>Termómetro AI</h3>
-          <p>Escala de 20 hitos para medir implantación real: solo los proyectos en WORKING elevan el termómetro del Hub.</p>
-          <div class="thermo-mini-metric"><strong id="thermo-home-working">0</strong><span>/ 20</span></div>
-          <div class="thermo-mini-track" id="thermo-home-track"></div>
-          <div class="hashtags">#DeLaIdeaALaTraccion #EstadoReal #ProgresoVisible</div>
-          <div class="actions"><a class="btn" href="/demo/termometro-ai/">Abrir sección</a></div>
-        </article>
-
-        <article class="card">
-          <div class="kicker">Sección 04</div>
-          <h3>Actividad Hub</h3>
-          <p>Lectura del pulso del Hub a través de publicaciones, comentarios, conversación y participación real del equipo.</p>
-          <div class="hashtags">#ConversacionActiva #ParticipacionReal #PulsoDelHub</div>
-          <div class="actions"><a class="btn" href="/demo/actividad-hub/">Abrir sección</a></div>
-        </article>
+      <section class="thermo-panel" id="thermo-home-card">
+        <div class="eyebrow">Señal de avance</div>
+        <h2>Termómetro AI</h2>
+        <p>Escala de 20 hitos para leer implantación real. Solo los proyectos en WORKING elevan el termómetro del Hub.</p>
+        <div class="thermo-mini-metric"><strong id="thermo-home-working">0</strong><span>/ 20</span></div>
+        <div class="thermo-mini-track" id="thermo-home-track"></div>
+        <div class="actions"><a class="btn secondary" href="/demo/termometro-ai/">Ver detalle</a></div>
       </section>
 
       <section class="secondary-block">
         <div>
-          <h2>Capas complementarias</h2>
-          <p>Estas cuatro secciones siguen disponibles para enriquecer el Hub, pero no hacen falta para entrar en su núcleo principal.</p>
+          <h2>Otras secciones</h2>
+          <p>Capas complementarias del Hub disponibles desde aquí.</p>
         </div>
         <div class="secondary-grid">
           <article class="secondary-card">
-            <div class="kicker">Capa 01</div>
-            <strong>Píldoras express</strong>
-            <span>Espacio reservado para futuras aportaciones breves de la comunidad, con lógica propia y sin mezclarlo con otras bibliotecas.</span>
+            <div class="eyebrow">Sección 01</div>
+            <strong>Express</strong>
+            <span>Espacio para aportaciones breves de la comunidad.</span>
             <div class="actions"><a class="btn secondary" href="/demo/pildoras-express/">Abrir</a></div>
           </article>
           <article class="secondary-card">
-            <div class="kicker">Capa 02</div>
+            <div class="eyebrow">Sección 02</div>
             <strong>Radar</strong>
-            <span>Mapa de señales, referencias y agrupaciones que ayudan a leer con más criterio lo que conviene mirar.</span>
+            <span>Clasificación de proyectos por función y temática.</span>
             <div class="actions"><a class="btn secondary" href="/demo/radar/">Abrir</a></div>
           </article>
           <article class="secondary-card">
-            <div class="kicker">Capa 03</div>
+            <div class="eyebrow">Sección 03</div>
             <strong>Academy AI</strong>
-            <span>Recursos para aprender mejor: guías, materiales y prácticas que aceleran criterio y autonomía.</span>
+            <span>Guías y recursos para aprender mejor.</span>
             <div class="actions"><a class="btn secondary" href="/demo/academy-ai/">Abrir</a></div>
           </article>
           <article class="secondary-card">
-            <div class="kicker">Capa 04</div>
+            <div class="eyebrow">Sección 04</div>
             <strong>Eventos AI Isaval</strong>
-            <span>Sesiones, encuentros y reconocimientos que mantienen ritmo, aprendizaje y comunidad en movimiento.</span>
+            <span>Sesiones, encuentros y vida del Hub.</span>
             <div class="actions"><a class="btn secondary" href="/demo/eventos-ai-isaval/">Abrir</a></div>
           </article>
-        </div>
-      </section>
-
-      <section class="content-block">
-        <div class="content-split">
-          <section class="content-panel">
-            <div class="kicker">Biblioteca ya cargada</div>
-            <h2>Corporativas</h2>
-            <p>Marco de propiedad y dirección para dar propósito y contexto común al Hub.</p>
-            <div class="mini-list" id="home-corporate-list"></div>
-          </section>
-
-          <section class="content-panel">
-            <div class="kicker">Tracción actual</div>
-            <h2>Ejecutivas destacadas</h2>
-            <p>Casos largos ya reordenados dentro del cuerpo ejecutivo del Hub.</p>
-            <div class="mini-list" id="home-executive-list"></div>
-          </section>
         </div>
       </section>
     </main>
@@ -559,12 +390,6 @@
 <script src="/demo/assets/project-status-strip.js"></script>
 <script>
 (function(){
-  function badgeClass(status){
-    if (status === 'working') return 'badge-working';
-    if (status === 'in_progress') return 'badge-progress';
-    return 'badge-idea';
-  }
-
   function thermoZoneClass(index){
     if (index <= 6) return 'red';
     if (index <= 13) return 'amber';
@@ -605,68 +430,7 @@
     window.location.href = '/login/';
   }
 
-    async function loadHomeLibraries(){
-      var corporateEl = document.getElementById('home-corporate-list');
-      var executiveEl = document.getElementById('home-executive-list');
-      if (!corporateEl || !executiveEl) return;
-
-    function renderCorporate(items){
-      corporateEl.innerHTML = items.map(function(item){
-        return '<article class="mini-card">'
-          + '<div class="mini-kicker">' + (item.demoOrdinalLabel || '') + '</div>'
-          + '<h3>' + item.title + '</h3>'
-          + '<div class="meta">' + item.author + '</div>'
-          + '<div class="actions"><a class="btn secondary" href="' + item.demoUrl + '">Abrir</a></div>'
-          + '</article>';
-      }).join('');
-    }
-
-    function renderExecutive(items){
-      executiveEl.innerHTML = items.map(function(item){
-        return '<article class="mini-card">'
-          + '<div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;">'
-          + '<div class="mini-kicker">' + (item.demoOrdinalLabel || '') + '</div>'
-          + '<span class="badge ' + badgeClass(item.status) + '">' + item.statusLabel + '</span>'
-          + '</div>'
-          + '<h3>' + item.title + '</h3>'
-          + '<div class="meta">' + item.author + '</div>'
-          + '<div class="actions"><a class="btn secondary" href="' + item.demoUrl + '">Abrir</a></div>'
-          + '</article>';
-      }).join('');
-    }
-
-    var embeddedCorporate = window.__DEMO_CORPORATE_PILLS__;
-    var embeddedExecutive = window.__DEMO_EXECUTIVE_PILLS__;
-    if (embeddedCorporate && embeddedExecutive) {
-      renderCorporate((embeddedCorporate.pills || []).slice(0, 4));
-      var embeddedExecutiveItems = (embeddedExecutive.pills || []).slice().sort(function(a, b){
-        var order = { working: 0, in_progress: 1, idea: 2 };
-        return (order[a.status] ?? 9) - (order[b.status] ?? 9) || (a.demoOrdinal || 999) - (b.demoOrdinal || 999);
-      }).slice(0, 6);
-      renderExecutive(embeddedExecutiveItems);
-    }
-    try {
-      var responses = await Promise.all([
-        fetch('/api/demo/corporate-pills', { credentials: 'same-origin', cache: 'no-store' }),
-        fetch('/api/demo/executive-pills', { credentials: 'same-origin', cache: 'no-store' })
-      ]);
-      if (!responses[0].ok || !responses[1].ok) throw new Error('load_failed');
-      var corporateData = await responses[0].json();
-      var executiveData = await responses[1].json();
-      renderCorporate((corporateData.pills || []).slice(0, 4));
-      var executiveItems = (executiveData.pills || []).slice().sort(function(a, b){
-        var order = { working: 0, in_progress: 1, idea: 2 };
-        return (order[a.status] ?? 9) - (order[b.status] ?? 9) || (a.demoOrdinal || 999) - (b.demoOrdinal || 999);
-      }).slice(0, 6);
-      renderExecutive(executiveItems);
-    } catch (error) {
-      if (!embeddedCorporate) corporateEl.innerHTML = '<div class="meta">No se ha podido cargar la biblioteca corporativa.</div>';
-      if (!embeddedExecutive) executiveEl.innerHTML = '<div class="meta">No se ha podido cargar la biblioteca ejecutiva.</div>';
-    }
-  }
-
   loadHomeThermometer();
-  loadHomeLibraries();
 
   document.addEventListener('click', function(event){
     var trigger = event.target.closest('[data-logout]');
