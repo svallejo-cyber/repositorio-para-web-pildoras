@@ -171,7 +171,7 @@
         </div>
         <div class="panel">
           <h2>Lectura rápida</h2>
-          <p>Los estados editoriales sirven para ordenar madurez. Pero solo <strong>WORKING</strong> suma en el contador global.</p>
+          <p>Los estados editoriales sirven para ordenar madurez. Cada autor puede declarar el estado real de su píldora, y solo <strong>WORKING</strong> suma en el contador global.</p>
           <div class="status-grid">
             <div class="status-card"><strong id="idea-count">0</strong><span>IDEA</span></div>
             <div class="status-card"><strong id="progress-count">0</strong><span>IN PROGRESS</span></div>
@@ -236,7 +236,7 @@
 
         const workingPills = (data.pills || []).filter((pill) => pill.status === 'working');
         if (!workingPills.length) {
-          workingListEl.innerHTML = '<div class="working-item"><strong>Todavía no hay proyectos en WORKING.</strong><div>Cuando una píldora pase a uso real y el administrador la marque como WORKING, aparecerá aquí y sumará en el termómetro.</div></div>';
+          workingListEl.innerHTML = '<div class="working-item"><strong>Todavía no hay proyectos en WORKING.</strong><div>Cuando una píldora pase a uso real y su autor o administración la marque como WORKING, aparecerá aquí y sumará en el termómetro.</div></div>';
           return;
         }
 

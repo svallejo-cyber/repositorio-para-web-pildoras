@@ -258,6 +258,25 @@ function getProjectStatusMeta(value) {
   return PROJECT_STATUS_META[normalizeProjectStatus(value)] || PROJECT_STATUS_META.idea;
 }
 
+function getStoredProjectStatusDetails(value) {
+  if (value && typeof value === "object" && !Array.isArray(value)) {
+    return {
+      status: normalizeProjectStatus(value.status),
+      updatedAt: value.updatedAt ? String(value.updatedAt) : null,
+      updatedByEmail: cleanEmail(value.updatedByEmail || ""),
+      updatedByName: cleanName(value.updatedByName || ""),
+      updatedByRole: value.updatedByRole === "admin" ? "admin" : "author",
+    };
+  }
+  return {
+    status: normalizeProjectStatus(value),
+    updatedAt: null,
+    updatedByEmail: "",
+    updatedByName: "",
+    updatedByRole: "author",
+  };
+}
+
 function isValidEmail(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
@@ -454,6 +473,15 @@ function getDemoProjectSlug(pathname) {
   return match ? normalizeSlug(match[1]) : "";
 }
 
+function canEditProjectStatus(pill, viewer) {
+  if (!pill || !viewer) return false;
+  if (!DEMO_EXECUTIVE_LIBRARY.some((item) => item.slug === pill.slug)) return false;
+  if (viewer.isAdmin) return true;
+  const authorEmail = cleanEmail(pill.authorEmail || "");
+  const viewerEmail = cleanEmail(viewer.email || "");
+  return Boolean(authorEmail && viewerEmail && authorEmail === viewerEmail);
+}
+
 async function getAuthenticatedSession(request, store) {
   const cookies = parseCookies(request);
   const token = cookies[SESSION_COOKIE];
@@ -474,7 +502,7 @@ async function fetchAssetAtPath(request, env, pathname) {
   return env.ASSETS.fetch(new Request(url.toString(), request));
 }
 
-async function decorateDemoProjectResponse(response, pathname, store, env) {
+async function decorateDemoProjectResponse(response, pathname, store, env, viewer = null) {
   const contentType = String(response.headers.get("content-type") || "").toLowerCase();
   if (!contentType.includes("text/html")) return response;
 
@@ -485,6 +513,11 @@ async function decorateDemoProjectResponse(response, pathname, store, env) {
   const corporateData = await store.getDemoCorporatePills(hubBaseUrl);
   const commentsData = await store.getRecentComments({ lang: "es", limit: 6, hubBaseUrl });
   const podiumData = await store.getCollaborativePodium("es");
+  const demoViewer = viewer ? {
+    email: cleanEmail(viewer.email || ""),
+    name: cleanName(viewer.name || ""),
+    isAdmin: Boolean(viewer.isAdmin),
+  } : null;
   const statusScript = `<script>
 window.__DEMO_BUILD__=${serializeForInlineScript(DEMO_BUILD)};
 window.__DEMO_PROJECT_STATUS__=${serializeForInlineScript(statusData)};
@@ -492,6 +525,7 @@ window.__DEMO_EXECUTIVE_PILLS__=${serializeForInlineScript(executiveData)};
 window.__DEMO_CORPORATE_PILLS__=${serializeForInlineScript(corporateData)};
 window.__DEMO_RECENT_COMMENTS__=${serializeForInlineScript(commentsData)};
 window.__DEMO_COLLABORATIVE_PODIUM__=${serializeForInlineScript(podiumData)};
+window.__DEMO_VIEWER__=${serializeForInlineScript(demoViewer)};
 </script>`;
 
   const slug = getDemoProjectSlug(pathname);
@@ -500,6 +534,7 @@ window.__DEMO_COLLABORATIVE_PODIUM__=${serializeForInlineScript(podiumData)};
   if (pill) {
     const statusEntry = await store.getProjectStatusEntry(slug);
     const meta = statusEntry.meta;
+    const editorEnabled = canEditProjectStatus(pill, demoViewer);
     badgeBlock = `
 <style>
   .demo-project-nav {
@@ -564,6 +599,63 @@ window.__DEMO_COLLABORATIVE_PODIUM__=${serializeForInlineScript(podiumData)};
     font-size: 13px;
     line-height: 1.35;
   }
+  .demo-project-status-editor {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(16, 27, 44, .12);
+    display: grid;
+    gap: 8px;
+  }
+  .demo-project-status-editor-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    opacity: .72;
+  }
+  .demo-project-status-editor-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+  }
+  .demo-project-status-editor select,
+  .demo-project-status-editor button {
+    border-radius: 10px;
+    border: 1px solid rgba(16, 27, 44, .18);
+    font: 600 13px Arial, sans-serif;
+  }
+  .demo-project-status-editor select {
+    min-width: 0;
+    padding: 9px 10px;
+    background: rgba(255,255,255,.82);
+    color: #143149;
+  }
+  .demo-project-status-editor button {
+    padding: 9px 12px;
+    background: #10314d;
+    color: #fff;
+    cursor: pointer;
+  }
+  .demo-project-status-editor button[disabled] {
+    opacity: .6;
+    cursor: wait;
+  }
+  .demo-project-status-editor-note {
+    font-size: 12px;
+    line-height: 1.4;
+    color: rgba(16, 49, 77, .82);
+  }
+  .demo-project-status-editor-feedback {
+    min-height: 16px;
+    font-size: 12px;
+    line-height: 1.35;
+  }
+  .demo-project-status-editor-feedback[data-tone="error"] {
+    color: #a12727;
+  }
+  .demo-project-status-editor-feedback[data-tone="success"] {
+    color: #0f6b3c;
+  }
   @media (max-width: 720px) {
     .demo-project-status-badge {
       top: auto;
@@ -589,8 +681,72 @@ window.__DEMO_COLLABORATIVE_PODIUM__=${serializeForInlineScript(podiumData)};
   <a href="/demo/actividad-hub/">Actividad Hub</a>
 </div>
 <div class="demo-project-status-badge">
-  <strong>${escapeHtml(meta.label)}</strong>
-  <span>${escapeHtml(meta.helper)}</span>
+  <strong id="demo-project-status-label">${escapeHtml(meta.label)}</strong>
+  <span id="demo-project-status-helper">${escapeHtml(meta.helper)}</span>
+  ${editorEnabled ? `
+  <div class="demo-project-status-editor" data-demo-project-status-editor>
+    <div class="demo-project-status-editor-label">${demoViewer.isAdmin ? "Edición admin" : "Actualiza tu estado"}</div>
+    <div class="demo-project-status-editor-row">
+      <select id="demo-project-status-select" aria-label="Estado del proyecto">
+        <option value="idea"${statusEntry.status === "idea" ? " selected" : ""}>IDEA</option>
+        <option value="in_progress"${statusEntry.status === "in_progress" ? " selected" : ""}>IN PROGRESS</option>
+        <option value="working"${statusEntry.status === "working" ? " selected" : ""}>WORKING</option>
+      </select>
+      <button type="button" id="demo-project-status-save">Guardar</button>
+    </div>
+    <div class="demo-project-status-editor-note">
+      ${demoViewer.isAdmin ? "Puedes corregir este estado como administración." : "Solo tú ves este control como autor de la píldora."}
+    </div>
+    <div class="demo-project-status-editor-feedback" id="demo-project-status-feedback"></div>
+  </div>
+  <script>
+    (function () {
+      const select = document.getElementById('demo-project-status-select');
+      const button = document.getElementById('demo-project-status-save');
+      const feedback = document.getElementById('demo-project-status-feedback');
+      const label = document.getElementById('demo-project-status-label');
+      const helper = document.getElementById('demo-project-status-helper');
+      const helpers = {
+        idea: ${serializeForInlineScript(PROJECT_STATUS_META.idea.helper)},
+        in_progress: ${serializeForInlineScript(PROJECT_STATUS_META.in_progress.helper)},
+        working: ${serializeForInlineScript(PROJECT_STATUS_META.working.helper)}
+      };
+      const labels = {
+        idea: ${serializeForInlineScript(PROJECT_STATUS_META.idea.label)},
+        in_progress: ${serializeForInlineScript(PROJECT_STATUS_META.in_progress.label)},
+        working: ${serializeForInlineScript(PROJECT_STATUS_META.working.label)}
+      };
+      if (!select || !button || !feedback || !label || !helper) return;
+      button.addEventListener('click', async function () {
+        const nextStatus = select.value;
+        button.disabled = true;
+        feedback.textContent = 'Guardando estado...';
+        feedback.dataset.tone = '';
+        try {
+          const response = await fetch('/api/demo/project-statuses', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ slug: ${serializeForInlineScript(slug)}, status: nextStatus })
+          });
+          const data = await response.json().catch(() => null);
+          if (!response.ok || !data || !data.ok) {
+            throw new Error((data && data.error) || 'save_failed');
+          }
+          label.textContent = labels[nextStatus] || labels.idea;
+          helper.textContent = helpers[nextStatus] || helpers.idea;
+          window.__DEMO_PROJECT_STATUS__ = data;
+          feedback.textContent = 'Estado actualizado. El termómetro ya cuenta este cambio.';
+          feedback.dataset.tone = 'success';
+        } catch (error) {
+          feedback.textContent = 'No se ha podido guardar el estado. Inténtalo de nuevo.';
+          feedback.dataset.tone = 'error';
+        } finally {
+          button.disabled = false;
+        }
+      });
+    })();
+  </script>` : ""}
 </div>`;
   }
 
@@ -614,7 +770,7 @@ window.__DEMO_COLLABORATIVE_PODIUM__=${serializeForInlineScript(podiumData)};
   });
 }
 
-async function serveDemoAsset(request, env, store) {
+async function serveDemoAsset(request, env, store, viewer = null) {
   const url = new URL(request.url);
   if (request.method === "GET" && !url.pathname.startsWith("/api/")) {
     const currentBuild = url.searchParams.get("dv");
@@ -636,12 +792,12 @@ async function serveDemoAsset(request, env, store) {
   }
   const demoResponse = await fetchAssetAtPath(request, env, demoPath);
   if (demoResponse.status !== 404) {
-    const decorated = await decorateDemoProjectResponse(demoResponse, demoPath, store, env);
+    const decorated = await decorateDemoProjectResponse(demoResponse, demoPath, store, env, viewer);
     return withNoStore(withHeader(decorated, "x-hub-variant", "demo"));
   }
   const livePath = demoPath.replace(/^\/demo/, "") || "/";
   const liveResponse = await fetchAssetAtPath(request, env, livePath);
-  const decorated = await decorateDemoProjectResponse(liveResponse, demoPath, store, env);
+  const decorated = await decorateDemoProjectResponse(liveResponse, demoPath, store, env, viewer);
   return withNoStore(withHeader(decorated, "x-hub-variant", "demo-fallback"));
 }
 
@@ -702,7 +858,11 @@ export default {
     }
 
     if (url.pathname.startsWith("/api/demo/")) {
-      const demoSession = session || adminSession;
+      const demoSession = session
+        ? { ...session, isAdmin: false }
+        : adminSession
+          ? { ...adminSession, isAdmin: true }
+          : null;
       if (!demoSession) return json({ error: "Unauthorized" }, 401);
       return handleApi(request, url, store, demoSession, env);
     }
@@ -719,11 +879,16 @@ export default {
     }
 
     if (isDemoPath(url.pathname)) {
-      if (!session && !adminSession) {
+      const demoSession = session
+        ? { ...session, isAdmin: false }
+        : adminSession
+          ? { ...adminSession, isAdmin: true }
+          : null;
+      if (!demoSession) {
         const next = encodeURIComponent(url.pathname + url.search);
         return redirect(`/login/?next=${next}`);
       }
-      return serveDemoAsset(request, env, store);
+      return serveDemoAsset(request, env, store, demoSession);
     }
 
     if (!session) {
@@ -824,7 +989,11 @@ async function handleAdminMaintenanceApi(request, url, store) {
     const slug = normalizeSlug(payload.slug);
     const status = normalizeProjectStatus(payload.status);
     if (!slug) return json({ error: "Missing slug" }, 400);
-    const result = await store.setProjectStatus(slug, status);
+    const result = await store.setProjectStatus(slug, status, {
+      updatedByEmail: "",
+      updatedByName: "Administración",
+      updatedByRole: "admin",
+    });
     if (!result.ok) return json({ error: result.error }, 404);
     const data = await store.getProjectStatusAdminData();
     return json({ ok: true, updated: result.entry, ...data });
@@ -877,6 +1046,28 @@ async function handleApi(request, url, store, session, env) {
     if (!slug) return json({ error: "Missing slug" }, 400);
     const comments = await store.getComments(slug);
     return json({ slug, comments });
+  }
+
+  if (request.method === "POST" && url.pathname === "/api/demo/project-statuses") {
+    const payload = await request.json().catch(() => null);
+    if (!payload) return json({ error: "Invalid JSON" }, 400);
+
+    const slug = normalizeSlug(payload.slug);
+    const status = normalizeProjectStatus(payload.status);
+    if (!slug) return json({ error: "Missing slug" }, 400);
+
+    const pill = DEMO_EXECUTIVE_LIBRARY.find((item) => item.slug === slug) || null;
+    if (!pill) return json({ error: "Pill not found" }, 404);
+    if (!canEditProjectStatus(pill, session)) return json({ error: "Forbidden" }, 403);
+
+    const result = await store.setProjectStatus(slug, status, {
+      updatedByEmail: cleanEmail(session.email || ""),
+      updatedByName: cleanName(session.name || pill.author || ""),
+      updatedByRole: session.isAdmin ? "admin" : "author",
+    });
+    if (!result.ok) return json({ error: result.error || "Save failed" }, 400);
+    const data = await store.getProjectStatusAdminData();
+    return json({ ok: true, updated: result.entry, ...data });
   }
 
   if (request.method === "POST" && url.pathname === "/api/comments") {
@@ -1770,13 +1961,17 @@ export class HubData extends DurableObject {
     const pill = DEMO_LIBRARY_BY_SLUG.get(slug);
     if (!pill) return null;
     const state = await this.getProjectStatusState();
-    const status = normalizeProjectStatus(state.statuses?.[slug]);
+    const details = getStoredProjectStatusDetails(state.statuses?.[slug]);
+    const status = details.status;
     const meta = getProjectStatusMeta(status);
     return {
       slug,
       status,
       meta,
-      updatedAt: state.updatedAt || null,
+      updatedAt: details.updatedAt || state.updatedAt || null,
+      updatedByEmail: details.updatedByEmail || "",
+      updatedByName: details.updatedByName || "",
+      updatedByRole: details.updatedByRole || "author",
       pill,
     };
   }
@@ -1784,7 +1979,8 @@ export class HubData extends DurableObject {
   async getProjectStatusAdminData() {
     const state = await this.getProjectStatusState();
     const pills = DEMO_EXECUTIVE_LIBRARY.map((pill) => {
-        const status = normalizeProjectStatus(state.statuses?.[pill.slug]);
+        const details = getStoredProjectStatusDetails(state.statuses?.[pill.slug]);
+        const status = details.status;
         const meta = getProjectStatusMeta(status);
         return {
           ...pill,
@@ -1792,6 +1988,10 @@ export class HubData extends DurableObject {
           statusLabel: meta.label,
           statusHelper: meta.helper,
           statusMeta: meta,
+          statusUpdatedAt: details.updatedAt || state.updatedAt || null,
+          statusUpdatedByEmail: details.updatedByEmail || "",
+          statusUpdatedByName: details.updatedByName || "",
+          statusUpdatedByRole: details.updatedByRole || "author",
           demoUrl: `/demo${pill.urlPath}`,
         };
       });
@@ -1815,14 +2015,21 @@ export class HubData extends DurableObject {
     };
   }
 
-  async setProjectStatus(slug, status) {
+  async setProjectStatus(slug, status, actor = {}) {
     const pill = DEMO_EXECUTIVE_LIBRARY.find((item) => item.slug === slug);
     if (!pill) return { ok: false, error: "Pill not found" };
 
     const state = await this.getProjectStatusState();
     state.statuses = state.statuses || {};
-    state.statuses[slug] = normalizeProjectStatus(status);
-    state.updatedAt = new Date().toISOString();
+    const updatedAt = new Date().toISOString();
+    state.statuses[slug] = {
+      status: normalizeProjectStatus(status),
+      updatedAt,
+      updatedByEmail: cleanEmail(actor.updatedByEmail || ""),
+      updatedByName: cleanName(actor.updatedByName || ""),
+      updatedByRole: actor.updatedByRole === "admin" ? "admin" : "author",
+    };
+    state.updatedAt = updatedAt;
     await this.saveProjectStatusState(state);
 
     const entry = await this.getProjectStatusEntry(slug);
