@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>El hogar Isaval para la AI · Demo</title>
+  <title>El hogar Isaval para la AI</title>
 
   <style>
     :root {
@@ -231,6 +231,48 @@
       display: grid;
       gap: 18px;
     }
+    .secondary-block {
+      margin-top: 18px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #fafcfe;
+      padding: 18px 20px 20px;
+      display: grid;
+      gap: 14px;
+    }
+    .secondary-block h2 {
+      margin: 0;
+      font-size: 22px;
+      color: #10314d;
+    }
+    .secondary-block p {
+      margin: 0;
+      color: #4f6172;
+    }
+    .secondary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .secondary-card {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #fff;
+      padding: 15px;
+      display: grid;
+      gap: 8px;
+    }
+    .secondary-card strong {
+      color: #10314d;
+      font-size: 16px;
+      line-height: 1.2;
+    }
+    .secondary-card span {
+      color: #5c6b79;
+      font-size: 14px;
+      line-height: 1.45;
+      min-height: 58px;
+    }
     .content-split {
       display:grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -331,7 +373,7 @@
       background:#fafcfe;
     }
     @media (max-width: 900px) {
-      .hero, .section-intro, .grid, .content-split, .quick-access-grid { grid-template-columns: 1fr; }
+      .hero, .section-intro, .grid, .content-split, .quick-access-grid, .secondary-grid { grid-template-columns: 1fr; }
       .hero { align-items:start; }
     }
     @media (max-width: 760px) {
@@ -350,8 +392,8 @@
         <div class="brand">
           <img src="/assets/brand/isaval-global-logo.png" alt="Isaval" />
           <div>
-            <div class="eyebrow">Hub interno · Demo paralela</div>
-            <div style="font-weight:700; font-size:14px; opacity:.9;">Nuevo marco editorial del Hub IA Isaval</div>
+            <div class="eyebrow">Hub interno AI</div>
+            <div style="font-weight:700; font-size:14px; opacity:.9;">Hub IA Isaval</div>
           </div>
         </div>
         <nav class="nav">
@@ -370,8 +412,8 @@
       <div class="hero">
         <div>
           <div class="eyebrow">El hogar Isaval para la AI</div>
-          <h1>Un solo lugar para pensar, ordenar, ejecutar y escalar la inteligencia artificial dentro de Isaval.</h1>
-          <p>Este Hub deja de ser la suma de aportaciones separadas y pasa a ser la casa común de la AI en la compañía: propósito, criterio, proyectos, avances, señales, madurez real y conversación visible.</p>
+          <h1>Un solo lugar para orientar, ejecutar y seguir la inteligencia artificial dentro de Isaval.</h1>
+          <p>El Hub se convierte en la casa común de la AI en la compañía: dirección, proyectos, avance real y conversación visible.</p>
         </div>
         <aside class="manifesto">
           <strong>Idea fuerza</strong>
@@ -382,19 +424,19 @@
     <main>
       <section class="section-intro">
         <div class="statement">
-          <h2>Qué cambia en esta DEMO</h2>
-          <p>Se elimina el eje personal y desaparece la separación entre ejecutivas y colaborativas como estructura principal. El nuevo hogar se ordena por utilidad editorial para la compañía: propósito, casos largos, piezas rápidas, radar, madurez y actividad.</p>
+          <h2>Qué encontrarás aquí</h2>
+          <p>El Hub se reorganiza para que la lectura sea más simple: dirección, proyectos, avance real y actividad visible.</p>
         </div>
         <div class="focus">
           <h2>Qué queremos provocar</h2>
-          <p>Más claridad, más participación, más lectura transversal y una visión mucho más corporativa de cómo Isaval está construyendo criterio y ejecución real alrededor de la AI.</p>
+          <p>Más claridad, más participación y una visión más útil de cómo Isaval está convirtiendo la AI en trabajo real.</p>
         </div>
       </section>
 
       <section class="quick-access">
         <div>
           <h2>Entrada rápida</h2>
-          <p>Si quieres usar ya la DEMO como hub operativo, entra por aquí. Estas cuatro puertas son las importantes para navegar y trabajar.</p>
+          <p>Si quieres usar ya el nuevo hub como espacio operativo, entra por aquí. Estas cuatro puertas son las importantes para navegar y trabajar.</p>
         </div>
         <div class="quick-access-grid">
           <article class="quick-access-card">
@@ -406,7 +448,7 @@
           <article class="quick-access-card">
             <div class="kicker">Acceso clave 02</div>
             <strong>Píldoras ejecutivas</strong>
-            <span>Casos largos y fichas DEMO donde cada autor ya puede actualizar su estado.</span>
+            <span>Casos largos y fichas donde cada autor ya puede actualizar su estado.</span>
             <div class="actions"><a class="btn" href="/demo/pildoras-ejecutivas/">Abrir</a></div>
           </article>
           <article class="quick-access-card">
@@ -442,40 +484,8 @@
           <div class="actions"><a class="btn" href="/demo/pildoras-ejecutivas/">Abrir sección</a></div>
         </article>
 
-        <article class="card">
-          <div class="kicker">Sección 03</div>
-          <h3>Píldoras express</h3>
-          <p>Ideas breves, avances rápidos, microhallazgos y updates que merecen circular sin esperar una pieza larga.</p>
-          <div class="hashtags">#IdeaEnMarcha #AvanceRapido #SeñalUtil</div>
-          <div class="actions"><a class="btn" href="/demo/pildoras-express/">Abrir sección</a></div>
-        </article>
-
-        <article class="card">
-          <div class="kicker">Sección 04</div>
-          <h3>Radar</h3>
-          <p>Mapa de señales, subclasificaciones y referencias que ayudan a ordenar lo que conviene mirar con atención.</p>
-          <div class="hashtags">#MercadoEnMovimiento #LoQueImporta #SeñalesExternas</div>
-          <div class="actions"><a class="btn" href="/demo/radar/">Abrir sección</a></div>
-        </article>
-
-        <article class="card">
-          <div class="kicker">Sección 05</div>
-          <h3>Academy AI</h3>
-          <p>Repositorio de recursos para aprender mejor: guías, materiales, ejemplos, prácticas y referencias para acelerar criterio y autonomía.</p>
-          <div class="hashtags">#AprenderHaciendo #CriterioDigital #CapacidadInterna</div>
-          <div class="actions"><a class="btn" href="/demo/academy-ai/">Abrir sección</a></div>
-        </article>
-
-        <article class="card">
-          <div class="kicker">Sección 06</div>
-          <h3>Eventos AI Isaval</h3>
-          <p>Agenda de actividades concretas alrededor de la AI: seminarios, formaciones, sesiones online, encuentros y reconocimientos internos.</p>
-          <div class="hashtags">#AprenderJuntos #ComunidadEnMarcha #RitmoVisible</div>
-          <div class="actions"><a class="btn" href="/demo/eventos-ai-isaval/">Abrir sección</a></div>
-        </article>
-
         <article class="card thermo-card" id="thermo-home-card">
-          <div class="kicker">Sección 07</div>
+          <div class="kicker">Sección 03</div>
           <h3>Termómetro AI</h3>
           <p>Escala de 20 hitos para medir implantación real: solo los proyectos en WORKING elevan el termómetro del Hub.</p>
           <div class="thermo-mini-metric"><strong id="thermo-home-working">0</strong><span>/ 20</span></div>
@@ -485,12 +495,45 @@
         </article>
 
         <article class="card">
-          <div class="kicker">Sección 08</div>
+          <div class="kicker">Sección 04</div>
           <h3>Actividad Hub</h3>
           <p>Lectura del pulso del Hub a través de publicaciones, comentarios, conversación y participación real del equipo.</p>
           <div class="hashtags">#ConversacionActiva #ParticipacionReal #PulsoDelHub</div>
           <div class="actions"><a class="btn" href="/demo/actividad-hub/">Abrir sección</a></div>
         </article>
+      </section>
+
+      <section class="secondary-block">
+        <div>
+          <h2>Capas complementarias</h2>
+          <p>Estas cuatro secciones siguen disponibles para enriquecer el Hub, pero no hacen falta para entrar en su núcleo principal.</p>
+        </div>
+        <div class="secondary-grid">
+          <article class="secondary-card">
+            <div class="kicker">Capa 01</div>
+            <strong>Píldoras express</strong>
+            <span>Ideas breves, avances rápidos y microhallazgos que merecen circular sin esperar una pieza larga.</span>
+            <div class="actions"><a class="btn secondary" href="/demo/pildoras-express/">Abrir</a></div>
+          </article>
+          <article class="secondary-card">
+            <div class="kicker">Capa 02</div>
+            <strong>Radar</strong>
+            <span>Mapa de señales, referencias y agrupaciones que ayudan a leer con más criterio lo que conviene mirar.</span>
+            <div class="actions"><a class="btn secondary" href="/demo/radar/">Abrir</a></div>
+          </article>
+          <article class="secondary-card">
+            <div class="kicker">Capa 03</div>
+            <strong>Academy AI</strong>
+            <span>Recursos para aprender mejor: guías, materiales y prácticas que aceleran criterio y autonomía.</span>
+            <div class="actions"><a class="btn secondary" href="/demo/academy-ai/">Abrir</a></div>
+          </article>
+          <article class="secondary-card">
+            <div class="kicker">Capa 04</div>
+            <strong>Eventos AI Isaval</strong>
+            <span>Sesiones, encuentros y reconocimientos que mantienen ritmo, aprendizaje y comunidad en movimiento.</span>
+            <div class="actions"><a class="btn secondary" href="/demo/eventos-ai-isaval/">Abrir</a></div>
+          </article>
+        </div>
       </section>
 
       <section class="content-block">
@@ -505,13 +548,13 @@
           <section class="content-panel">
             <div class="kicker">Tracción actual</div>
             <h2>Ejecutivas destacadas</h2>
-            <p>Casos largos ya reordenados dentro del nuevo cuerpo ejecutivo de la DEMO.</p>
+            <p>Casos largos ya reordenados dentro del cuerpo ejecutivo del Hub.</p>
             <div class="mini-list" id="home-executive-list"></div>
           </section>
         </div>
       </section>
     </main>
-    <footer>Demo editorial del Hub IA Isaval · Solo español · Preparada para iterar sin tocar producción.</footer>
+    <footer>Hub IA Isaval · Solo español.</footer>
   </article>
 <script src="/demo/assets/project-status-strip.js"></script>
 <script>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Radar · Demo</title>
+  <title>Radar</title>
 
   <style>
     :root {
@@ -255,7 +255,7 @@
         <div class="brand">
           <img src="/assets/brand/isaval-global-logo.png" alt="Isaval" />
           <div>
-            <div class="eyebrow">Hub IA Isaval · Demo</div>
+            <div class="eyebrow">Hub IA Isaval</div>
             <div style="font-weight:700; font-size:14px; opacity:.9;">Radar</div>
           </div>
         </div>
@@ -286,20 +286,20 @@
     <main>
       <section class="section-intro">
         <div class="statement">
-          <h2>Rol de esta sección</h2>
-          <p>El Radar recogerá lo que hay que mirar con atención: referencias, señales, patrones y agrupaciones que ayuden a no perder contexto mientras el Hub crece.</p>
+          <h2>Qué encontrarás aquí</h2>
+          <p>Lo que conviene mirar con atención: referencias, señales, patrones y agrupaciones que ayudan a no perder contexto.</p>
         </div>
         <div class="focus">
-          <h2>Primer criterio aplicado</h2>
-          <p>La DEMO usa ya una primera agrupación temática de las ejecutivas para convertir la biblioteca en lectura estratégica y no en simple secuencia de publicaciones.</p>
+          <h2>Qué muestra hoy</h2>
+          <p>Una primera agrupación temática de las ejecutivas para convertir la biblioteca en lectura estratégica y no en simple secuencia de publicaciones.</p>
         </div>
       </section>
       <section class="grid" id="radar-grid"></section>
       <div class="actions">
-        <a class="btn" href="/demo/">Volver a la portada demo</a>
+        <a class="btn" href="/demo/">Volver al inicio</a>
       </div>
     </main>
-    <footer>Radar · Demo paralela del Hub IA Isaval.</footer>
+    <footer>Radar · Hub IA Isaval.</footer>
   </article>
 <script>
   (function () {
@@ -362,7 +362,7 @@
         const data = await response.json();
         renderFrom(data);
       } catch (error) {
-        if (!embedded) radarGrid.innerHTML = '<article class="card"><h3>No se ha podido cargar el radar.</h3><p>La DEMO necesita leer la biblioteca ejecutiva para pintar esta clasificación temática.</p></article>';
+        if (!embedded) radarGrid.innerHTML = '<article class="card"><h3>No se ha podido cargar el radar.</h3><p>Esta sección necesita leer la biblioteca ejecutiva para pintar esta clasificación temática.</p></article>';
       }
     }
 

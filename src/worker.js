@@ -670,10 +670,10 @@ window.__DEMO_VIEWER__=${serializeForInlineScript(demoViewer)};
   }
 </style>
 <div class="demo-project-nav">
-  <a class="demo-project-brand" href="/demo/" aria-label="Volver a la portada DEMO">
+  <a class="demo-project-brand" href="/demo/" aria-label="Volver al inicio del Hub">
     <img src="/assets/brand/isaval-global-logo.png" alt="Isaval" />
   </a>
-  <a href="/demo/">Inicio DEMO</a>
+  <a href="/demo/">Inicio</a>
   <a href="/demo/pildoras-corporativas/">Corporativas</a>
   <a href="/demo/pildoras-ejecutivas/">Ejecutivas</a>
   <a href="/demo/pildoras-express/">Express</a>

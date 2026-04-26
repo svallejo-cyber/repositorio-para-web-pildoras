@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Píldoras express · Demo</title>
+  <title>Píldoras express</title>
 
   <style>
     :root {
@@ -249,7 +249,7 @@
         <div class="brand">
           <img src="/assets/brand/isaval-global-logo.png" alt="Isaval" />
           <div>
-            <div class="eyebrow">Hub IA Isaval · Demo</div>
+            <div class="eyebrow">Hub IA Isaval</div>
             <div style="font-weight:700; font-size:14px; opacity:.9;">Píldoras express</div>
           </div>
         </div>
@@ -280,20 +280,20 @@
     <main>
       <section class="section-intro">
         <div class="statement">
-          <h2>Rol de esta sección</h2>
-          <p>Aquí entrarán pequeñas aportaciones con valor inmediato: un avance corto, una mejora detectada, un update de proyecto o una intuición que convenga compartir ya.</p>
+          <h2>Qué encontrarás aquí</h2>
+          <p>Pequeñas aportaciones con valor inmediato: un avance corto, una mejora detectada o una intuición que convenga compartir ya.</p>
         </div>
         <div class="focus">
-          <h2>Primer criterio aplicado</h2>
-          <p>Mientras no exista aún un modelo propio de microcontenidos, esta DEMO usa el estado real de las ejecutivas para generar updates cortos y visibles.</p>
+          <h2>Qué muestra hoy</h2>
+          <p>Mientras no exista aún un modelo propio de microcontenidos, esta sección usa el estado real de las ejecutivas para generar updates cortos y visibles.</p>
         </div>
       </section>
       <section class="grid" id="express-grid"></section>
       <div class="actions">
-        <a class="btn" href="/demo/">Volver a la portada demo</a>
+        <a class="btn" href="/demo/">Volver al inicio</a>
       </div>
     </main>
-    <footer>Píldoras express · Demo paralela del Hub IA Isaval.</footer>
+    <footer>Píldoras express · Hub IA Isaval.</footer>
   </article>
 <script>
   (function () {
@@ -344,7 +344,7 @@
         const data = await response.json();
         renderFrom(data);
       } catch (error) {
-        if (!embedded) expressGrid.innerHTML = '<article class="card"><h3>No se ha podido cargar el feed express.</h3><p>La DEMO necesita leer el cuerpo ejecutivo para construir este flujo corto.</p></article>';
+        if (!embedded) expressGrid.innerHTML = '<article class="card"><h3>No se ha podido cargar el feed express.</h3><p>Esta sección necesita leer el cuerpo ejecutivo para construir este flujo corto.</p></article>';
       }
     }
 
