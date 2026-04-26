@@ -847,6 +847,7 @@ window.__DEMO_VIEWER__=${serializeForInlineScript(demoViewer)};
   let badgeBlock = "";
   const pill = slug ? PUBLISHED_PILLS.find((item) => item.lang === "es" && item.slug === slug) : null;
   if (pill) {
+    const isCorporateDemoPill = DEMO_CORPORATE_LIBRARY.some((item) => item.slug === pill.slug);
     const statusEntry = await store.getProjectStatusEntry(slug);
     const radarEntry = await store.getRadarClassificationForPill(pill, hubBaseUrl);
     const meta = statusEntry.meta;
@@ -943,6 +944,46 @@ window.__DEMO_VIEWER__=${serializeForInlineScript(demoViewer)};
     font-size: 11px;
     line-height: 1.3;
     color: rgba(16, 49, 77, .76);
+  }
+  .demo-project-inline-author {
+    margin: 14px 18px 0;
+    padding: 14px 16px;
+    border-radius: 18px;
+    border: 1px solid rgba(16, 27, 44, .12);
+    background: rgba(255,255,255,.96);
+    box-shadow: 0 10px 24px rgba(16, 27, 44, .10);
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 14px;
+    align-items: center;
+    font-family: Arial, sans-serif;
+  }
+  .demo-project-inline-author img {
+    width: 64px;
+    height: 64px;
+    border-radius: 20px;
+    object-fit: cover;
+    display: block;
+    border: 1px solid rgba(16, 27, 44, .12);
+    background: #eef3f7;
+  }
+  .demo-project-inline-author-copy {
+    min-width: 0;
+    display: grid;
+    gap: 4px;
+  }
+  .demo-project-inline-author-copy strong {
+    font-size: 18px;
+    line-height: 1.15;
+    color: #10314d;
+  }
+  .demo-project-inline-author-copy span {
+    font-size: 12px;
+    line-height: 1.35;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: rgba(16, 49, 77, .72);
+    font-weight: 700;
   }
   .demo-project-status-badge strong {
     font-size: 12px;
@@ -1072,6 +1113,14 @@ window.__DEMO_VIEWER__=${serializeForInlineScript(demoViewer)};
   <a href="/demo/termometro-ai/">Termómetro AI</a>
   <a href="/demo/actividad-hub/">Actividad Hub</a>
 </div>
+${isCorporateDemoPill ? `
+<div class="demo-project-inline-author">
+  <img src="${escapeHtml(pill.avatar || DEFAULT_PROFILE_AVATAR)}" alt="${escapeHtml(pill.author)}" />
+  <div class="demo-project-inline-author-copy">
+    <strong>${escapeHtml(pill.author)}</strong>
+    <span>Píldora corporativa</span>
+  </div>
+</div>` : ""}
 <div class="demo-project-status-badge">
   <div class="demo-project-author">
     <img src="${escapeHtml(pill.avatar || DEFAULT_PROFILE_AVATAR)}" alt="${escapeHtml(pill.author)}" />
