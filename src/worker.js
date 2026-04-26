@@ -557,10 +557,13 @@ window.__DEMO_VIEWER__=${serializeForInlineScript(demoViewer)};
     margin-right: 6px;
   }
   .demo-project-brand img {
-    height: 26px;
+    height: 32px;
     width: auto;
     display: block;
-    filter: drop-shadow(0 4px 10px rgba(0,0,0,.14));
+    padding: 6px 10px;
+    background: rgba(255,255,255,.96);
+    border-radius: 12px;
+    box-shadow: 0 8px 18px rgba(0,0,0,.14);
   }
   .demo-project-nav a {
     text-decoration: none;
