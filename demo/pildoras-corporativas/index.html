@@ -189,6 +189,31 @@
       color:#5c6b79;
       font-size:14px;
     }
+    .author-row {
+      display:grid;
+      grid-template-columns:auto minmax(0, 1fr);
+      gap:12px;
+      align-items:center;
+    }
+    .author-row img {
+      width:56px;
+      height:56px;
+      border-radius:18px;
+      object-fit:cover;
+      display:block;
+      border:1px solid #d8e0e8;
+      background:#eef3f7;
+    }
+    .author-copy {
+      min-width:0;
+      display:grid;
+      gap:2px;
+    }
+    .author-copy strong {
+      color:#10314d;
+      font-size:16px;
+      line-height:1.2;
+    }
     .status-line {
       margin-top:14px;
       color:#5c6b79;
@@ -308,7 +333,13 @@
         <article class="card">
           <div class="kicker">${pill.demoOrdinalLabel || ''}</div>
           <h3>${pill.title}</h3>
-          <div class="meta">${pill.author} · ${pill.publishedLabel}</div>
+          <div class="author-row">
+            <img src="${pill.avatar || '/assets/profile/santiago2-360.jpg'}" alt="${pill.author}" />
+            <div class="author-copy">
+              <strong>${pill.author}</strong>
+              <div class="meta">${pill.publishedLabel}</div>
+            </div>
+          </div>
           <p>Texto de marco y dirección para dar propósito y contexto común al resto del Hub.</p>
           <div class="actions">
             <a class="btn" href="${pill.demoUrl}">Abrir ficha</a>
