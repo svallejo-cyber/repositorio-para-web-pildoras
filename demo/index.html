@@ -121,6 +121,48 @@
       line-height:1.6;
     }
     main { padding: 30px 34px 38px; }
+    .intro-quad {
+      margin-bottom: 22px;
+      border: 1px solid #d8e0e8;
+      border-radius: 18px;
+      background: linear-gradient(180deg, #fffaf4 0%, #f8fbfe 100%);
+      padding: 18px 20px 20px;
+      display: grid;
+      gap: 14px;
+    }
+    .intro-quad h2 {
+      margin: 0;
+      color: var(--accent-dark);
+      font-size: 23px;
+    }
+    .intro-quad p {
+      margin: 0;
+      color: #32485b;
+    }
+    .intro-grid {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 12px;
+    }
+    .intro-card {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #fff;
+      padding: 15px 16px;
+      display: grid;
+      gap: 6px;
+    }
+    .intro-card strong {
+      color: #10314d;
+      font-size: 14px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .intro-card span {
+      color: #4f6172;
+      font-size: 14px;
+      line-height: 1.5;
+    }
     .quick-access {
       margin-bottom: 22px;
       border: 1px solid #cfddea;
@@ -261,7 +303,7 @@
       background:#fafcfe;
     }
     @media (max-width: 900px) {
-      .hero, .quick-access-grid, .secondary-grid { grid-template-columns: 1fr; }
+      .hero, .intro-grid, .quick-access-grid, .secondary-grid { grid-template-columns: 1fr; }
       .hero { align-items:start; }
     }
     @media (max-width: 760px) {
@@ -308,6 +350,23 @@
       </div>
     </header>
     <main>
+      <section class="intro-quad">
+        <div>
+          <h2>Por qué existe este Hub</h2>
+          <p>Este Hub nace para convertir la inteligencia artificial en una capacidad compartida dentro de Isaval. No es solo un repositorio de ideas: es un espacio para orientar, detectar fricciones reales, compartir soluciones y hacer visible qué proyectos ya están evolucionando dentro de la compañía.</p>
+        </div>
+        <div class="intro-grid">
+          <article class="intro-card">
+            <strong>Formato comunidad</strong>
+            <span>Lo hacemos así porque el valor no está en una sola herramienta ni en un solo equipo. Está en que distintas personas aporten casos, aprendan unas de otras y hagan que la mejora se reparta por toda la organización.</span>
+          </article>
+          <article class="intro-card">
+            <strong>Estado y termómetro</strong>
+            <span>El estado de cada proyecto ya se ve en todo el Hub. A partir de ahora, cada autor debe clasificar el estado de su propia píldora, y ese movimiento hará evolucionar directamente el termómetro del Hub.</span>
+          </article>
+        </div>
+      </section>
+
       <section class="quick-access">
         <div>
           <h2>Entrada rápida</h2>

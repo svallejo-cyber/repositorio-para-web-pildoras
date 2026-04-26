@@ -217,6 +217,27 @@
       gap:6px;
     }
     .list-item strong { color:#10314d; }
+    .podium-illustration {
+      margin-top: 10px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: linear-gradient(180deg, #fffaf4 0%, #f8fbfe 100%);
+      padding: 12px;
+      display: grid;
+      gap: 8px;
+      justify-items: center;
+      text-align: center;
+    }
+    .podium-illustration img {
+      width: min(100%, 320px);
+      height: auto;
+      display: block;
+    }
+    .podium-illustration span {
+      color: #5c6b79;
+      font-size: 13px;
+      line-height: 1.45;
+    }
     .podium-item {
       grid-template-columns: auto minmax(0, 1fr) auto;
       gap: 12px;
@@ -352,6 +373,10 @@
           <div class="kicker">Autores con más publicaciones</div>
           <h3>Podio de aportación</h3>
           <div class="list" id="activity-podium"></div>
+          <div class="podium-illustration">
+            <img src="/podium.png" alt="Podio del Hub" />
+            <span>La aportación visible del Hub también construye comunidad.</span>
+          </div>
         </article>
         <article class="card">
           <div class="kicker">Conversación reciente</div>
