@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Módulo 4 · Academy AI</title>
+  <style>
+    :root { --bg:#f3f6f9; --panel:#fff; --ink:#1f2c3a; --muted:#5c6b79; --accent:#0f5f94; --accent-dark:#10314d; --line:#d8e0e8; --soft:#edf5fb; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Arial,sans-serif; background:var(--bg); color:var(--ink); line-height:1.6; }
+    .page { max-width:1120px; margin:26px auto; border:1px solid var(--line); border-radius:22px; overflow:hidden; background:var(--panel); box-shadow:0 16px 38px rgba(17,34,52,.08); }
+    header { padding:24px 34px 30px; color:#fff; background:linear-gradient(115deg, #102c45 0%, #0f5f94 52%, #1a86ba 100%); }
+    .topbar { display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom:22px; }
+    .brand { display:flex; align-items:center; gap:14px; }
+    .brand img { height:52px; padding:8px 14px; background:rgba(255,255,255,.96); border-radius:16px; box-shadow:0 10px 24px rgba(0,0,0,.14); }
+    .nav { display:flex; gap:8px; flex-wrap:wrap; }
+    .nav a { text-decoration:none; color:#fff; border:1px solid rgba(255,255,255,.32); background:rgba(255,255,255,.12); padding:8px 11px; border-radius:999px; font-size:13px; font-weight:700; }
+    .eyebrow { font-size:12px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; opacity:.88; }
+    h1 { margin:8px 0 10px; font-size:clamp(2rem,4vw,3.2rem); line-height:1.05; letter-spacing:-.03em; }
+    header p { margin:0; max-width:760px; color:rgba(255,255,255,.92); font-size:17px; }
+    main { padding:30px 34px 38px; display:grid; gap:18px; }
+    .panel { border:1px solid var(--line); border-radius:18px; background:#fbfdff; padding:20px; }
+    .meta { display:flex; flex-wrap:wrap; gap:8px; }
+    .meta span { display:inline-flex; align-items:center; padding:7px 11px; border-radius:999px; background:var(--soft); color:var(--accent-dark); border:1px solid #d6e1ea; font-size:13px; font-weight:700; }
+    .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+    h2 { margin:0 0 8px; color:var(--accent-dark); font-size:22px; }
+    .actions { display:flex; gap:10px; flex-wrap:wrap; }
+    .btn { text-decoration:none; border-radius:10px; padding:10px 13px; font-size:14px; font-weight:700; border:1px solid #0f5a8c; color:#fff; background:#0f5f94; display:inline-block; }
+    .btn.secondary { background:#fff; color:#10314d; border-color:#cad8e5; }
+    footer { border-top:1px solid var(--line); padding:14px 34px 22px; color:var(--muted); font-size:14px; background:#fafcfe; }
+    @media (max-width:900px) { .grid { grid-template-columns:1fr; } }
+    @media (max-width:760px) { .page { margin:14px; } header,main,footer { padding-left:18px; padding-right:18px; } }
+  </style>
+</head>
+<body>
+  <article class="page">
+    <header>
+      <div class="topbar">
+        <div class="brand">
+          <img src="/assets/brand/isaval-global-logo.png" alt="Isaval" />
+          <div>
+            <div class="eyebrow">Hub IA Isaval</div>
+            <div style="font-weight:700; font-size:14px; opacity:.9;">Academy AI</div>
+          </div>
+        </div>
+        <nav class="nav">
+          <a href="/demo/">Inicio</a>
+          <a href="/demo/academy-ai/">Academy AI</a>
+          <a href="/demo/pildoras-ejecutivas/">Ejecutivas</a>
+          <a href="/demo/comparte-tu-idea/">Comparte tu idea</a>
+        </nav>
+      </div>
+      <div class="eyebrow">Fase 2 · Uso competente</div>
+      <h1>Módulo 4 · Uso eficaz de Codex</h1>
+      <p>Cómo pedir bien, iterar con método y evitar el caos de contexto.</p>
+    </header>
+    <main>
+      <section class="panel">
+        <div class="meta">
+          <span>Curso Codex Isaval</span>
+          <span>Material PDF</span>
+          <span>Aplicación práctica</span>
+        </div>
+      </section>
+      <section class="grid">
+        <article class="panel">
+          <h2>Qué te llevas</h2>
+          <p>Capacidad para formular peticiones claras, reconducir respuestas flojas y trabajar con más orden.</p>
+        </article>
+        <article class="panel">
+          <h2>Dónde te sirve mejor</h2>
+          <p>Menos reescrituras innecesarias y mejores resultados en proyectos reales.</p>
+        </article>
+      </section>
+      <section class="panel">
+        <h2>Material del módulo</h2>
+        <p>Desde aquí puedes abrir el PDF original del módulo o descargarlo para trabajarlo con calma. Si quieres seguir el curso por orden, vuelve después a Academy para continuar con el siguiente paso.</p>
+        <div class="actions" style="margin-top:14px;">
+          <a class="btn" href="/curso_codex/modulo_4_uso_eficaz_codex_isaval.pdf" target="_blank" rel="noopener noreferrer">Abrir PDF del módulo</a>
+          <a class="btn secondary" href="/curso_codex/modulo_4_uso_eficaz_codex_isaval.pdf" download>Descargar PDF</a>
+          <a class="btn secondary" href="/demo/academy-ai/">Volver a Academy</a>
+        </div>
+      </section>
+    </main>
+    <footer>Academy AI · Curso Codex Isaval.</footer>
+  </article>
+</body>
+</html>
