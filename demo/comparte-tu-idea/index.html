@@ -184,7 +184,6 @@
     .status-tag.in_review { background:#fff4dd; border-color:#f0d28d; color:#8a5a00; }
     .status-tag.pending_development { background:#eef5fb; border-color:#cfe0ee; color:#214b69; }
     .status-tag.converted_collaborative,
-    .status-tag.converted_express { background:#e8f5ec; border-color:#bfe0ca; color:#0f6b3c; }
     .status-tag.rejected { background:#fdeceb; border-color:#efc0bd; color:#a13434; }
     .submission p { margin:0; color:#32485b; }
     .submission-grid { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:10px; }
@@ -228,7 +227,6 @@
           <a href="/demo/">Inicio</a>
           <a href="/demo/pildoras-corporativas/">Corporativas</a>
           <a href="/demo/pildoras-ejecutivas/">Ejecutivas</a>
-          <a href="/demo/pildoras-express/">Express</a>
           <a href="/demo/radar/">Radar</a>
           <a href="/demo/academy-ai/">Academy AI</a>
           <a href="/demo/eventos-ai-isaval/">Eventos AI Isaval</a>
@@ -261,7 +259,7 @@
             </div>
             <div class="step">
               <strong>2. Revisión editorial</strong>
-              <span>La propuesta se estudia y se clasifica: puede madurar como píldora colaborativa, como píldora express o quedarse en observación.</span>
+              <span>La propuesta se estudia y se clasifica: puede madurar como píldora colaborativa, quedar pendiente de desarrollo o quedarse en observación.</span>
             </div>
             <div class="step">
               <strong>3. Trazabilidad real</strong>
@@ -355,7 +353,6 @@
         { value: 'in_review', label: 'En revisión' },
         { value: 'pending_development', label: 'Pendiente de desarrollo' },
         { value: 'converted_collaborative', label: 'Convertida en colaborativa' },
-        { value: 'converted_express', label: 'Convertida en express' },
         { value: 'rejected', label: 'Descartada' },
       ];
 

@@ -14,7 +14,7 @@ const IDEA_SUBMISSION_STATUS_META = {
   in_review: { key: "in_review", label: "En revisión" },
   pending_development: { key: "pending_development", label: "Pendiente de desarrollo" },
   converted_collaborative: { key: "converted_collaborative", label: "Convertida en colaborativa" },
-  converted_express: { key: "converted_express", label: "Convertida en express" },
+  converted_express: { key: "converted_express", label: "Convertida en aportación breve" },
   rejected: { key: "rejected", label: "Descartada" },
 };
 const DEFAULT_INVITED_AVATARS = {
@@ -1194,7 +1194,6 @@ window.__DEMO_VIEWER__=${serializeForInlineScript(demoViewer)};
   <a href="/demo/">Inicio</a>
   <a href="/demo/pildoras-corporativas/">Corporativas</a>
   <a href="/demo/pildoras-ejecutivas/">Ejecutivas</a>
-  <a href="/demo/pildoras-express/">Express</a>
   <a href="/demo/radar/">Radar</a>
   <a href="/demo/academy-ai/">Academy AI</a>
   <a href="/demo/eventos-ai-isaval/">Eventos AI Isaval</a>
@@ -1338,6 +1337,9 @@ async function serveDemoAsset(request, env, store, viewer = null) {
     }
   }
   const demoPath = url.pathname === "/demo" ? "/demo/" : url.pathname;
+  if (demoPath === "/demo/pildoras-express" || demoPath === "/demo/pildoras-express/") {
+    return redirect("/demo/");
+  }
   if (demoPath === "/demo/en" || demoPath === "/demo/en/" || demoPath.startsWith("/demo/en/")) {
     return redirect("/demo/");
   }
