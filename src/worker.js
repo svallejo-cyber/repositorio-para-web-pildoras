@@ -9,6 +9,23 @@ const EXCLUDED_TRACKING_EMAILS = new Set(["svallejo@isaval.es", "svallejoi@iclou
 const NOTIFICATION_TIMEZONE = "Europe/Madrid";
 const DEFAULT_HUB_BASE_URL = "https://repositorio-para-web-pildoras.svallejo-351.workers.dev";
 const DEFAULT_PROFILE_AVATAR = "/assets/profile/santiago2-360.jpg";
+const IDEA_SUBMISSION_EMAIL = "svallejoi@icloud.com";
+const IDEA_SUBMISSION_MAX_BYTES = 2_500_000;
+const IDEA_SUBMISSION_ALLOWED_EXTENSIONS = new Set(["pdf", "doc", "docx"]);
+const IDEA_SUBMISSION_ALLOWED_MIME_TYPES = new Set([
+  "application/pdf",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/octet-stream",
+]);
+const IDEA_SUBMISSION_STATUS_META = {
+  received: { key: "received", label: "Recibida" },
+  in_review: { key: "in_review", label: "En revisión" },
+  pending_development: { key: "pending_development", label: "Pendiente de desarrollo" },
+  converted_collaborative: { key: "converted_collaborative", label: "Convertida en colaborativa" },
+  converted_express: { key: "converted_express", label: "Convertida en express" },
+  rejected: { key: "rejected", label: "Descartada" },
+};
 const DEFAULT_INVITED_AVATARS = {
   "svallejo@isaval.es": DEFAULT_PROFILE_AVATAR,
   "lmerelo@isaval.es": "/assets/profile/luis2-360.jpg",
@@ -545,6 +562,37 @@ function cleanMessage(value) {
     .slice(0, 1200);
 }
 
+function cleanIdeaTitle(value) {
+  return String(value || "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 140);
+}
+
+function cleanIdeaSummary(value) {
+  return String(value || "")
+    .replace(/\r\n/g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim()
+    .slice(0, 2500);
+}
+
+function cleanIdeaNote(value) {
+  return String(value || "")
+    .replace(/\r\n/g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim()
+    .slice(0, 600);
+}
+
+function cleanFilename(value) {
+  return String(value || "")
+    .replace(/[^\p{L}\p{N}._ -]+/gu, "-")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 180);
+}
+
 function cleanAvatar(value) {
   const text = String(value || "").trim();
   if (!text) return "";
@@ -558,6 +606,50 @@ function serializeForInlineScript(value) {
     .replace(/</g, "\\u003c")
     .replace(/\u2028/g, "\\u2028")
     .replace(/\u2029/g, "\\u2029");
+}
+
+function normalizeIdeaSubmissionStatus(value) {
+  const key = String(value || "").trim().toLowerCase();
+  if (IDEA_SUBMISSION_STATUS_META[key]) return key;
+  return "received";
+}
+
+function getIdeaSubmissionStatusMeta(value) {
+  return IDEA_SUBMISSION_STATUS_META[normalizeIdeaSubmissionStatus(value)] || IDEA_SUBMISSION_STATUS_META.received;
+}
+
+function getFilenameExtension(name) {
+  const filename = String(name || "").trim().toLowerCase();
+  const dotIndex = filename.lastIndexOf(".");
+  if (dotIndex === -1) return "";
+  return filename.slice(dotIndex + 1);
+}
+
+function getAttachmentContentType(file) {
+  const type = String(file?.type || "").trim().toLowerCase();
+  if (type && type !== "application/octet-stream") return type;
+  const extension = getFilenameExtension(file?.name || "");
+  if (extension === "pdf") return "application/pdf";
+  if (extension === "doc") return "application/msword";
+  if (extension === "docx") return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+  return type || "application/octet-stream";
+}
+
+function isAllowedIdeaAttachment(file) {
+  const extension = getFilenameExtension(file?.name || "");
+  const contentType = getAttachmentContentType(file);
+  return IDEA_SUBMISSION_ALLOWED_EXTENSIONS.has(extension) && IDEA_SUBMISSION_ALLOWED_MIME_TYPES.has(contentType);
+}
+
+function arrayBufferToBase64(buffer) {
+  let binary = "";
+  const bytes = new Uint8Array(buffer);
+  const chunkSize = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    const chunk = bytes.subarray(i, i + chunkSize);
+    binary += String.fromCharCode(...chunk);
+  }
+  return btoa(binary);
 }
 
 function normalizeProjectStatus(value) {
@@ -592,6 +684,15 @@ function getStoredProjectStatusDetails(value) {
 
 function isValidEmail(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+}
+
+function serializeIdeaSubmission(item) {
+  const meta = getIdeaSubmissionStatusMeta(item.status);
+  return {
+    ...item,
+    status: meta.key,
+    statusLabel: meta.label,
+  };
 }
 
 function isHtmlResponse(response) {
@@ -1127,6 +1228,7 @@ window.__DEMO_VIEWER__=${serializeForInlineScript(demoViewer)};
   <a href="/demo/radar/">Radar</a>
   <a href="/demo/academy-ai/">Academy AI</a>
   <a href="/demo/eventos-ai-isaval/">Eventos AI Isaval</a>
+  <a href="/demo/comparte-tu-idea/">Comparte tu idea</a>
   <a href="/demo/termometro-ai/">Termómetro AI</a>
   <a href="/demo/actividad-hub/">Actividad Hub</a>
 </div>
@@ -1536,6 +1638,120 @@ async function handleApi(request, url, store, session, env) {
     if (!slug) return json({ error: "Missing slug" }, 400);
     const comments = await store.getComments(slug);
     return json({ slug, comments });
+  }
+
+  if (request.method === "GET" && url.pathname === "/api/demo/idea-submissions") {
+    if (!session.isAdmin) return json({ error: "Forbidden" }, 403);
+    const submissions = (await store.getIdeaSubmissions()).map(serializeIdeaSubmission);
+    const counts = submissions.reduce((acc, item) => {
+      acc[item.status] = (acc[item.status] || 0) + 1;
+      return acc;
+    }, {});
+    return json({ ok: true, submissions, counts });
+  }
+
+  if (request.method === "POST" && url.pathname === "/api/demo/idea-submissions") {
+    const formData = await request.formData().catch(() => null);
+    if (!formData) return json({ error: "Invalid form data" }, 400);
+
+    const name = cleanName(session.name || formData.get("name") || "");
+    const email = cleanEmail(session.email || formData.get("email") || "");
+    const title = cleanIdeaTitle(formData.get("title") || "");
+    const summary = cleanIdeaSummary(formData.get("summary") || "");
+    const attachment = formData.get("attachment");
+
+    if (!name || !email || !isValidEmail(email)) return json({ error: "Invalid sender" }, 400);
+    if (!title) return json({ error: "Missing title" }, 400);
+    if (!summary) return json({ error: "Missing summary" }, 400);
+    if (!(attachment instanceof File) || !attachment.name) return json({ error: "Missing attachment" }, 400);
+    if (!isAllowedIdeaAttachment(attachment)) {
+      return json({ error: "Attachment must be a PDF or Word document" }, 400);
+    }
+    if (attachment.size > IDEA_SUBMISSION_MAX_BYTES) {
+      return json({ error: "Attachment too large" }, 400);
+    }
+
+    const attachmentBuffer = await attachment.arrayBuffer();
+    const attachmentName = cleanFilename(attachment.name || "idea");
+    const attachmentType = getAttachmentContentType(attachment);
+    const senderEmail = cleanEmail(env.NOTIFY_SENDER_EMAIL || "svallejo@isaval.es");
+    const subject = `Nueva idea Hub IA · ${name} · ${title}`;
+    const html = `
+      <div style="background:#f4f7fa;padding:24px 18px;">
+        <table role="presentation" style="max-width:720px;width:100%;margin:0 auto;background:#ffffff;border:1px solid #d8e0e8;border-radius:14px;border-collapse:separate;">
+          <tr><td bgcolor="#10314d" style="padding:24px 26px;background-color:#10314d;background-image:linear-gradient(110deg,#10314d 0%,#0f5f94 56%,#1577af 100%);color:#ffffff;border-radius:14px 14px 0 0;">
+            <div style="font:700 12px Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;opacity:.9;">Hub IA Isaval</div>
+            <div style="font:700 32px Georgia,serif;line-height:1.15;margin-top:8px;">Nueva idea recibida</div>
+            <div style="font:400 16px Arial,sans-serif;line-height:1.5;margin-top:10px;opacity:.95;">Propuesta enviada desde el espacio participativo del Hub.</div>
+          </td></tr>
+          <tr><td style="padding:24px 26px;">
+            <div style="font:700 18px Arial,sans-serif;color:#1f2c3a;">${escapeHtml(title)}</div>
+            <div style="font:14px Arial,sans-serif;color:#5c6b79;line-height:1.6;margin-top:6px;">${escapeHtml(name)} · ${escapeHtml(email)}</div>
+            <div style="font:14px Arial,sans-serif;color:#1f2c3a;line-height:1.7;margin-top:16px;white-space:pre-wrap;">${escapeHtml(summary)}</div>
+            <div style="margin-top:18px;padding:14px 16px;border:1px solid #d8e0e8;border-radius:12px;background:#fbfdff;">
+              <div style="font:700 13px Arial,sans-serif;color:#10314d;letter-spacing:.08em;text-transform:uppercase;">Adjunto</div>
+              <div style="font:14px Arial,sans-serif;color:#455463;line-height:1.6;margin-top:6px;">${escapeHtml(attachmentName)} · ${escapeHtml(String(Math.round(attachment.size / 1024)))} KB</div>
+            </div>
+          </td></tr>
+        </table>
+      </div>`;
+    const text = [
+      "Nueva idea recibida en el Hub IA Isaval",
+      "",
+      `Título: ${title}`,
+      `Autor: ${name}`,
+      `Email: ${email}`,
+      `Adjunto: ${attachmentName} (${Math.round(attachment.size / 1024)} KB)`,
+      "",
+      summary,
+    ].join("\n");
+
+    const mailResult = await sendMailViaGraph({
+      env,
+      senderEmail,
+      to: [IDEA_SUBMISSION_EMAIL],
+      subject,
+      html,
+      text,
+      attachments: [{
+        name: attachmentName,
+        contentType: attachmentType,
+        contentBytes: arrayBufferToBase64(attachmentBuffer),
+      }],
+    });
+
+    if (!mailResult.ok) {
+      return json({ error: mailResult.error }, 500);
+    }
+
+    const submission = await store.addIdeaSubmission({
+      name,
+      email,
+      title,
+      summary,
+      attachmentName,
+      attachmentType,
+      attachmentSize: attachment.size,
+      source: "hub-form",
+    });
+    return json({ ok: true, submission: serializeIdeaSubmission(submission) }, 201);
+  }
+
+  if (request.method === "PATCH" && /^\/api\/demo\/idea-submissions\/.+/.test(url.pathname)) {
+    if (!session.isAdmin) return json({ error: "Forbidden" }, 403);
+    const submissionId = decodeURIComponent(url.pathname.replace(/^\/api\/demo\/idea-submissions\//, "")).trim();
+    if (!submissionId) return json({ error: "Missing submission id" }, 400);
+    const payload = await request.json().catch(() => null);
+    if (!payload) return json({ error: "Invalid JSON" }, 400);
+    const result = await store.updateIdeaSubmission({
+      id: submissionId,
+      status: payload.status,
+      note: payload.note,
+      reviewedByEmail: session.email || "",
+      reviewedByName: session.name || session.email || "Administración",
+    });
+    if (!result.ok) return json({ error: result.error }, result.error === "Submission not found" ? 404 : 400);
+    return json({ ok: true, submission: serializeIdeaSubmission(result.submission) });
   }
 
   if (request.method === "POST" && url.pathname === "/api/demo/project-statuses") {
@@ -1982,7 +2198,7 @@ async function sendWeeklyCommentDigests({ env, store, now, timeZone, hubBaseUrl,
   });
 }
 
-async function sendMailViaGraph({ env, senderEmail, to = [], bcc = [], subject, html, text }) {
+async function sendMailViaGraph({ env, senderEmail, to = [], bcc = [], subject, html, text, attachments = [] }) {
   const tenantId = env.M365_TENANT_ID;
   const clientId = env.M365_CLIENT_ID;
   const clientSecret = env.M365_CLIENT_SECRET;
@@ -2028,6 +2244,12 @@ async function sendMailViaGraph({ env, senderEmail, to = [], bcc = [], subject, 
         },
         toRecipients: to.map((email) => ({ emailAddress: { address: email } })),
         bccRecipients: bcc.map((email) => ({ emailAddress: { address: email } })),
+        attachments: attachments.map((attachment) => ({
+          "@odata.type": "#microsoft.graph.fileAttachment",
+          name: attachment.name,
+          contentType: attachment.contentType,
+          contentBytes: attachment.contentBytes,
+        })),
       },
       saveToSentItems: true,
     }),
@@ -2365,6 +2587,64 @@ export class HubData extends DurableObject {
 
   async deleteAdminSession(token) {
     await this.ctx.storage.delete(`admin-session:${token}`);
+  }
+
+  async getIdeaSubmissions() {
+    const submissions = (await this.ctx.storage.get("idea-submissions")) || [];
+    return submissions
+      .map((item) => ({
+        ...item,
+        status: normalizeIdeaSubmissionStatus(item.status),
+      }))
+      .sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
+  }
+
+  async saveIdeaSubmissions(items) {
+    await this.ctx.storage.put("idea-submissions", items);
+  }
+
+  async addIdeaSubmission({ name, email, title, summary, attachmentName, attachmentType, attachmentSize, source = "hub" }) {
+    const submissions = await this.getIdeaSubmissions();
+    const now = new Date().toISOString();
+    const record = {
+      id: crypto.randomUUID(),
+      name: cleanName(name),
+      email: cleanEmail(email),
+      title: cleanIdeaTitle(title),
+      summary: cleanIdeaSummary(summary),
+      attachmentName: cleanFilename(attachmentName),
+      attachmentType: String(attachmentType || "").slice(0, 120),
+      attachmentSize: Number(attachmentSize || 0),
+      source: String(source || "hub").slice(0, 40),
+      status: "received",
+      note: "",
+      createdAt: now,
+      updatedAt: now,
+      reviewedAt: null,
+      reviewedByEmail: "",
+      reviewedByName: "",
+    };
+    submissions.unshift(record);
+    await this.saveIdeaSubmissions(submissions.slice(0, 500));
+    return record;
+  }
+
+  async updateIdeaSubmission({ id, status, note, reviewedByEmail, reviewedByName }) {
+    const submissions = await this.getIdeaSubmissions();
+    const index = submissions.findIndex((item) => item.id === id);
+    if (index === -1) return { ok: false, error: "Submission not found" };
+    const updatedAt = new Date().toISOString();
+    submissions[index] = {
+      ...submissions[index],
+      status: normalizeIdeaSubmissionStatus(status),
+      note: cleanIdeaNote(note),
+      updatedAt,
+      reviewedAt: updatedAt,
+      reviewedByEmail: cleanEmail(reviewedByEmail || ""),
+      reviewedByName: cleanName(reviewedByName || ""),
+    };
+    await this.saveIdeaSubmissions(submissions);
+    return { ok: true, submission: submissions[index] };
   }
 
   async recordPageView({ userId, email, name, path, language, type = "page-view" }) {

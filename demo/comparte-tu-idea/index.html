@@ -1,0 +1,582 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Comparte tu idea</title>
+  <style>
+    :root {
+      --bg: #f3f6f9;
+      --panel: #ffffff;
+      --ink: #1f2c3a;
+      --muted: #5c6b79;
+      --accent: #0f5f94;
+      --accent-dark: #10314d;
+      --line: #d8e0e8;
+      --success-bg: #e8f5ec;
+      --success-ink: #0f6b3c;
+      --warn-bg: #fff4dd;
+      --warn-ink: #8a5a00;
+      --error-bg: #fdeceb;
+      --error-ink: #a13434;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 4%, #dce9f4 0, transparent 22%),
+        radial-gradient(circle at 90% 0%, #e8eef3 0, transparent 24%),
+        var(--bg);
+      line-height: 1.55;
+    }
+    .page {
+      max-width: 1160px;
+      margin: 28px auto;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      overflow: hidden;
+      background: var(--panel);
+      box-shadow: 0 16px 38px rgba(17,34,52,.08);
+    }
+    header {
+      padding: 24px 34px 34px;
+      color: #fff;
+      background:
+        radial-gradient(circle at 78% 18%, rgba(255,255,255,.16) 0, transparent 18%),
+        linear-gradient(115deg, #102c45 0%, #0f5f94 52%, #1a86ba 100%);
+    }
+    .topbar { display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom:24px; }
+    .brand { display:flex; align-items:center; gap:14px; }
+    .brand img {
+      height: 52px;
+      width: auto;
+      display: block;
+      padding: 8px 14px;
+      background: rgba(255,255,255,.96);
+      border-radius: 16px;
+      box-shadow: 0 10px 24px rgba(0,0,0,.14);
+    }
+    .eyebrow { font-size:12px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; opacity:.88; }
+    .nav { display:flex; flex-wrap:wrap; gap:8px; }
+    .nav a {
+      text-decoration:none; color:#fff; border:1px solid rgba(255,255,255,.32); background:rgba(255,255,255,.12);
+      padding:8px 11px; border-radius:999px; font-size:13px; font-weight:700;
+    }
+    .hero { display:grid; grid-template-columns:minmax(0,1.2fr) minmax(280px,.8fr); gap:24px; align-items:end; }
+    .hero h1 { margin:10px 0 12px; font-size:clamp(2.1rem,4vw,3.3rem); line-height:1.02; letter-spacing:-.03em; }
+    .hero p { margin:0; max-width:760px; font-size:17px; line-height:1.6; color:rgba(255,255,255,.92); }
+    .manifesto {
+      background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.18); border-radius:18px;
+      padding:18px; backdrop-filter: blur(6px);
+    }
+    .manifesto strong { display:block; margin-bottom:8px; font-size:13px; letter-spacing:.08em; text-transform:uppercase; }
+    .manifesto p { margin:0; font-size:15px; line-height:1.6; }
+    main { padding: 30px 34px 38px; display:grid; gap:18px; }
+    .intro-grid { display:grid; grid-template-columns:1.15fr .85fr; gap:16px; }
+    .panel {
+      border:1px solid var(--line);
+      border-radius:18px;
+      background:#fbfdff;
+      padding:20px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.7);
+    }
+    .panel h2 { margin:0 0 10px; color:var(--accent-dark); font-size:22px; }
+    .panel p { margin:0; color:#32485b; }
+    .stack { display:grid; gap:12px; }
+    .steps { display:grid; gap:10px; margin-top:14px; }
+    .step {
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fff;
+      padding:14px 15px;
+      display:grid;
+      gap:4px;
+    }
+    .step strong { color:#10314d; font-size:14px; letter-spacing:.03em; text-transform:uppercase; }
+    .step span { color:#4f6172; font-size:14px; }
+    .form-grid { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:14px; }
+    .field { display:grid; gap:6px; }
+    .field.full { grid-column:1 / -1; }
+    .field label { color:#10314d; font-size:14px; font-weight:700; }
+    .field input,
+    .field textarea,
+    .field select {
+      width:100%;
+      border:1px solid #cfd8e1;
+      border-radius:12px;
+      padding:11px 12px;
+      font:inherit;
+      color:#1f2c3a;
+      background:#fff;
+    }
+    .field textarea { min-height:150px; resize:vertical; }
+    .field small { color:#5c6b79; font-size:12px; }
+    .field input[readonly] { background:#f5f8fb; }
+    .actions { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    .btn {
+      text-decoration:none;
+      border-radius:10px;
+      padding:10px 13px;
+      font-size:14px;
+      font-weight:700;
+      border:1px solid #0f5a8c;
+      color:#fff;
+      background:#0f5f94;
+      display:inline-block;
+      cursor:pointer;
+    }
+    .btn.secondary { background:#fff; color:#10314d; border-color:#cad8e5; }
+    .btn[disabled] { opacity:.65; cursor:wait; }
+    .status-box {
+      border-radius:14px;
+      padding:13px 14px;
+      font-size:14px;
+      border:1px solid transparent;
+      display:none;
+    }
+    .status-box.show { display:block; }
+    .status-box.success { background:var(--success-bg); color:var(--success-ink); border-color:#bfe0ca; }
+    .status-box.error { background:var(--error-bg); color:var(--error-ink); border-color:#efc0bd; }
+    .status-box.info { background:#eef5fb; color:#214b69; border-color:#cfe0ee; }
+    .summary-row { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px; }
+    .summary-pill {
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:#fff;
+      padding:8px 12px;
+      font-size:13px;
+      color:#4f6172;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    .summary-pill strong { color:#10314d; font-size:14px; }
+    .submissions { display:grid; gap:12px; }
+    .submission {
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:#fff;
+      padding:16px;
+      display:grid;
+      gap:12px;
+    }
+    .submission-top {
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      gap:12px;
+      align-items:start;
+    }
+    .submission-top h3 { margin:0; color:#10314d; font-size:20px; line-height:1.2; }
+    .submission-meta { color:#5c6b79; font-size:14px; }
+    .status-tag {
+      display:inline-flex;
+      align-items:center;
+      border-radius:999px;
+      padding:6px 10px;
+      font-size:12px;
+      font-weight:700;
+      border:1px solid #d3dde6;
+      background:#eef2f6;
+      color:#52606c;
+    }
+    .status-tag.in_review { background:#fff4dd; border-color:#f0d28d; color:#8a5a00; }
+    .status-tag.pending_development { background:#eef5fb; border-color:#cfe0ee; color:#214b69; }
+    .status-tag.converted_collaborative,
+    .status-tag.converted_express { background:#e8f5ec; border-color:#bfe0ca; color:#0f6b3c; }
+    .status-tag.rejected { background:#fdeceb; border-color:#efc0bd; color:#a13434; }
+    .submission p { margin:0; color:#32485b; }
+    .submission-grid { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:10px; }
+    .submission-mini {
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:#fbfdff;
+      padding:12px;
+      display:grid;
+      gap:4px;
+    }
+    .submission-mini strong { color:#10314d; font-size:12px; letter-spacing:.06em; text-transform:uppercase; }
+    .submission-mini span { color:#4f6172; font-size:14px; }
+    .review-grid { display:grid; grid-template-columns:minmax(220px,.35fr) minmax(0,1fr) auto; gap:10px; align-items:start; }
+    .review-grid textarea { min-height:96px; }
+    .admin-only { display:none; }
+    .admin-only.show { display:grid; gap:14px; }
+    .empty { color:#5c6b79; font-size:14px; }
+    footer { border-top:1px solid var(--line); padding:14px 34px 22px; color:var(--muted); font-size:14px; background:#fafcfe; }
+    @media (max-width: 960px) {
+      .hero, .intro-grid, .form-grid, .submission-grid, .review-grid { grid-template-columns:1fr; }
+    }
+    @media (max-width: 760px) {
+      .page { margin:14px; }
+      header, main, footer { padding-left:18px; padding-right:18px; }
+    }
+  </style>
+</head>
+<body>
+  <article class="page">
+    <header>
+      <div class="topbar">
+        <div class="brand">
+          <img src="/assets/brand/isaval-global-logo.png" alt="Isaval" />
+          <div>
+            <div class="eyebrow">Hub IA Isaval</div>
+            <div style="font-weight:700; font-size:14px; opacity:.9;">Comparte tu idea</div>
+          </div>
+        </div>
+        <nav class="nav">
+          <a href="/demo/">Inicio</a>
+          <a href="/demo/pildoras-corporativas/">Corporativas</a>
+          <a href="/demo/pildoras-ejecutivas/">Ejecutivas</a>
+          <a href="/demo/pildoras-express/">Express</a>
+          <a href="/demo/radar/">Radar</a>
+          <a href="/demo/academy-ai/">Academy AI</a>
+          <a href="/demo/eventos-ai-isaval/">Eventos AI Isaval</a>
+          <a href="/demo/comparte-tu-idea/">Comparte tu idea</a>
+          <a href="/demo/termometro-ai/">Termómetro AI</a>
+          <a href="/demo/actividad-hub/">Actividad Hub</a>
+        </nav>
+      </div>
+      <div class="hero">
+        <div>
+          <div class="eyebrow">Participación</div>
+          <h1>Comparte tu idea con el Hub</h1>
+          <p>Si ves una fricción real, una oportunidad o un caso que merezca ser explorado, súbelo aquí y entrará directamente en la bandeja editorial del Hub.</p>
+        </div>
+        <aside class="manifesto">
+          <strong>Qué buscamos</strong>
+          <p>Ideas bien aterrizadas, no piezas perfectas. Nos interesa más detectar una necesidad real y explicarla bien que presentar una solución cerrada desde el primer minuto.</p>
+        </aside>
+      </div>
+    </header>
+    <main>
+      <section class="intro-grid">
+        <div class="panel">
+          <h2>Cómo funciona</h2>
+          <p>La propuesta entra por dos sitios a la vez: llega al buzón editorial y queda registrada dentro del Hub para que podamos seguir su estado con orden.</p>
+          <div class="steps">
+            <div class="step">
+              <strong>1. Sube tu idea</strong>
+              <span>Adjunta un PDF o un Word y explica en pocas líneas qué problema resuelve o qué oportunidad abre.</span>
+            </div>
+            <div class="step">
+              <strong>2. Revisión editorial</strong>
+              <span>La propuesta se estudia y se clasifica: puede madurar como píldora colaborativa, como píldora express o quedarse en observación.</span>
+            </div>
+            <div class="step">
+              <strong>3. Trazabilidad real</strong>
+              <span>El Hub conserva el rastro de cada propuesta para que la participación no dependa solo del correo ni se pierda en el tiempo.</span>
+            </div>
+          </div>
+        </div>
+        <div class="panel stack">
+          <div>
+            <h2>Qué conviene subir</h2>
+            <p>Casos concretos, fricciones operativas, ideas de automatización, necesidades de lectura de datos o propuestas para ordenar mejor un proceso.</p>
+          </div>
+          <div class="step">
+            <strong>Formatos admitidos</strong>
+            <span>PDF, DOC o DOCX. El archivo debe pesar menos de 2,5 MB para que el envío llegue limpio al buzón editorial.</span>
+          </div>
+          <div class="step">
+            <strong>Destino</strong>
+            <span>La propuesta llega a <strong>svallejoi@icloud.com</strong> y queda registrada en la bandeja interna del Hub.</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Enviar propuesta</h2>
+        <p style="margin-bottom:14px;">La idea se firma con tu identidad dentro del Hub. Tú subes el caso; el equipo editorial decide después cómo debe incorporarse.</p>
+        <div class="status-box info show" id="viewer-box">Cargando tu identidad dentro del Hub...</div>
+        <form id="idea-form" class="stack" novalidate>
+          <div class="form-grid">
+            <div class="field">
+              <label for="idea-name">Nombre</label>
+              <input id="idea-name" name="name" type="text" readonly />
+            </div>
+            <div class="field">
+              <label for="idea-email">Email</label>
+              <input id="idea-email" name="email" type="email" readonly />
+            </div>
+            <div class="field full">
+              <label for="idea-title">Título provisional</label>
+              <input id="idea-title" name="title" type="text" maxlength="140" placeholder="Ejemplo: Del control manual a la alerta inteligente de incidencias" required />
+            </div>
+            <div class="field full">
+              <label for="idea-summary">Breve explicación</label>
+              <textarea id="idea-summary" name="summary" maxlength="2500" placeholder="Explica qué fricción detectas, qué oportunidad ves y por qué merecería estudiarse dentro del Hub." required></textarea>
+            </div>
+            <div class="field full">
+              <label for="idea-attachment">Adjunto</label>
+              <input id="idea-attachment" name="attachment" type="file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" required />
+              <small>PDF, DOC o DOCX · máximo 2,5 MB</small>
+            </div>
+          </div>
+          <div class="actions">
+            <button class="btn" id="idea-submit" type="submit">Enviar al Hub</button>
+            <a class="btn secondary" href="/demo/">Volver al inicio</a>
+          </div>
+          <div class="status-box" id="idea-status"></div>
+        </form>
+      </section>
+
+      <section class="panel admin-only" id="admin-board">
+        <div>
+          <h2>Bandeja editorial</h2>
+          <p>Aquí verás las ideas recibidas, su estado editorial y la nota interna asociada. El adjunto llega al buzón editorial y queda referenciado aquí por nombre y tamaño.</p>
+        </div>
+        <div class="summary-row" id="submission-counts"></div>
+        <div class="submissions" id="submission-list"></div>
+        <p class="empty" id="submission-empty" hidden>Todavía no hay ideas registradas.</p>
+      </section>
+    </main>
+    <footer>Comparte tu idea · Hub IA Isaval.</footer>
+  </article>
+
+  <script>
+    (function () {
+      const form = document.getElementById('idea-form');
+      const submitButton = document.getElementById('idea-submit');
+      const statusBox = document.getElementById('idea-status');
+      const viewerBox = document.getElementById('viewer-box');
+      const adminBoard = document.getElementById('admin-board');
+      const submissionCounts = document.getElementById('submission-counts');
+      const submissionList = document.getElementById('submission-list');
+      const submissionEmpty = document.getElementById('submission-empty');
+      const nameInput = document.getElementById('idea-name');
+      const emailInput = document.getElementById('idea-email');
+      const titleInput = document.getElementById('idea-title');
+      const summaryInput = document.getElementById('idea-summary');
+      const attachmentInput = document.getElementById('idea-attachment');
+
+      const statusOptions = [
+        { value: 'received', label: 'Recibida' },
+        { value: 'in_review', label: 'En revisión' },
+        { value: 'pending_development', label: 'Pendiente de desarrollo' },
+        { value: 'converted_collaborative', label: 'Convertida en colaborativa' },
+        { value: 'converted_express', label: 'Convertida en express' },
+        { value: 'rejected', label: 'Descartada' },
+      ];
+
+      let viewer = null;
+
+      function setBox(box, message, tone) {
+        box.textContent = message;
+        box.className = 'status-box show ' + (tone || 'info');
+      }
+
+      function formatDate(value) {
+        const date = new Date(value);
+        return Number.isNaN(date.getTime()) ? '' : date.toLocaleString('es-ES');
+      }
+
+      function formatBytes(bytes) {
+        const value = Number(bytes || 0);
+        if (!value) return '0 KB';
+        if (value < 1024 * 1024) return Math.max(1, Math.round(value / 1024)) + ' KB';
+        return (value / (1024 * 1024)).toFixed(1).replace('.', ',') + ' MB';
+      }
+
+      function escapeHtml(value) {
+        return String(value || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/\"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      async function loadViewer() {
+        const [adminResponse, userResponse] = await Promise.all([
+          fetch('/api/admin-auth/session', { credentials: 'same-origin', cache: 'no-store' }),
+          fetch('/api/auth/session', { credentials: 'same-origin', cache: 'no-store' }),
+        ]);
+        const adminPayload = adminResponse.ok ? await adminResponse.json() : { authenticated: false };
+        const userPayload = userResponse.ok ? await userResponse.json() : { authenticated: false };
+
+        if (adminPayload?.authenticated && adminPayload?.session) {
+          viewer = {
+            name: adminPayload.session.name || adminPayload.session.email,
+            email: adminPayload.session.email,
+            isAdmin: true,
+          };
+          return viewer;
+        }
+        if (userPayload?.authenticated && userPayload?.session) {
+          viewer = {
+            name: userPayload.session.name || userPayload.session.email,
+            email: userPayload.session.email,
+            isAdmin: false,
+          };
+          return viewer;
+        }
+        throw new Error('viewer_unavailable');
+      }
+
+      function renderViewer() {
+        nameInput.value = viewer?.name || '';
+        emailInput.value = viewer?.email || '';
+        setBox(
+          viewerBox,
+          viewer?.isAdmin
+            ? 'Has entrado como administración del Hub. Puedes enviar ideas y además revisar la bandeja editorial.'
+            : 'Tu propuesta quedará firmada con tu identidad dentro del Hub y llegará directamente al buzón editorial.',
+          'info'
+        );
+      }
+
+      function renderCounts(counts) {
+        const items = statusOptions.map((option) => {
+          const count = Number((counts && counts[option.value]) || 0);
+          return '<span class="summary-pill"><strong>' + count + '</strong>' + option.label + '</span>';
+        }).join('');
+        submissionCounts.innerHTML = items;
+      }
+
+      function renderSubmissions(submissions) {
+        submissionList.innerHTML = '';
+        submissionEmpty.hidden = submissions.length > 0;
+        submissions.forEach((submission) => {
+          const article = document.createElement('article');
+          article.className = 'submission';
+          article.innerHTML = `
+            <div class="submission-top">
+              <div>
+                <h3>${escapeHtml(submission.title)}</h3>
+                <div class="submission-meta">${escapeHtml(submission.name)} · ${escapeHtml(submission.email)} · ${formatDate(submission.createdAt)}</div>
+              </div>
+              <span class="status-tag ${escapeHtml(submission.status)}">${escapeHtml(submission.statusLabel)}</span>
+            </div>
+            <p>${escapeHtml(submission.summary)}</p>
+            <div class="submission-grid">
+              <div class="submission-mini">
+                <strong>Adjunto</strong>
+                <span>${escapeHtml(submission.attachmentName || 'Sin adjunto')}${submission.attachmentName ? ' · ' + formatBytes(submission.attachmentSize) : ''}</span>
+              </div>
+              <div class="submission-mini">
+                <strong>Última revisión</strong>
+                <span>${submission.reviewedAt ? formatDate(submission.reviewedAt) : 'Todavía sin revisar'}</span>
+              </div>
+              <div class="submission-mini">
+                <strong>Responsable</strong>
+                <span>${escapeHtml(submission.reviewedByName || 'Pendiente')}</span>
+              </div>
+            </div>
+            <div class="review-grid">
+              <div class="field">
+                <label>Estado editorial</label>
+                <select data-status-select>
+                  ${statusOptions.map((option) => '<option value="' + option.value + '"' + (option.value === submission.status ? ' selected' : '') + '>' + option.label + '</option>').join('')}
+                </select>
+              </div>
+              <div class="field">
+                <label>Nota interna</label>
+                <textarea data-note-input placeholder="Nota interna para la revisión editorial"></textarea>
+              </div>
+              <div class="actions" style="align-self:end;">
+                <button class="btn secondary" type="button" data-save-submission>Guardar</button>
+              </div>
+            </div>`;
+          article.querySelector('[data-note-input]').value = submission.note || '';
+
+          article.querySelector('[data-save-submission]').addEventListener('click', async () => {
+            const saveButton = article.querySelector('[data-save-submission]');
+            const select = article.querySelector('[data-status-select]');
+            const note = article.querySelector('[data-note-input]');
+            saveButton.disabled = true;
+            saveButton.textContent = 'Guardando...';
+            try {
+              const response = await fetch('/api/demo/idea-submissions/' + encodeURIComponent(submission.id), {
+                method: 'PATCH',
+                credentials: 'same-origin',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ status: select.value, note: note.value }),
+              });
+              const payload = await response.json().catch(() => ({}));
+              if (!response.ok) throw new Error(payload.error || 'No se ha podido guardar la revisión.');
+              await loadSubmissions();
+            } catch (error) {
+              window.alert(error.message || 'No se ha podido guardar la revisión.');
+            } finally {
+              saveButton.disabled = false;
+              saveButton.textContent = 'Guardar';
+            }
+          });
+
+          submissionList.appendChild(article);
+        });
+      }
+
+      async function loadSubmissions() {
+        if (!viewer?.isAdmin) return;
+        const response = await fetch('/api/demo/idea-submissions', { credentials: 'same-origin', cache: 'no-store' });
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(payload.error || 'No se ha podido cargar la bandeja editorial.');
+        renderCounts(payload.counts || {});
+        renderSubmissions(payload.submissions || []);
+      }
+
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        if (!viewer) return;
+        const file = attachmentInput.files && attachmentInput.files[0];
+        if (!file) {
+          setBox(statusBox, 'Adjunta un PDF o un Word antes de enviar la propuesta.', 'error');
+          return;
+        }
+        submitButton.disabled = true;
+        submitButton.textContent = 'Enviando...';
+        setBox(statusBox, 'Estamos enviando tu propuesta al buzón editorial y registrándola dentro del Hub.', 'info');
+        try {
+          const payload = new FormData();
+          payload.set('name', nameInput.value);
+          payload.set('email', emailInput.value);
+          payload.set('title', titleInput.value.trim());
+          payload.set('summary', summaryInput.value.trim());
+          payload.set('attachment', file);
+          const response = await fetch('/api/demo/idea-submissions', {
+            method: 'POST',
+            credentials: 'same-origin',
+            body: payload,
+          });
+          const data = await response.json().catch(() => ({}));
+          if (!response.ok) {
+            const message = data.error === 'Attachment too large'
+              ? 'El archivo supera el límite de 2,5 MB. Súbelo un poco más ligero.'
+              : (data.error || 'No se ha podido enviar la propuesta.');
+            throw new Error(message);
+          }
+          form.reset();
+          nameInput.value = viewer.name;
+          emailInput.value = viewer.email;
+          setBox(statusBox, 'Propuesta recibida. Ya está en el buzón editorial y queda registrada dentro del Hub para su revisión.', 'success');
+          if (viewer.isAdmin) await loadSubmissions();
+        } catch (error) {
+          setBox(statusBox, error.message || 'No se ha podido enviar la propuesta.', 'error');
+        } finally {
+          submitButton.disabled = false;
+          submitButton.textContent = 'Enviar al Hub';
+        }
+      });
+
+      (async function init() {
+        try {
+          await loadViewer();
+          renderViewer();
+          if (viewer.isAdmin) {
+            adminBoard.classList.add('show');
+            await loadSubmissions();
+          }
+        } catch (error) {
+          setBox(viewerBox, 'No se ha podido identificar tu sesión dentro del Hub.', 'error');
+          submitButton.disabled = true;
+          titleInput.disabled = true;
+          summaryInput.disabled = true;
+          attachmentInput.disabled = true;
+        }
+      })();
+    })();
+  </script>
+</body>
+</html>
