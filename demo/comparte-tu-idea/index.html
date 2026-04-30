@@ -462,6 +462,10 @@
                 <strong>Responsable</strong>
                 <span>${escapeHtml(submission.reviewedByName || 'Pendiente')}</span>
               </div>
+              <div class="submission-mini">
+                <strong>Correo editorial</strong>
+                <span>${submission.deliveryStatus === 'sent' ? 'Enviado' : submission.deliveryStatus === 'failed' ? 'Pendiente por incidencia' : 'Pendiente'}</span>
+              </div>
             </div>
             <div class="review-grid">
               <div class="field">
@@ -550,7 +554,11 @@
           form.reset();
           nameInput.value = viewer.name;
           emailInput.value = viewer.email;
-          setBox(statusBox, 'Propuesta recibida. Ya está en el buzón editorial y queda registrada dentro del Hub para su revisión.', 'success');
+          if (data.warningCode === 'delivery_failed') {
+            setBox(statusBox, 'Propuesta registrada dentro del Hub. El correo editorial no ha salido todavía, pero la idea no se ha perdido y ya está en la bandeja de revisión.', 'info');
+          } else {
+            setBox(statusBox, 'Propuesta recibida. Ya está en el buzón editorial y queda registrada dentro del Hub para su revisión.', 'success');
+          }
           if (viewer.isAdmin) await loadSubmissions();
         } catch (error) {
           setBox(statusBox, error.message || 'No se ha podido enviar la propuesta.', 'error');

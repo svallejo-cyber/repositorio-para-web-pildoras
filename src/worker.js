@@ -1706,6 +1706,17 @@ async function handleApi(request, url, store, session, env) {
       summary,
     ].join("\n");
 
+    const submission = await store.addIdeaSubmission({
+      name,
+      email,
+      title,
+      summary,
+      attachmentName,
+      attachmentType,
+      attachmentSize: attachment.size,
+      source: "hub-form",
+    });
+
     const mailResult = await sendMailViaGraph({
       env,
       senderEmail,
@@ -1721,20 +1732,30 @@ async function handleApi(request, url, store, session, env) {
     });
 
     if (!mailResult.ok) {
-      return json({ error: mailResult.error }, 500);
+      await store.updateIdeaSubmissionDelivery({
+        id: submission.id,
+        deliveryStatus: "failed",
+        deliveryError: mailResult.error,
+      });
+      return json({
+        ok: true,
+        warning: "Idea registrada, pero el correo editorial no ha podido salir.",
+        warningCode: "delivery_failed",
+        warningDetail: mailResult.error,
+        submission: serializeIdeaSubmission({
+          ...submission,
+          deliveryStatus: "failed",
+          deliveryError: mailResult.error,
+        }),
+      }, 202);
     }
 
-    const submission = await store.addIdeaSubmission({
-      name,
-      email,
-      title,
-      summary,
-      attachmentName,
-      attachmentType,
-      attachmentSize: attachment.size,
-      source: "hub-form",
+    const deliveryUpdate = await store.updateIdeaSubmissionDelivery({
+      id: submission.id,
+      deliveryStatus: "sent",
+      deliveryError: "",
     });
-    return json({ ok: true, submission: serializeIdeaSubmission(submission) }, 201);
+    return json({ ok: true, submission: serializeIdeaSubmission(deliveryUpdate.submission || submission) }, 201);
   }
 
   if (request.method === "PATCH" && /^\/api\/demo\/idea-submissions\/.+/.test(url.pathname)) {
@@ -2618,6 +2639,8 @@ export class HubData extends DurableObject {
       source: String(source || "hub").slice(0, 40),
       status: "received",
       note: "",
+      deliveryStatus: "pending",
+      deliveryError: "",
       createdAt: now,
       updatedAt: now,
       reviewedAt: null,
@@ -2642,6 +2665,20 @@ export class HubData extends DurableObject {
       reviewedAt: updatedAt,
       reviewedByEmail: cleanEmail(reviewedByEmail || ""),
       reviewedByName: cleanName(reviewedByName || ""),
+    };
+    await this.saveIdeaSubmissions(submissions);
+    return { ok: true, submission: submissions[index] };
+  }
+
+  async updateIdeaSubmissionDelivery({ id, deliveryStatus, deliveryError = "" }) {
+    const submissions = await this.getIdeaSubmissions();
+    const index = submissions.findIndex((item) => item.id === id);
+    if (index === -1) return { ok: false, error: "Submission not found" };
+    submissions[index] = {
+      ...submissions[index],
+      deliveryStatus: String(deliveryStatus || "pending").slice(0, 30),
+      deliveryError: cleanIdeaNote(deliveryError),
+      updatedAt: new Date().toISOString(),
     };
     await this.saveIdeaSubmissions(submissions);
     return { ok: true, submission: submissions[index] };
