@@ -16,6 +16,8 @@
       --line: #d8e0e8;
       --soft: #edf5fb;
       --warm: #f9efe4;
+      --mint: #edf7f2;
+      --violet: #f4effd;
     }
     * { box-sizing: border-box; }
     body {
@@ -29,7 +31,7 @@
       line-height: 1.55;
     }
     .page {
-      max-width: 1120px;
+      max-width: 1160px;
       margin: 28px auto;
       border: 1px solid var(--line);
       border-radius: 22px;
@@ -86,13 +88,13 @@
     }
     .hero {
       display:grid;
-      grid-template-columns: minmax(0, 1.35fr) minmax(280px, .8fr);
+      grid-template-columns: minmax(0, 1.25fr) minmax(300px, .75fr);
       gap: 26px;
       align-items:end;
     }
     .hero h1 {
       margin: 10px 0 12px;
-      font-size: clamp(2.2rem, 4vw, 3.6rem);
+      font-size: clamp(2.3rem, 4vw, 3.7rem);
       line-height: 1.02;
       letter-spacing: -.03em;
     }
@@ -109,85 +111,201 @@
       border-radius: 18px;
       padding: 18px 18px 16px;
       backdrop-filter: blur(6px);
+      display: grid;
+      gap: 10px;
     }
     .manifesto strong {
       display:block;
-      margin-bottom:8px;
       font-size:13px;
       letter-spacing:.08em;
       text-transform:uppercase;
     }
     .manifesto p {
+      margin: 0;
       font-size:15px;
       line-height:1.6;
     }
-    main { padding: 30px 34px 38px; }
-    .section-intro {
+    .hero-pills {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .hero-pill {
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.14);
+      border:1px solid rgba(255,255,255,.22);
+      font-size:13px;
+      font-weight:700;
+    }
+    main { padding: 30px 34px 38px; display:grid; gap:22px; }
+    .intro-grid {
       display:grid;
       grid-template-columns: 1.15fr .85fr;
-      gap: 18px;
-      align-items:start;
-      margin-bottom: 24px;
-    }
-    .statement {
-      padding: 18px 20px;
-      border-radius: 18px;
-      border: 1px solid #cfddea;
-      background: linear-gradient(180deg, #f8fbfe 0%, #eef5fb 100%);
-    }
-    .statement h2, .focus h2 {
-      margin:0 0 10px;
-      color: var(--accent-dark);
-      font-size: 20px;
-    }
-    .statement p, .focus p { margin:0; color:#32485b; }
-    .focus {
-      padding: 18px 20px;
-      border-radius: 18px;
-      border: 1px solid #ead9c7;
-      background: linear-gradient(180deg, #fffaf4 0%, #f9efe4 100%);
-    }
-    .grid {
-      display:grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 16px;
     }
-    .card {
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:18px;
-      background:#fbfdff;
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 20px;
+      background: #fbfdff;
       box-shadow: inset 0 1px 0 rgba(255,255,255,.7);
+    }
+    .panel.soft { background: linear-gradient(180deg, #f8fbfe 0%, #eef5fb 100%); }
+    .panel.warm { background: linear-gradient(180deg, #fffaf4 0%, #f9efe4 100%); border-color: #ead9c7; }
+    .panel h2, .phase-head h2 {
+      margin: 0 0 10px;
+      color: var(--accent-dark);
+      font-size: 22px;
+    }
+    .panel p { margin:0; color:#32485b; }
+    .program-grid {
+      display:grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .program-card {
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:#fff;
+      padding:16px;
+      display:grid;
+      gap:8px;
+    }
+    .program-card strong {
+      color:#10314d;
+      font-size:17px;
+      line-height:1.2;
+    }
+    .program-card span {
+      color:#5c6b79;
+      font-size:14px;
+      line-height:1.45;
+    }
+    .phase {
+      border:1px solid var(--line);
+      border-radius:22px;
+      background:#fff;
+      padding:20px;
+      display:grid;
+      gap:16px;
+    }
+    .phase.phase-soft { background: linear-gradient(180deg, #fbfdff 0%, #f4f9fe 100%); }
+    .phase.phase-warm { background: linear-gradient(180deg, #fffdf9 0%, #f9f2ea 100%); }
+    .phase.phase-mint { background: linear-gradient(180deg, #fbfffd 0%, #eef7f2 100%); }
+    .phase.phase-violet { background: linear-gradient(180deg, #fcfbff 0%, #f3effd 100%); }
+    .phase-head {
+      display:grid;
+      grid-template-columns: minmax(0,1fr) auto;
+      gap:16px;
+      align-items:end;
+    }
+    .phase-head p {
+      margin:0;
+      color:#32485b;
+    }
+    .phase-badge {
+      display:inline-flex;
+      align-items:center;
+      border-radius:999px;
+      padding:8px 12px;
+      border:1px solid #cad8e5;
+      background:#fff;
+      color:#10314d;
+      font-size:13px;
+      font-weight:700;
+      white-space:nowrap;
+    }
+    .modules {
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .module {
+      border:1px solid #d9e4ed;
+      border-radius:18px;
+      background:#fff;
+      padding:18px;
       display:grid;
       gap:12px;
     }
-    .card .kicker {
+    .module-top {
+      display:grid;
+      grid-template-columns: auto 1fr;
+      gap:12px;
+      align-items:start;
+    }
+    .module-number {
+      width:48px;
+      height:48px;
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      background:#10314d;
+      color:#fff;
+      font-size:18px;
+      font-weight:700;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.18);
+    }
+    .module h3 {
+      margin:0;
+      color:#10314d;
+      font-size:22px;
+      line-height:1.1;
+    }
+    .module-subtitle {
+      color:#4f6172;
+      font-size:14px;
+      line-height:1.5;
+    }
+    .module-meta {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .meta-pill {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      border:1px solid #d6e1ea;
+      border-radius:999px;
+      background:#f8fbfe;
+      padding:6px 10px;
+      color:#4f6172;
       font-size:12px;
       font-weight:700;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      color:#31516a;
     }
-    .card h3 {
-      margin:0;
-      font-size:24px;
-      line-height:1.12;
-      color:#10314d;
-    }
-    .card p, .card li {
-      color:#32485b;
-    }
-    .card ul {
-      margin:0;
-      padding-left:18px;
+    .module-body {
       display:grid;
-      gap:8px;
+      gap:10px;
+    }
+    .module-block {
+      border:1px solid #e2ebf2;
+      border-radius:14px;
+      background:#fbfdff;
+      padding:12px 13px;
+      display:grid;
+      gap:4px;
+    }
+    .module-block strong {
+      color:#10314d;
+      font-size:12px;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+    }
+    .module-block span {
+      color:#32485b;
+      font-size:14px;
+      line-height:1.5;
     }
     .actions {
       display:flex;
       gap:10px;
       flex-wrap:wrap;
-      margin-top:6px;
+      margin-top:2px;
     }
     .btn {
       text-decoration:none;
@@ -200,6 +318,11 @@
       background:#0f5f94;
       display:inline-block;
     }
+    .btn.secondary {
+      background:#fff;
+      color:#10314d;
+      border-color:#cad8e5;
+    }
     footer {
       border-top:1px solid var(--line);
       padding:14px 34px 22px;
@@ -207,9 +330,10 @@
       font-size:14px;
       background:#fafcfe;
     }
-    @media (max-width: 900px) {
-      .hero, .section-intro, .grid { grid-template-columns: 1fr; }
+    @media (max-width: 960px) {
+      .hero, .intro-grid, .program-grid, .modules { grid-template-columns: 1fr; }
       .hero { align-items:start; }
+      .phase-head { grid-template-columns: 1fr; }
     }
     @media (max-width: 760px) {
       .page { margin: 14px; }
@@ -244,70 +368,367 @@
       </div>
       <div class="hero">
         <div>
-          <div class="eyebrow">Aprendizaje aplicable</div>
-          <h1>Academy AI</h1>
-          <p>Repositorio de recursos para el aprendizaje: guías, materiales, ejemplos, buenas prácticas y referencias para elevar el nivel medio de criterio y autonomía dentro de Isaval.</p>
+          <div class="eyebrow">Programa formativo</div>
+          <h1>Curso Codex Isaval</h1>
+          <p>Recorrido completo para que empleados de Isaval y miembros del Hub pasen de un uso inicial con dudas a un uso avanzado, disciplinado y útil de Codex en su trabajo real.</p>
         </div>
         <aside class="manifesto">
-          <strong>Hashtags guía</strong>
-          <p>#AprenderHaciendo #CriterioDigital #CapacidadInterna</p>
+          <strong>Qué es este programa</strong>
+          <p>No es una biblioteca de PDFs. Es un itinerario de aprendizaje por fases pensado para perfiles no técnicos que quieren trabajar con más criterio, más seguridad y más impacto real.</p>
+          <div class="hero-pills">
+            <span class="hero-pill">11 módulos</span>
+            <span class="hero-pill">4 fases</span>
+            <span class="hero-pill">50-70 horas</span>
+          </div>
         </aside>
       </div>
     </header>
     <main>
-      <section class="section-intro">
-        <div class="statement">
-          <h2>Qué encontrarás aquí</h2>
-          <p>Los recursos de aprendizaje del Hub: materiales introductorios, guías de uso, casos explicados, plantillas e itinerarios para aprender mejor.</p>
+      <section class="intro-grid">
+        <div class="panel soft">
+          <h2>Cómo lo usaría dentro de Isaval</h2>
+          <p>Lo presentaría como el programa interno de referencia para aprender Codex con método. El valor no está en leerlo entero de golpe, sino en avanzar por orden, practicar en pequeño y llevar cada módulo a una mejora real del puesto.</p>
         </div>
-        <div class="focus">
-          <h2>Qué organiza hoy</h2>
-          <p>Una estructura de aprendizaje por capas: empezar, pensar mejor, ejecutar y trabajar con criterio seguro.</p>
+        <div class="panel warm">
+          <h2>Qué consigue</h2>
+          <p>Que una persona deje de ver Codex como una curiosidad o una caja negra y empiece a usarlo como colaborador técnico bien dirigido, útil para documentos, datos, automatizaciones, estructura de proyectos y nuevas herramientas internas.</p>
         </div>
       </section>
-      <section class="grid">
-        <article class="card">
-          <div class="kicker">Track 01</div>
-          <h3>Empezar en el Hub</h3>
-          <ul>
-            <li>Qué es cada sección y para qué sirve.</li>
-            <li>Cómo comentar y aportar sin esperar a tener una pieza perfecta.</li>
-            <li>Cómo mover una idea desde el comentario hasta la píldora.</li>
-          </ul>
+
+      <section class="program-grid">
+        <article class="program-card">
+          <div class="eyebrow">Fase 01</div>
+          <strong>Arranque seguro</strong>
+          <span>Instalar, entender el entorno y perder el miedo técnico básico sin cometer imprudencias.</span>
         </article>
-        <article class="card">
-          <div class="kicker">Track 02</div>
-          <h3>Pensar mejor con AI</h3>
-          <ul>
-            <li>Uso directivo de conversaciones bien contextualizadas.</li>
-            <li>Diferencia entre pedir texto y ordenar razonamiento.</li>
-            <li>Cómo usar la IA como acompañante, no como sustituto del criterio.</li>
-          </ul>
+        <article class="program-card">
+          <div class="eyebrow">Fase 02</div>
+          <strong>Uso competente</strong>
+          <span>Trabajar mejor con archivos, datos y conversaciones bien dirigidas.</span>
         </article>
-        <article class="card">
-          <div class="kicker">Track 03</div>
-          <h3>De idea a WORKING</h3>
-          <ul>
-            <li>Qué distingue una IDEA de un IN PROGRESS y de un WORKING.</li>
-            <li>Cómo preparar un proyecto para que entre en ejecución real.</li>
-            <li>Cómo leer el Termómetro AI sin inflar el avance.</li>
-          </ul>
+        <article class="program-card">
+          <div class="eyebrow">Fase 03</div>
+          <strong>Construcción de valor</strong>
+          <span>Pasar de tareas sueltas a flujos, análisis y herramientas que otra persona ya pueda usar.</span>
         </article>
-        <article class="card">
-          <div class="kicker">Track 04</div>
-          <h3>Buenas prácticas</h3>
-          <ul>
-            <li>No subir datos sensibles ni información no preparada.</li>
-            <li>Priorizar claridad del caso antes que brillo del texto.</li>
-            <li>Usar el Hub para compartir aprendizaje, no para aparentar dominio.</li>
-          </ul>
+        <article class="program-card">
+          <div class="eyebrow">Fase 04</div>
+          <strong>Escala profesional</strong>
+          <span>Ordenar proyectos, usar mejor AGENTS, skills y cerrar con una mejora real aplicada al puesto.</span>
         </article>
       </section>
-      <div class="actions">
-        <a class="btn" href="/demo/">Volver al inicio</a>
-      </div>
+
+      <section class="phase phase-soft">
+        <div class="phase-head">
+          <div>
+            <div class="eyebrow">Fase 1</div>
+            <h2>Arranque seguro</h2>
+            <p>Primero hay que entrar bien: instalar, entender qué es Codex, trabajar sin miedo y ganar el vocabulario mínimo para no depender ciegamente de lo que proponga.</p>
+          </div>
+          <div class="phase-badge">Módulos 0, 1 y 2</div>
+        </div>
+        <div class="modules">
+          <article class="module">
+            <div class="module-top">
+              <div class="module-number">0</div>
+              <div>
+                <h3>Puesta en marcha de Codex</h3>
+                <div class="module-subtitle">Cómo dejar preparado el equipo, la cuenta y el entorno para empezar a trabajar en Isaval.</div>
+              </div>
+            </div>
+            <div class="module-meta">
+              <span class="meta-pill">3 a 5 horas</span>
+              <span class="meta-pill">Nivel muy bajo</span>
+              <span class="meta-pill">Inicio recomendado</span>
+            </div>
+            <div class="module-body">
+              <div class="module-block"><strong>Resultado esperado</strong><span>Usuario autenticado, programa operativo, herramientas mínimas instaladas y comprensión básica de permisos y modos de uso.</span></div>
+              <div class="module-block"><strong>Para qué sirve</strong><span>Evita el bloqueo inicial y deja a cualquier persona lista para seguir el resto del curso sin miedo técnico básico.</span></div>
+            </div>
+            <div class="actions">
+              <a class="btn" href="/curso_codex/modulo_0_codex_puesta_marcha_isaval.pdf" target="_blank" rel="noopener noreferrer">Abrir módulo</a>
+              <a class="btn secondary" href="/curso_codex/modulo_0_codex_puesta_marcha_isaval.pdf" download>Descargar PDF</a>
+            </div>
+          </article>
+
+          <article class="module">
+            <div class="module-top">
+              <div class="module-number">1</div>
+              <div>
+                <h3>Entorno, seguridad y primer script</h3>
+                <div class="module-subtitle">Base para trabajar con carpetas reales sin perder el control del alcance ni del riesgo.</div>
+              </div>
+            </div>
+            <div class="module-meta">
+              <span class="meta-pill">4 a 6 horas</span>
+              <span class="meta-pill">Disciplina básica</span>
+              <span class="meta-pill">Primera práctica</span>
+            </div>
+            <div class="module-body">
+              <div class="module-block"><strong>Resultado esperado</strong><span>Ser capaz de trabajar con una carpeta real sin perder el control del alcance ni del riesgo.</span></div>
+              <div class="module-block"><strong>Aplicación Isaval</strong><span>Orden documental, seguridad en cambios y primeras automatizaciones de bajo riesgo.</span></div>
+            </div>
+            <div class="actions">
+              <a class="btn" href="/curso_codex/modulo_1_codex_isaval_libro.pdf" target="_blank" rel="noopener noreferrer">Abrir módulo</a>
+              <a class="btn secondary" href="/curso_codex/modulo_1_codex_isaval_libro.pdf" download>Descargar PDF</a>
+            </div>
+          </article>
+
+          <article class="module">
+            <div class="module-top">
+              <div class="module-number">2</div>
+              <div>
+                <h3>Fundamentos mínimos para dirigir a Codex</h3>
+                <div class="module-subtitle">El vocabulario justo para leer scripts sencillos, pedir mejor y validar con más criterio.</div>
+              </div>
+            </div>
+            <div class="module-meta">
+              <span class="meta-pill">4 a 6 horas</span>
+              <span class="meta-pill">No técnico</span>
+              <span class="meta-pill">Alfabetización funcional</span>
+            </div>
+            <div class="module-body">
+              <div class="module-block"><strong>Resultado esperado</strong><span>Poder leer un script sencillo, entender su lógica básica y pedir ajustes pequeños con criterio.</span></div>
+              <div class="module-block"><strong>Aplicación inmediata</strong><span>Mejorar prompts, corregir reglas simples y validar cambios generados por Codex.</span></div>
+            </div>
+            <div class="actions">
+              <a class="btn" href="/curso_codex/modulo_2_fundamentos_codex_isaval.pdf" target="_blank" rel="noopener noreferrer">Abrir módulo</a>
+              <a class="btn secondary" href="/curso_codex/modulo_2_fundamentos_codex_isaval.pdf" download>Descargar PDF</a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="phase phase-warm">
+        <div class="phase-head">
+          <div>
+            <div class="eyebrow">Fase 2</div>
+            <h2>Uso competente</h2>
+            <p>Aquí el usuario deja de improvisar. Aprende a gobernar mejor datos, Excels, CSVs y conversaciones con Codex para que el contexto no se vuelva caótico.</p>
+          </div>
+          <div class="phase-badge">Módulos 3 y 4</div>
+        </div>
+        <div class="modules">
+          <article class="module">
+            <div class="module-top">
+              <div class="module-number">3</div>
+              <div>
+                <h3>Automatización de archivos, Excel y CSV</h3>
+                <div class="module-subtitle">Cómo trabajar con datos y documentos sin perder control, contexto ni trazabilidad.</div>
+              </div>
+            </div>
+            <div class="module-meta">
+              <span class="meta-pill">5 a 7 horas</span>
+              <span class="meta-pill">Datos y archivos</span>
+              <span class="meta-pill">Retorno rápido</span>
+            </div>
+            <div class="module-body">
+              <div class="module-block"><strong>Resultado esperado</strong><span>Poder pedir a Codex una limpieza o consolidación de datos con criterios claros y salida segura.</span></div>
+              <div class="module-block"><strong>Aplicación inmediata</strong><span>Listados comerciales, bases administrativas, registros de incidencias, gastos y carpetas documentales.</span></div>
+            </div>
+            <div class="actions">
+              <a class="btn" href="/curso_codex/modulo_3_excel_csv_isaval.pdf" target="_blank" rel="noopener noreferrer">Abrir módulo</a>
+              <a class="btn secondary" href="/curso_codex/modulo_3_excel_csv_isaval.pdf" download>Descargar PDF</a>
+            </div>
+          </article>
+
+          <article class="module">
+            <div class="module-top">
+              <div class="module-number">4</div>
+              <div>
+                <h3>Uso eficaz de Codex</h3>
+                <div class="module-subtitle">Cómo pedir bien, iterar con método y evitar el caos de contexto en un entorno real como Isaval.</div>
+              </div>
+            </div>
+            <div class="module-meta">
+              <span class="meta-pill">5 a 7 horas</span>
+              <span class="meta-pill">Método de trabajo</span>
+              <span class="meta-pill">Menos ruido</span>
+            </div>
+            <div class="module-body">
+              <div class="module-block"><strong>Resultado esperado</strong><span>Poder formular peticiones claras, iterar con orden y reconducir a Codex cuando la respuesta no es buena.</span></div>
+              <div class="module-block"><strong>Aplicación inmediata</strong><span>Menos reescrituras innecesarias, menos contexto caótico y mejores resultados en proyectos reales.</span></div>
+            </div>
+            <div class="actions">
+              <a class="btn" href="/curso_codex/modulo_4_uso_eficaz_codex_isaval.pdf" target="_blank" rel="noopener noreferrer">Abrir módulo</a>
+              <a class="btn secondary" href="/curso_codex/modulo_4_uso_eficaz_codex_isaval.pdf" download>Descargar PDF</a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="phase phase-mint">
+        <div class="phase-head">
+          <div>
+            <div class="eyebrow">Fase 3</div>
+            <h2>Construcción de valor</h2>
+            <p>En esta fase el usuario ya no solo entiende y pide mejor: empieza a construir flujos, análisis, apps locales e integraciones con criterio empresarial.</p>
+          </div>
+          <div class="phase-badge">Módulos 5, 6, 7 y 8</div>
+        </div>
+        <div class="modules">
+          <article class="module">
+            <div class="module-top">
+              <div class="module-number">5</div>
+              <div>
+                <h3>Automatización avanzada y generación de documentos</h3>
+                <div class="module-subtitle">Cómo pasar de tareas aisladas a flujos útiles para negocio y producir salidas listas para usar.</div>
+              </div>
+            </div>
+            <div class="module-meta">
+              <span class="meta-pill">5 a 7 horas</span>
+              <span class="meta-pill">Flujos completos</span>
+              <span class="meta-pill">Salida profesional</span>
+            </div>
+            <div class="module-body">
+              <div class="module-block"><strong>Resultado esperado</strong><span>Ser capaz de diseñar una automatización por fases con entrada, proceso, control de errores y salida documental útil.</span></div>
+              <div class="module-block"><strong>Aplicación inmediata</strong><span>Informes, consolidaciones, fichas, resúmenes comerciales y soporte interno listo para usar.</span></div>
+            </div>
+            <div class="actions">
+              <a class="btn" href="/curso_codex/modulo_5_automatizacion_avanzada_isaval.pdf" target="_blank" rel="noopener noreferrer">Abrir módulo</a>
+              <a class="btn secondary" href="/curso_codex/modulo_5_automatizacion_avanzada_isaval.pdf" download>Descargar PDF</a>
+            </div>
+          </article>
+
+          <article class="module">
+            <div class="module-top">
+              <div class="module-number">6</div>
+              <div>
+                <h3>Análisis de datos para decisiones</h3>
+                <div class="module-subtitle">Cómo usar Codex para convertir datos en criterio útil de negocio dentro de Isaval.</div>
+              </div>
+            </div>
+            <div class="module-meta">
+              <span class="meta-pill">5 a 7 horas</span>
+              <span class="meta-pill">Lectura de negocio</span>
+              <span class="meta-pill">Decisiones mejores</span>
+            </div>
+            <div class="module-body">
+              <div class="module-block"><strong>Resultado esperado</strong><span>Poder pedir a Codex un análisis útil, revisar calidad del dato y distinguir entre hallazgo real y lectura engañosa.</span></div>
+              <div class="module-block"><strong>Aplicación inmediata</strong><span>Ventas, rentabilidad, incidencias, actividad comercial, consumo, tiempos de respuesta y seguimiento de negocio.</span></div>
+            </div>
+            <div class="actions">
+              <a class="btn" href="/curso_codex/modulo_6_analisis_datos_isaval.pdf" target="_blank" rel="noopener noreferrer">Abrir módulo</a>
+              <a class="btn secondary" href="/curso_codex/modulo_6_analisis_datos_isaval.pdf" download>Descargar PDF</a>
+            </div>
+          </article>
+
+          <article class="module">
+            <div class="module-top">
+              <div class="module-number">7</div>
+              <div>
+                <h3>Creación de apps locales y herramientas de equipo</h3>
+                <div class="module-subtitle">Cómo convertir automatizaciones útiles en herramientas que otras personas de Isaval puedan usar con facilidad.</div>
+              </div>
+            </div>
+            <div class="module-meta">
+              <span class="meta-pill">5 a 7 horas</span>
+              <span class="meta-pill">De script a herramienta</span>
+              <span class="meta-pill">Uso compartido</span>
+            </div>
+            <div class="module-body">
+              <div class="module-block"><strong>Resultado esperado</strong><span>Ser capaz de plantear una app local sencilla con una primera versión útil, clara y mantenible.</span></div>
+              <div class="module-block"><strong>Aplicación inmediata</strong><span>Herramientas internas para cargar archivos, generar salidas o simplificar tareas repetitivas sin depender del terminal.</span></div>
+            </div>
+            <div class="actions">
+              <a class="btn" href="/curso_codex/modulo_7_apps_locales_isaval.pdf" target="_blank" rel="noopener noreferrer">Abrir módulo</a>
+              <a class="btn secondary" href="/curso_codex/modulo_7_apps_locales_isaval.pdf" download>Descargar PDF</a>
+            </div>
+          </article>
+
+          <article class="module">
+            <div class="module-top">
+              <div class="module-number">8</div>
+              <div>
+                <h3>Integraciones y APIs con criterio</h3>
+                <div class="module-subtitle">Cómo conectar Codex con servicios externos sin convertir una buena idea en una dependencia mal gobernada.</div>
+              </div>
+            </div>
+            <div class="module-meta">
+              <span class="meta-pill">5 a 7 horas</span>
+              <span class="meta-pill">Conexiones externas</span>
+              <span class="meta-pill">Criterio empresarial</span>
+            </div>
+            <div class="module-body">
+              <div class="module-block"><strong>Resultado esperado</strong><span>Poder valorar si una integración merece la pena, pedirla a Codex con límites claros y documentar sus riesgos y supuestos.</span></div>
+              <div class="module-block"><strong>Aplicación inmediata</strong><span>Fuentes de mercado, servicios externos, automatizaciones de consulta y enriquecimiento de informes internos.</span></div>
+            </div>
+            <div class="actions">
+              <a class="btn" href="/curso_codex/modulo_8_integraciones_apis_isaval.pdf" target="_blank" rel="noopener noreferrer">Abrir módulo</a>
+              <a class="btn secondary" href="/curso_codex/modulo_8_integraciones_apis_isaval.pdf" download>Descargar PDF</a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="phase phase-violet">
+        <div class="phase-head">
+          <div>
+            <div class="eyebrow">Fase 4</div>
+            <h2>Escala profesional</h2>
+            <p>La última fase profesionaliza el uso de Codex dentro de Isaval: orden en proyectos, mejor uso de `AGENTS.md`, skills y una mejora final aplicada al puesto.</p>
+          </div>
+          <div class="phase-badge">Módulos 9 y 10</div>
+        </div>
+        <div class="modules">
+          <article class="module">
+            <div class="module-top">
+              <div class="module-number">9</div>
+              <div>
+                <h3>Estructura profesional, AGENTS.md, skills y subagentes</h3>
+                <div class="module-subtitle">Cómo evitar que el trabajo con Codex se vuelva caótico cuando empieza a escalar dentro de Isaval.</div>
+              </div>
+            </div>
+            <div class="module-meta">
+              <span class="meta-pill">5 a 7 horas</span>
+              <span class="meta-pill">Orden y escalabilidad</span>
+              <span class="meta-pill">Trabajo profesional</span>
+            </div>
+            <div class="module-body">
+              <div class="module-block"><strong>Resultado esperado</strong><span>Poder ordenar un proyecto, dejar reglas claras y decidir con criterio cuándo dividir trabajo y cuándo no.</span></div>
+              <div class="module-block"><strong>Aplicación inmediata</strong><span>Automatizaciones internas, proyectos compartidos, mayor claridad para mantenimiento y colaboración en Isaval.</span></div>
+            </div>
+            <div class="actions">
+              <a class="btn" href="/curso_codex/modulo_9_estructura_profesional_isaval.pdf" target="_blank" rel="noopener noreferrer">Abrir módulo</a>
+              <a class="btn secondary" href="/curso_codex/modulo_9_estructura_profesional_isaval.pdf" download>Descargar PDF</a>
+            </div>
+          </article>
+
+          <article class="module">
+            <div class="module-top">
+              <div class="module-number">10</div>
+              <div>
+                <h3>Proyecto final aplicado al puesto</h3>
+                <div class="module-subtitle">Cómo convertir el aprendizaje del curso en una mejora real, demostrable y transferible dentro de Pinturas Isaval.</div>
+              </div>
+            </div>
+            <div class="module-meta">
+              <span class="meta-pill">6 a 10 horas</span>
+              <span class="meta-pill">Cierre aplicado</span>
+              <span class="meta-pill">Impacto real</span>
+            </div>
+            <div class="module-body">
+              <div class="module-block"><strong>Resultado esperado</strong><span>Un proyecto funcional, útil para el trabajo real, con criterio de éxito claro, pruebas y explicación ejecutiva.</span></div>
+              <div class="module-block"><strong>Aplicación inmediata</strong><span>Mejoras concretas en comercial, administración, análisis, reporting, documentación o coordinación interna.</span></div>
+            </div>
+            <div class="actions">
+              <a class="btn" href="/curso_codex/modulo_10_proyecto_final_isaval.pdf" target="_blank" rel="noopener noreferrer">Abrir módulo</a>
+              <a class="btn secondary" href="/curso_codex/modulo_10_proyecto_final_isaval.pdf" download>Descargar PDF</a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel soft">
+        <h2>Cómo recomendaría cursarlo</h2>
+        <p>Mi sugerencia sería muy simple: no leerlo como un manual cerrado, sino como un recorrido en paralelo al trabajo real. Un módulo por semana ya sería una cadencia muy buena para la mayoría de perfiles. Lo importante no es “terminarlo rápido”, sino que cada módulo deje una práctica pequeña y una mejora aplicable al puesto.</p>
+        <div class="actions" style="margin-top:14px;">
+          <a class="btn" href="/curso_codex/modulo_0_codex_puesta_marcha_isaval.pdf" target="_blank" rel="noopener noreferrer">Empezar por el módulo 0</a>
+          <a class="btn secondary" href="/demo/">Volver al inicio</a>
+        </div>
+      </section>
     </main>
-    <footer>Academy AI · Hub IA Isaval.</footer>
+    <footer>Academy AI · Programa interno de aprendizaje de Codex para Isaval.</footer>
   </article>
 </body>
 </html>
