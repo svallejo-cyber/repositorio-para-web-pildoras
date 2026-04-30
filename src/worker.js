@@ -1641,6 +1641,16 @@ async function handleApi(request, url, store, session, env) {
       documentUrl,
       source: "hub-form",
     });
+    const notifyEmail = cleanEmail(env.IDEA_SUBMISSION_NOTIFY_EMAIL || "svallejoi@icloud.com");
+    const resendResult = await sendIdeaSubmissionNotification({
+      env,
+      to: notifyEmail,
+      submission,
+      hubBaseUrl: getHubBaseUrl(env),
+    });
+    if (!resendResult.ok) {
+      console.log(`Idea submission notification skipped: ${resendResult.error}`);
+    }
     return json({ ok: true, submission: serializeIdeaSubmission(submission) }, 201);
   }
 
@@ -2168,6 +2178,90 @@ async function sendMailViaGraph({ env, senderEmail, to = [], bcc = [], subject, 
   }
 
   return { ok: true };
+}
+
+async function sendMailViaResend({ env, fromEmail, to = [], subject, html, text }) {
+  const apiKey = String(env.RESEND_API_KEY || "").trim();
+  if (!apiKey) {
+    return { ok: false, error: "Missing Resend API key" };
+  }
+  const sender = String(fromEmail || env.RESEND_FROM_EMAIL || "Hub IA Isaval <onboarding@resend.dev>").trim();
+  const recipients = (to || []).map((email) => cleanEmail(email)).filter(Boolean);
+  if (!recipients.length) {
+    return { ok: false, error: "Missing recipient" };
+  }
+
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      authorization: `Bearer ${apiKey}`,
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      from: sender,
+      to: recipients,
+      subject,
+      html,
+      text,
+    }),
+  });
+
+  if (!response.ok) {
+    const detail = await response.text();
+    return { ok: false, error: `Resend failed (${response.status}): ${detail}` };
+  }
+
+  return { ok: true };
+}
+
+async function sendIdeaSubmissionNotification({ env, to, submission, hubBaseUrl }) {
+  const safeTo = cleanEmail(to || "");
+  if (!safeTo) {
+    return { ok: false, error: "Missing notification recipient" };
+  }
+  const submissionUrl = `${hubBaseUrl}/demo/comparte-tu-idea/`;
+  const supportLink = submission.documentUrl
+    ? `<p style="font:14px Arial,sans-serif;color:#1f2c3a;line-height:1.7;margin:14px 0 0;">Documento de apoyo: <a href="${escapeHtml(submission.documentUrl)}" style="color:#0f5f94;text-decoration:none;">Abrir enlace</a></p>`
+    : "";
+  const html = `
+    <div style="background:#f4f7fa;padding:28px 18px;">
+      <table role="presentation" style="max-width:720px;width:100%;margin:0 auto;background:#ffffff;border:1px solid #d8e0e8;border-radius:14px;border-collapse:separate;">
+        <tr><td bgcolor="#10314d" style="padding:24px 26px;background-color:#10314d;background-image:linear-gradient(110deg,#10314d 0%,#0f5f94 56%,#1577af 100%);color:#ffffff;border-radius:14px 14px 0 0;">
+          <div style="font:700 12px Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;opacity:.9;">Hub IA Isaval</div>
+          <div style="font:700 30px Georgia,serif;line-height:1.15;margin-top:8px;">Nueva propuesta recibida</div>
+          <div style="font:400 16px Arial,sans-serif;line-height:1.5;margin-top:10px;opacity:.95;">Ya tienes una aportación nueva esperando revisión en la bandeja interna.</div>
+        </td></tr>
+        <tr><td style="padding:24px 26px;">
+          <div style="font:700 18px Arial,sans-serif;color:#1f2c3a;">${escapeHtml(submission.title)}</div>
+          <div style="font:14px Arial,sans-serif;color:#5c6b79;line-height:1.6;margin-top:6px;">${escapeHtml(submission.name)} · ${escapeHtml(submission.email)}</div>
+          <div style="font:14px Arial,sans-serif;color:#1f2c3a;line-height:1.7;margin-top:16px;white-space:pre-wrap;">${escapeHtml(submission.summary)}</div>
+          ${supportLink}
+          <div style="margin-top:18px;">
+            <a href="${escapeHtml(submissionUrl)}" style="display:inline-block;background:#0f5f94;color:#ffffff;text-decoration:none;border-radius:10px;padding:11px 16px;font:700 14px Arial,sans-serif;">Abrir bandeja interna</a>
+          </div>
+        </td></tr>
+      </table>
+    </div>`;
+  const text = [
+    "Nueva propuesta recibida en el Hub IA Isaval",
+    "",
+    `Título: ${submission.title}`,
+    `Autor: ${submission.name}`,
+    `Email: ${submission.email}`,
+    "",
+    submission.summary,
+    "",
+    submission.documentUrl ? `Documento de apoyo: ${submission.documentUrl}` : null,
+    `Bandeja interna: ${submissionUrl}`,
+  ].filter(Boolean).join("\n");
+
+  return sendMailViaResend({
+    env,
+    to: [safeTo],
+    subject: `Nueva propuesta en el Hub IA Isaval · ${submission.title}`,
+    html,
+    text,
+  });
 }
 
 function ensureUserMetrics(user) {

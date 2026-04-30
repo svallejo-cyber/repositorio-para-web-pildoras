@@ -6,6 +6,8 @@ compatibility_date = "2026-03-13"
 NOTIFY_SENDER_EMAIL = "svallejo@isaval.es"
 NOTIFY_TIMEZONE = "Europe/Madrid"
 M365_NOTIFICATIONS_ENABLED = "false"
+IDEA_SUBMISSION_NOTIFY_EMAIL = "svallejoi@icloud.com"
+RESEND_FROM_EMAIL = "Hub IA Isaval <onboarding@resend.dev>"
 
 [assets]
 directory = "."
