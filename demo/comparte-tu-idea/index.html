@@ -241,7 +241,7 @@
         <div>
           <div class="eyebrow">Participación</div>
           <h1>Comparte tu idea con el Hub</h1>
-          <p>Si ves una fricción real, una oportunidad o un caso que merezca ser explorado, súbelo aquí y entrará directamente en la bandeja editorial del Hub.</p>
+          <p>Si ves una fricción real, una oportunidad o un caso que merezca ser explorado, súbelo aquí y entrará directamente en la bandeja interna del Hub.</p>
         </div>
         <aside class="manifesto">
           <strong>Qué buscamos</strong>
@@ -253,11 +253,11 @@
       <section class="intro-grid">
         <div class="panel">
           <h2>Cómo funciona</h2>
-          <p>La propuesta entra por dos sitios a la vez: llega al buzón editorial y queda registrada dentro del Hub para que podamos seguir su estado con orden.</p>
+          <p>La propuesta queda registrada dentro del Hub para que podamos revisarla con orden, decidir su recorrido y seguir su estado sin depender del correo.</p>
           <div class="steps">
             <div class="step">
               <strong>1. Sube tu idea</strong>
-              <span>Adjunta un PDF o un Word y explica en pocas líneas qué problema resuelve o qué oportunidad abre.</span>
+              <span>Resume la idea en pocas líneas y, si quieres, añade un enlace al documento de apoyo donde la desarrollas mejor.</span>
             </div>
             <div class="step">
               <strong>2. Revisión editorial</strong>
@@ -265,7 +265,7 @@
             </div>
             <div class="step">
               <strong>3. Trazabilidad real</strong>
-              <span>El Hub conserva el rastro de cada propuesta para que la participación no dependa solo del correo ni se pierda en el tiempo.</span>
+              <span>El Hub conserva el rastro de cada propuesta para que la participación no se pierda y siempre sepamos en qué punto está.</span>
             </div>
           </div>
         </div>
@@ -275,12 +275,12 @@
             <p>Casos concretos, fricciones operativas, ideas de automatización, necesidades de lectura de datos o propuestas para ordenar mejor un proceso.</p>
           </div>
           <div class="step">
-            <strong>Formatos admitidos</strong>
-            <span>PDF, DOC o DOCX. El archivo debe pesar menos de 2,5 MB para que el envío llegue limpio al buzón editorial.</span>
+            <strong>Qué conviene explicar</strong>
+            <span>Qué problema ves, por qué merece atención y qué impacto podría tener si lo resolvemos bien dentro del Hub.</span>
           </div>
           <div class="step">
-            <strong>Destino</strong>
-            <span>La propuesta llega a <strong>svallejoi@icloud.com</strong> y queda registrada en la bandeja interna del Hub.</span>
+            <strong>Documento de apoyo</strong>
+            <span>Si ya tienes un PDF, un Word o una nota larga, puedes dejar aquí el enlace. Si no, con la explicación breve basta para arrancar.</span>
           </div>
         </div>
       </section>
@@ -308,9 +308,9 @@
               <textarea id="idea-summary" name="summary" maxlength="2500" placeholder="Explica qué fricción detectas, qué oportunidad ves y por qué merecería estudiarse dentro del Hub." required></textarea>
             </div>
             <div class="field full">
-              <label for="idea-attachment">Adjunto</label>
-              <input id="idea-attachment" name="attachment" type="file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" required />
-              <small>PDF, DOC o DOCX · máximo 2,5 MB</small>
+              <label for="idea-document-url">Enlace al documento de apoyo</label>
+              <input id="idea-document-url" name="documentUrl" type="url" maxlength="1200" placeholder="https://..." />
+              <small>Opcional. Puede ser un enlace a OneDrive, SharePoint, Google Drive o cualquier documento accesible.</small>
             </div>
           </div>
           <div class="actions">
@@ -323,8 +323,8 @@
 
       <section class="panel admin-only" id="admin-board">
         <div>
-          <h2>Bandeja editorial</h2>
-          <p>Aquí verás las ideas recibidas, su estado editorial y la nota interna asociada. El adjunto llega al buzón editorial y queda referenciado aquí por nombre y tamaño.</p>
+          <h2>Bandeja interna</h2>
+          <p>Aquí verás las ideas recibidas, su estado editorial y la nota interna asociada. Lo nuevo se considera todo lo que siga en estado <strong>Recibida</strong>.</p>
         </div>
         <div class="summary-row" id="submission-counts"></div>
         <div class="submissions" id="submission-list"></div>
@@ -348,7 +348,7 @@
       const emailInput = document.getElementById('idea-email');
       const titleInput = document.getElementById('idea-title');
       const summaryInput = document.getElementById('idea-summary');
-      const attachmentInput = document.getElementById('idea-attachment');
+      const documentUrlInput = document.getElementById('idea-document-url');
 
       const statusOptions = [
         { value: 'received', label: 'Recibida' },
@@ -420,8 +420,8 @@
         setBox(
           viewerBox,
           viewer?.isAdmin
-            ? 'Has entrado como administración del Hub. Puedes enviar ideas y además revisar la bandeja editorial.'
-            : 'Tu propuesta quedará firmada con tu identidad dentro del Hub y llegará directamente al buzón editorial.',
+            ? 'Has entrado como administración del Hub. Puedes enviar ideas y además revisar la bandeja interna.'
+            : 'Tu propuesta quedará firmada con tu identidad dentro del Hub y pasará directamente a la bandeja interna de revisión.',
           'info'
         );
       }
@@ -451,8 +451,8 @@
             <p>${escapeHtml(submission.summary)}</p>
             <div class="submission-grid">
               <div class="submission-mini">
-                <strong>Adjunto</strong>
-                <span>${escapeHtml(submission.attachmentName || 'Sin adjunto')}${submission.attachmentName ? ' · ' + formatBytes(submission.attachmentSize) : ''}</span>
+                <strong>Documento de apoyo</strong>
+                <span>${submission.documentUrl ? '<a href="' + escapeHtml(submission.documentUrl) + '" target="_blank" rel="noopener noreferrer">Abrir enlace</a>' : 'Sin enlace'}</span>
               </div>
               <div class="submission-mini">
                 <strong>Última revisión</strong>
@@ -461,10 +461,6 @@
               <div class="submission-mini">
                 <strong>Responsable</strong>
                 <span>${escapeHtml(submission.reviewedByName || 'Pendiente')}</span>
-              </div>
-              <div class="submission-mini">
-                <strong>Correo editorial</strong>
-                <span>${submission.deliveryStatus === 'sent' ? 'Enviado' : submission.deliveryStatus === 'failed' ? 'Pendiente por incidencia' : 'Pendiente'}</span>
               </div>
             </div>
             <div class="review-grid">
@@ -516,7 +512,7 @@
         if (!viewer?.isAdmin) return;
         const response = await fetch('/api/demo/idea-submissions', { credentials: 'same-origin', cache: 'no-store' });
         const payload = await response.json().catch(() => ({}));
-        if (!response.ok) throw new Error(payload.error || 'No se ha podido cargar la bandeja editorial.');
+        if (!response.ok) throw new Error(payload.error || 'No se ha podido cargar la bandeja interna.');
         renderCounts(payload.counts || {});
         renderSubmissions(payload.submissions || []);
       }
@@ -524,44 +520,35 @@
       form.addEventListener('submit', async (event) => {
         event.preventDefault();
         if (!viewer) return;
-        const file = attachmentInput.files && attachmentInput.files[0];
-        if (!file) {
-          setBox(statusBox, 'Adjunta un PDF o un Word antes de enviar la propuesta.', 'error');
-          return;
-        }
         submitButton.disabled = true;
         submitButton.textContent = 'Enviando...';
-        setBox(statusBox, 'Estamos enviando tu propuesta al buzón editorial y registrándola dentro del Hub.', 'info');
+        setBox(statusBox, 'Estamos registrando tu propuesta dentro del Hub.', 'info');
         try {
-          const payload = new FormData();
-          payload.set('name', nameInput.value);
-          payload.set('email', emailInput.value);
-          payload.set('title', titleInput.value.trim());
-          payload.set('summary', summaryInput.value.trim());
-          payload.set('attachment', file);
+          const payload = {
+            name: nameInput.value,
+            email: emailInput.value,
+            title: titleInput.value.trim(),
+            summary: summaryInput.value.trim(),
+            documentUrl: documentUrlInput.value.trim(),
+          };
           const response = await fetch('/api/demo/idea-submissions', {
             method: 'POST',
             credentials: 'same-origin',
-            body: payload,
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify(payload),
           });
           const data = await response.json().catch(() => ({}));
           if (!response.ok) {
-            const message = data.error === 'Attachment too large'
-              ? 'El archivo supera el límite de 2,5 MB. Súbelo un poco más ligero.'
-              : (data.error || 'No se ha podido enviar la propuesta.');
+            const message = data.error || 'No se ha podido registrar la propuesta.';
             throw new Error(message);
           }
           form.reset();
           nameInput.value = viewer.name;
           emailInput.value = viewer.email;
-          if (data.warningCode === 'delivery_failed') {
-            setBox(statusBox, 'Propuesta registrada dentro del Hub. El correo editorial no ha salido todavía, pero la idea no se ha perdido y ya está en la bandeja de revisión.', 'info');
-          } else {
-            setBox(statusBox, 'Propuesta recibida. Ya está en el buzón editorial y queda registrada dentro del Hub para su revisión.', 'success');
-          }
+          setBox(statusBox, 'Propuesta recibida. Ya está en la bandeja interna del Hub para su revisión.', 'success');
           if (viewer.isAdmin) await loadSubmissions();
         } catch (error) {
-          setBox(statusBox, error.message || 'No se ha podido enviar la propuesta.', 'error');
+          setBox(statusBox, error.message || 'No se ha podido registrar la propuesta.', 'error');
         } finally {
           submitButton.disabled = false;
           submitButton.textContent = 'Enviar al Hub';
@@ -581,7 +568,7 @@
           submitButton.disabled = true;
           titleInput.disabled = true;
           summaryInput.disabled = true;
-          attachmentInput.disabled = true;
+          documentUrlInput.disabled = true;
         }
       })();
     })();

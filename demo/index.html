@@ -211,6 +211,49 @@
       flex-wrap:wrap;
       margin-top:6px;
     }
+    .admin-inbox {
+      margin-bottom: 22px;
+      border: 1px solid #d6e3ef;
+      border-radius: 18px;
+      background: linear-gradient(180deg, #f6fbff 0%, #eef6fc 100%);
+      padding: 16px 18px 18px;
+      display: none;
+      gap: 10px;
+    }
+    .admin-inbox.show {
+      display: grid;
+    }
+    .admin-inbox h2 {
+      margin: 0;
+      color: var(--accent-dark);
+      font-size: 21px;
+    }
+    .admin-inbox p {
+      margin: 0;
+      color: #32485b;
+    }
+    .admin-inbox-metrics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+    .admin-pill {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      padding: 8px 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #4f6172;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .admin-pill strong {
+      color: #10314d;
+      font-size: 15px;
+    }
     .btn {
       text-decoration:none;
       border-radius:10px;
@@ -372,6 +415,20 @@
         </div>
       </section>
 
+      <section class="admin-inbox" id="admin-inbox-card">
+        <div>
+          <h2>Bandeja interna del Hub</h2>
+          <p>Si entras como administración, aquí verás enseguida si han llegado ideas nuevas. Todo lo que siga en estado <strong>Recibida</strong> cuenta como aportación nueva pendiente de revisar.</p>
+        </div>
+        <div class="admin-inbox-metrics">
+          <span class="admin-pill"><strong id="admin-inbox-new-count">0</strong>Nuevas aportaciones</span>
+          <span class="admin-pill"><strong id="admin-inbox-total-count">0</strong>Total registradas</span>
+        </div>
+        <div class="actions">
+          <a class="btn" href="/demo/comparte-tu-idea/">Abrir bandeja interna</a>
+        </div>
+      </section>
+
       <section class="quick-access">
         <div>
           <h2>Entrada rápida</h2>
@@ -489,12 +546,34 @@
     }
   }
 
+  async function loadAdminInboxCard(){
+    var inboxCard = document.getElementById('admin-inbox-card');
+    var newCountEl = document.getElementById('admin-inbox-new-count');
+    var totalCountEl = document.getElementById('admin-inbox-total-count');
+    if (!inboxCard || !newCountEl || !totalCountEl) return;
+    try {
+      var adminResponse = await fetch('/api/admin-auth/session', { credentials: 'same-origin', cache: 'no-store' });
+      var adminPayload = adminResponse.ok ? await adminResponse.json() : { authenticated: false };
+      if (!adminPayload || !adminPayload.authenticated) return;
+      var response = await fetch('/api/demo/idea-submissions', { credentials: 'same-origin', cache: 'no-store' });
+      if (!response.ok) throw new Error('status ' + response.status);
+      var payload = await response.json();
+      var submissions = Array.isArray(payload.submissions) ? payload.submissions : [];
+      newCountEl.textContent = String(Number(payload.pendingCount || 0));
+      totalCountEl.textContent = String(submissions.length);
+      inboxCard.classList.add('show');
+    } catch (error) {
+      return;
+    }
+  }
+
   async function logout(){
     try { await fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' }); } catch (e) {}
     window.location.href = '/login/';
   }
 
   loadHomeThermometer();
+  loadAdminInboxCard();
 
   document.addEventListener('click', function(event){
     var trigger = event.target.closest('[data-logout]');

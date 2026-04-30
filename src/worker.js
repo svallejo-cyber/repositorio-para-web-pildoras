@@ -9,15 +9,6 @@ const EXCLUDED_TRACKING_EMAILS = new Set(["svallejo@isaval.es", "svallejoi@iclou
 const NOTIFICATION_TIMEZONE = "Europe/Madrid";
 const DEFAULT_HUB_BASE_URL = "https://repositorio-para-web-pildoras.svallejo-351.workers.dev";
 const DEFAULT_PROFILE_AVATAR = "/assets/profile/santiago2-360.jpg";
-const IDEA_SUBMISSION_EMAIL = "svallejoi@icloud.com";
-const IDEA_SUBMISSION_MAX_BYTES = 2_500_000;
-const IDEA_SUBMISSION_ALLOWED_EXTENSIONS = new Set(["pdf", "doc", "docx"]);
-const IDEA_SUBMISSION_ALLOWED_MIME_TYPES = new Set([
-  "application/pdf",
-  "application/msword",
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-  "application/octet-stream",
-]);
 const IDEA_SUBMISSION_STATUS_META = {
   received: { key: "received", label: "Recibida" },
   in_review: { key: "in_review", label: "En revisión" },
@@ -585,6 +576,18 @@ function cleanIdeaNote(value) {
     .slice(0, 600);
 }
 
+function cleanIdeaUrl(value) {
+  const text = String(value || "").trim().slice(0, 500);
+  if (!text) return "";
+  try {
+    const url = new URL(text);
+    if (url.protocol !== "http:" && url.protocol !== "https:") return "";
+    return url.toString();
+  } catch {
+    return "";
+  }
+}
+
 function cleanFilename(value) {
   return String(value || "")
     .replace(/[^\p{L}\p{N}._ -]+/gu, "-")
@@ -618,39 +621,6 @@ function getIdeaSubmissionStatusMeta(value) {
   return IDEA_SUBMISSION_STATUS_META[normalizeIdeaSubmissionStatus(value)] || IDEA_SUBMISSION_STATUS_META.received;
 }
 
-function getFilenameExtension(name) {
-  const filename = String(name || "").trim().toLowerCase();
-  const dotIndex = filename.lastIndexOf(".");
-  if (dotIndex === -1) return "";
-  return filename.slice(dotIndex + 1);
-}
-
-function getAttachmentContentType(file) {
-  const type = String(file?.type || "").trim().toLowerCase();
-  if (type && type !== "application/octet-stream") return type;
-  const extension = getFilenameExtension(file?.name || "");
-  if (extension === "pdf") return "application/pdf";
-  if (extension === "doc") return "application/msword";
-  if (extension === "docx") return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-  return type || "application/octet-stream";
-}
-
-function isAllowedIdeaAttachment(file) {
-  const extension = getFilenameExtension(file?.name || "");
-  const contentType = getAttachmentContentType(file);
-  return IDEA_SUBMISSION_ALLOWED_EXTENSIONS.has(extension) && IDEA_SUBMISSION_ALLOWED_MIME_TYPES.has(contentType);
-}
-
-function arrayBufferToBase64(buffer) {
-  let binary = "";
-  const bytes = new Uint8Array(buffer);
-  const chunkSize = 0x8000;
-  for (let i = 0; i < bytes.length; i += chunkSize) {
-    const chunk = bytes.subarray(i, i + chunkSize);
-    binary += String.fromCharCode(...chunk);
-  }
-  return btoa(binary);
-}
 
 function normalizeProjectStatus(value) {
   const key = String(value || "").trim().toLowerCase();
@@ -1647,115 +1617,31 @@ async function handleApi(request, url, store, session, env) {
       acc[item.status] = (acc[item.status] || 0) + 1;
       return acc;
     }, {});
-    return json({ ok: true, submissions, counts });
+    return json({ ok: true, submissions, counts, pendingCount: Number(counts.received || 0) });
   }
 
   if (request.method === "POST" && url.pathname === "/api/demo/idea-submissions") {
-    const formData = await request.formData().catch(() => null);
-    if (!formData) return json({ error: "Invalid form data" }, 400);
+    const payload = await request.json().catch(() => null);
+    if (!payload) return json({ error: "Invalid JSON" }, 400);
 
-    const name = cleanName(session.name || formData.get("name") || "");
-    const email = cleanEmail(session.email || formData.get("email") || "");
-    const title = cleanIdeaTitle(formData.get("title") || "");
-    const summary = cleanIdeaSummary(formData.get("summary") || "");
-    const attachment = formData.get("attachment");
+    const name = cleanName(session.name || payload.name || "");
+    const email = cleanEmail(session.email || payload.email || "");
+    const title = cleanIdeaTitle(payload.title || "");
+    const summary = cleanIdeaSummary(payload.summary || "");
+    const documentUrl = cleanIdeaUrl(payload.documentUrl || "");
 
     if (!name || !email || !isValidEmail(email)) return json({ error: "Invalid sender" }, 400);
     if (!title) return json({ error: "Missing title" }, 400);
     if (!summary) return json({ error: "Missing summary" }, 400);
-    if (!(attachment instanceof File) || !attachment.name) return json({ error: "Missing attachment" }, 400);
-    if (!isAllowedIdeaAttachment(attachment)) {
-      return json({ error: "Attachment must be a PDF or Word document" }, 400);
-    }
-    if (attachment.size > IDEA_SUBMISSION_MAX_BYTES) {
-      return json({ error: "Attachment too large" }, 400);
-    }
-
-    const attachmentBuffer = await attachment.arrayBuffer();
-    const attachmentName = cleanFilename(attachment.name || "idea");
-    const attachmentType = getAttachmentContentType(attachment);
-    const senderEmail = cleanEmail(env.NOTIFY_SENDER_EMAIL || "svallejo@isaval.es");
-    const subject = `Nueva idea Hub IA · ${name} · ${title}`;
-    const html = `
-      <div style="background:#f4f7fa;padding:24px 18px;">
-        <table role="presentation" style="max-width:720px;width:100%;margin:0 auto;background:#ffffff;border:1px solid #d8e0e8;border-radius:14px;border-collapse:separate;">
-          <tr><td bgcolor="#10314d" style="padding:24px 26px;background-color:#10314d;background-image:linear-gradient(110deg,#10314d 0%,#0f5f94 56%,#1577af 100%);color:#ffffff;border-radius:14px 14px 0 0;">
-            <div style="font:700 12px Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;opacity:.9;">Hub IA Isaval</div>
-            <div style="font:700 32px Georgia,serif;line-height:1.15;margin-top:8px;">Nueva idea recibida</div>
-            <div style="font:400 16px Arial,sans-serif;line-height:1.5;margin-top:10px;opacity:.95;">Propuesta enviada desde el espacio participativo del Hub.</div>
-          </td></tr>
-          <tr><td style="padding:24px 26px;">
-            <div style="font:700 18px Arial,sans-serif;color:#1f2c3a;">${escapeHtml(title)}</div>
-            <div style="font:14px Arial,sans-serif;color:#5c6b79;line-height:1.6;margin-top:6px;">${escapeHtml(name)} · ${escapeHtml(email)}</div>
-            <div style="font:14px Arial,sans-serif;color:#1f2c3a;line-height:1.7;margin-top:16px;white-space:pre-wrap;">${escapeHtml(summary)}</div>
-            <div style="margin-top:18px;padding:14px 16px;border:1px solid #d8e0e8;border-radius:12px;background:#fbfdff;">
-              <div style="font:700 13px Arial,sans-serif;color:#10314d;letter-spacing:.08em;text-transform:uppercase;">Adjunto</div>
-              <div style="font:14px Arial,sans-serif;color:#455463;line-height:1.6;margin-top:6px;">${escapeHtml(attachmentName)} · ${escapeHtml(String(Math.round(attachment.size / 1024)))} KB</div>
-            </div>
-          </td></tr>
-        </table>
-      </div>`;
-    const text = [
-      "Nueva idea recibida en el Hub IA Isaval",
-      "",
-      `Título: ${title}`,
-      `Autor: ${name}`,
-      `Email: ${email}`,
-      `Adjunto: ${attachmentName} (${Math.round(attachment.size / 1024)} KB)`,
-      "",
-      summary,
-    ].join("\n");
-
     const submission = await store.addIdeaSubmission({
       name,
       email,
       title,
       summary,
-      attachmentName,
-      attachmentType,
-      attachmentSize: attachment.size,
+      documentUrl,
       source: "hub-form",
     });
-
-    const mailResult = await sendMailViaGraph({
-      env,
-      senderEmail,
-      to: [IDEA_SUBMISSION_EMAIL],
-      subject,
-      html,
-      text,
-      attachments: [{
-        name: attachmentName,
-        contentType: attachmentType,
-        contentBytes: arrayBufferToBase64(attachmentBuffer),
-      }],
-    });
-
-    if (!mailResult.ok) {
-      await store.updateIdeaSubmissionDelivery({
-        id: submission.id,
-        deliveryStatus: "failed",
-        deliveryError: mailResult.error,
-      });
-      return json({
-        ok: true,
-        warning: "Idea registrada, pero el correo editorial no ha podido salir.",
-        warningCode: "delivery_failed",
-        warningDetail: mailResult.error,
-        submission: serializeIdeaSubmission({
-          ...submission,
-          deliveryStatus: "failed",
-          deliveryError: mailResult.error,
-        }),
-      }, 202);
-    }
-
-    const deliveryUpdate = await store.updateIdeaSubmissionDelivery({
-      id: submission.id,
-      deliveryStatus: "sent",
-      deliveryError: "",
-    });
-    return json({ ok: true, submission: serializeIdeaSubmission(deliveryUpdate.submission || submission) }, 201);
+    return json({ ok: true, submission: serializeIdeaSubmission(submission) }, 201);
   }
 
   if (request.method === "PATCH" && /^\/api\/demo\/idea-submissions\/.+/.test(url.pathname)) {
@@ -2624,7 +2510,7 @@ export class HubData extends DurableObject {
     await this.ctx.storage.put("idea-submissions", items);
   }
 
-  async addIdeaSubmission({ name, email, title, summary, attachmentName, attachmentType, attachmentSize, source = "hub" }) {
+  async addIdeaSubmission({ name, email, title, summary, documentUrl = "", attachmentName = "", attachmentType = "", attachmentSize = 0, source = "hub" }) {
     const submissions = await this.getIdeaSubmissions();
     const now = new Date().toISOString();
     const record = {
@@ -2633,6 +2519,7 @@ export class HubData extends DurableObject {
       email: cleanEmail(email),
       title: cleanIdeaTitle(title),
       summary: cleanIdeaSummary(summary),
+      documentUrl: cleanIdeaUrl(documentUrl),
       attachmentName: cleanFilename(attachmentName),
       attachmentType: String(attachmentType || "").slice(0, 120),
       attachmentSize: Number(attachmentSize || 0),
