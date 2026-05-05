@@ -172,7 +172,7 @@
         <div>
           <span class="demo-status-strip-eyebrow">Estado visible</span>
           <h3>${variant === 'home' ? 'El estado de cada proyecto ya se ve en todo el Hub.' : 'Los estados de proyecto ya son visibles aquí también.'}</h3>
-          <p>${variant === 'home' ? 'Cada píldora ejecutiva muestra su badge y solo EN USO empuja el termómetro del Hub.' : 'IDEA, EN CURSO y EN USO quedan visibles también en esta sección. Solo EN USO suma en el termómetro.'}</p>
+          <p>${variant === 'home' ? 'Cada píldora ejecutiva muestra su estado visible y solo EN USO empuja el termómetro del Hub.' : 'IDEA, EN CURSO y EN USO quedan visibles también en esta sección. Solo EN USO suma en el termómetro.'}</p>
         </div>
         <div class="demo-status-strip-links">
           <a href="/demo/termometro-ai/">Ver termómetro</a>
