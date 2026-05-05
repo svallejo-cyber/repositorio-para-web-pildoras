@@ -133,7 +133,7 @@ const PROJECT_STATUS_META = {
   },
   in_progress: {
     key: "in_progress",
-    label: "IN PROGRESS",
+    label: "EN CURSO",
     helper: "En desarrollo o despliegue",
     color: "#8a5a00",
     background: "#fff1d6",
@@ -141,7 +141,7 @@ const PROJECT_STATUS_META = {
   },
   working: {
     key: "working",
-    label: "WORKING",
+    label: "EN USO",
     helper: "En uso real",
     color: "#0f6b3c",
     background: "#e5f6ec",
@@ -163,13 +163,13 @@ const RADAR_FUNCTION_META = {
     id: "direction_transformation",
     label: "Direccion y transformacion",
     shortLabel: "Direccion",
-    description: "Direccion, estrategia, criterio directivo y capacidad interna para convertir la AI en sistema de empresa.",
+    description: "Direccion, estrategia, criterio directivo y capacidad interna para convertir la IA en sistema de empresa.",
   },
   commercial_export_portfolio: {
     id: "commercial_export_portfolio",
-    label: "Comercial, exportacion y portfolio",
+    label: "Comercial, exportacion y cartera",
     shortLabel: "Comercial y exportacion",
-    description: "Mercado, clientes, pricing, exportacion, portfolio y decisiones comerciales con criterio de posicionamiento.",
+    description: "Mercado, clientes, precios, exportacion, cartera y decisiones comerciales con criterio de posicionamiento.",
   },
   operations_plant_logistics: {
     id: "operations_plant_logistics",
@@ -193,7 +193,7 @@ const RADAR_FUNCTION_META = {
     id: "people_organization_knowledge",
     label: "Personas, organizacion y conocimiento",
     shortLabel: "Personas y organizacion",
-    description: "Onboarding, coordinacion de personas, conocimiento interno y procesos que mejoran como trabaja la organizacion.",
+    description: "Incorporacion, coordinacion de personas, conocimiento interno y procesos que mejoran como trabaja la organizacion.",
   },
 };
 
@@ -215,12 +215,12 @@ const RADAR_THEME_META = {
   },
   workflow_traceability: {
     id: "workflow_traceability",
-    label: "Workflow y trazabilidad",
+    label: "Procesos y trazabilidad",
     description: "Procesos conectados de punta a punta, expedientes unicos, carpetas vivas y circuitos con memoria.",
   },
   control_alerts_compliance: {
     id: "control_alerts_compliance",
-    label: "Control, alertas y compliance",
+    label: "Control, alertas y cumplimiento",
     description: "Control automatico, validacion, alertas, permisos, desviaciones y criterio auditable.",
   },
   dashboards_data_reading: {
@@ -235,13 +235,13 @@ const RADAR_THEME_META = {
   },
   market_pricing_intelligence: {
     id: "market_pricing_intelligence",
-    label: "Inteligencia comercial, mercado y pricing",
-    description: "Prospeccion, monitorizacion competitiva, pricing, portfolio y lectura de mercado para decidir mejor.",
+    label: "Inteligencia comercial, mercado y precios",
+    description: "Prospeccion, monitorizacion competitiva, precios, cartera y lectura de mercado para decidir mejor.",
   },
   ai_culture_capability: {
     id: "ai_culture_capability",
-    label: "Cultura AI y capacidad interna",
-    description: "Construccion de criterio, aprendizaje, comunidad y capacidad organizativa alrededor de la AI.",
+    label: "Cultura IA y capacidad interna",
+    description: "Construccion de criterio, aprendizaje, comunidad y capacidad organizativa alrededor de la IA.",
   },
 };
 
@@ -1195,10 +1195,10 @@ window.__DEMO_VIEWER__=${serializeForInlineScript(demoViewer)};
   <a href="/demo/pildoras-corporativas/">Corporativas</a>
   <a href="/demo/pildoras-ejecutivas/">Ejecutivas</a>
   <a href="/demo/radar/">Radar</a>
-  <a href="/demo/academy-ai/">Academy AI</a>
-  <a href="/demo/eventos-ai-isaval/">Eventos AI Isaval</a>
+  <a href="/demo/academy-ai/">Academia IA</a>
+  <a href="/demo/eventos-ai-isaval/">Eventos IA Isaval</a>
   <a href="/demo/comparte-tu-idea/">Comparte tu idea</a>
-  <a href="/demo/termometro-ai/">Termómetro AI</a>
+  <a href="/demo/termometro-ai/">Termómetro IA</a>
   <a href="/demo/actividad-hub/">Actividad Hub</a>
 </div>
 <div class="demo-project-status-badge">
@@ -1230,8 +1230,8 @@ window.__DEMO_VIEWER__=${serializeForInlineScript(demoViewer)};
     <div class="demo-project-status-editor-row">
       <select id="demo-project-status-select" aria-label="Estado del proyecto">
         <option value="idea"${statusEntry.status === "idea" ? " selected" : ""}>IDEA</option>
-        <option value="in_progress"${statusEntry.status === "in_progress" ? " selected" : ""}>IN PROGRESS</option>
-        <option value="working"${statusEntry.status === "working" ? " selected" : ""}>WORKING</option>
+        <option value="in_progress"${statusEntry.status === "in_progress" ? " selected" : ""}>EN CURSO</option>
+        <option value="working"${statusEntry.status === "working" ? " selected" : ""}>EN USO</option>
       </select>
       <button type="button" id="demo-project-status-save">Guardar</button>
     </div>
@@ -3287,7 +3287,7 @@ export class HubData extends DurableObject {
       "colaborativa-8": "Herramientas navegables para responder preguntas estratégicas con datos consolidados sobre red comercial y competencia.",
       "colaborativa-9": "Automatización documental para convertir datos regulatorios de fichas de seguridad en documentos de transporte marítimo y aéreo desde el ERP.",
       "colaborativa-10": "Automatización del flujo de exportación para transformar pedidos heterogéneos en entradas ERP y documentos comerciales y logísticos conectados.",
-      "colaborativa-11": "Onboarding estructurado para convertir información dispersa de incorporación en una experiencia homogénea, accesible y mantenible en el tiempo.",
+      "colaborativa-11": "Incorporación estructurada para convertir información dispersa de llegada en una experiencia homogénea, accesible y mantenible en el tiempo.",
       "colaborativa-12": "Herramienta de inteligencia de mercado para seleccionar países objetivo con mejor base comparativa antes de activar misiones y prospección internacional.",
       "colaborativa-13": "Digitalización del SAT para estructurar incidencias, ganar trazabilidad y preparar una capa de IA orientada a alertas, patrones y respuesta técnica homogénea.",
       "colaborativa-14": "Ayudante de control de calidad para convertir histórico de fabricaciones en recomendaciones de ajuste más rápidas, homogéneas y fiables.",
@@ -3314,7 +3314,7 @@ export class HubData extends DurableObject {
       "colaborativa-35": "Automatización de la conciliación bancaria para cruzar ERP y banco en segundos, reducir el trabajo manual y devolver trazabilidad al control financiero.",
       "colaborativa-36": "Sistema estructurado de mantenimiento tintométrico por frecuencias para pasar de formatos manuales aislados a una gestión trazable y preparada para digitalizarse.",
       "colaborativa-37": "Agente de innovación on-prem para convertir vigilancia dispersa y actas de comité en oportunidades priorizadas, dossiers votables y aprendizaje real sobre decisiones.",
-      "colaborativa-38": "Herramienta de análisis de catálogo para detectar solapamientos, ordenar el portfolio y dar criterio económico y técnico a la racionalización de referencias.",
+      "colaborativa-38": "Herramienta de análisis de catálogo para detectar solapamientos, ordenar la cartera y dar criterio económico y técnico a la racionalización de referencias.",
       "colaborativa-39": "Herramienta interna para comparar precios Expaint con el mercado, detectar movimientos y dar criterio continuo al posicionamiento comercial y de margen.",
       "colaborativa-40": "Automatización de la planilla de pedidos de exportación para leer PDFs, cruzar stock y producción y devolver estados homogéneos con más rapidez y menos error.",
       "colaborativa-41": "Sistema interno para consolidar forecast, stock y producción de clientes estratégicos y convertir una planificación manual en una capacidad escalable con menos inmovilizado.",

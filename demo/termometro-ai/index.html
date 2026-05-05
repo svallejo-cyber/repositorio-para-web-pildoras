@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Termómetro AI</title>
+  <title>Termómetro IA</title>
   <style>
     :root {
       --bg: #f3f6f9;
@@ -144,7 +144,7 @@
           <img src="/assets/brand/isaval-global-logo.png" alt="Isaval" />
           <div>
             <div class="eyebrow">Hub IA Isaval</div>
-            <div style="font-weight:700; font-size:14px; opacity:.9;">Termómetro AI</div>
+            <div style="font-weight:700; font-size:14px; opacity:.9;">Termómetro IA</div>
           </div>
         </div>
         <nav class="nav">
@@ -152,10 +152,10 @@
           <a href="/demo/pildoras-corporativas/">Corporativas</a>
           <a href="/demo/pildoras-ejecutivas/">Ejecutivas</a>
           <a href="/demo/radar/">Radar</a>
-          <a href="/demo/academy-ai/">Academy AI</a>
-          <a href="/demo/eventos-ai-isaval/">Eventos AI Isaval</a>
+          <a href="/demo/academy-ai/">Academia IA</a>
+          <a href="/demo/eventos-ai-isaval/">Eventos IA Isaval</a>
           <a href="/demo/comparte-tu-idea/">Comparte tu idea</a>
-          <a href="/demo/termometro-ai/">Termómetro AI</a>
+          <a href="/demo/termometro-ai/">Termómetro IA</a>
           <a href="/demo/actividad-hub/">Actividad Hub</a>
         </nav>
       </div>
@@ -163,7 +163,7 @@
         <div>
           <div class="eyebrow">Madurez real de proyectos</div>
           <h1>El termómetro no mide ideas. Mide implantación real.</h1>
-          <p>Cada peldaño del termómetro representa una píldora que ya está en uso real y funcionando. Solo las marcadas como <strong>WORKING</strong> suben la aguja.</p>
+          <p>Cada peldaño del termómetro representa una píldora que ya está en uso real y funcionando. Solo las marcadas como <strong>EN USO</strong> suben la aguja.</p>
         </div>
         <aside class="manifesto">
           <strong>Hashtags guía</strong>
@@ -171,7 +171,7 @@
         </aside>
       </div>
       <div class="hero-visual">
-        <img src="/assets/illustrations/termometro-hub-visual.png" alt="Termómetro AI del Hub Isaval" />
+        <img src="/assets/illustrations/termometro-hub-visual.png" alt="Termómetro IA del Hub Isaval" />
       </div>
     </header>
     <main>
@@ -190,17 +190,17 @@
         </div>
         <div class="panel">
           <h2>Lectura rápida</h2>
-          <p>Los estados del proyecto ayudan a ordenar la madurez de cada iniciativa. Cada autor puede actualizar el estado real de su píldora, y solo <strong>WORKING</strong> suma en el contador global.</p>
+          <p>Los estados del proyecto ayudan a ordenar la madurez de cada iniciativa. Cada autor puede actualizar el estado real de su píldora, y solo <strong>EN USO</strong> suma en el contador global.</p>
           <div class="status-grid">
             <div class="status-card"><strong id="idea-count">0</strong><span>IDEA</span></div>
-            <div class="status-card"><strong id="progress-count">0</strong><span>IN PROGRESS</span></div>
-            <div class="status-card"><strong id="working-count-side">0</strong><span>WORKING</span></div>
+            <div class="status-card"><strong id="progress-count">0</strong><span>EN CURSO</span></div>
+            <div class="status-card"><strong id="working-count-side">0</strong><span>EN USO</span></div>
           </div>
         </div>
       </section>
 
       <section class="panel">
-        <h2>Proyectos ya en WORKING</h2>
+        <h2>Proyectos ya en EN USO</h2>
         <p>Estos son los casos que ya están en uso real y que, por tanto, elevan el termómetro.</p>
         <div class="working-list" id="working-list"></div>
         <div class="actions">
@@ -209,7 +209,7 @@
         </div>
       </section>
     </main>
-    <footer>Termómetro AI · Hub IA Isaval.</footer>
+    <footer>Termómetro IA · Hub IA Isaval.</footer>
   </article>
   <script>
     (function () {
@@ -255,13 +255,13 @@
 
         const workingPills = (data.pills || []).filter((pill) => pill.status === 'working');
         if (!workingPills.length) {
-          workingListEl.innerHTML = '<div class="working-item"><strong>Todavía no hay proyectos en WORKING.</strong><div>Cuando una píldora pase a uso real y su autor o administración la marque como WORKING, aparecerá aquí y sumará en el termómetro.</div></div>';
+          workingListEl.innerHTML = '<div class="working-item"><strong>Todavía no hay proyectos en EN USO.</strong><div>Cuando una píldora pase a uso real y su autor o administración la marque como EN USO, aparecerá aquí y sumará en el termómetro.</div></div>';
           return;
         }
 
         workingListEl.innerHTML = workingPills.map((pill) => `
           <article class="working-item">
-            <div><span class="badge badge-working">WORKING</span></div>
+            <div><span class="badge badge-working">EN USO</span></div>
             <strong>${pill.title}</strong>
             <div>${pill.author}</div>
             <a href="${pill.demoUrl}">Abrir ficha</a>
@@ -279,7 +279,7 @@
           render(fresh);
         } catch (error) {
           if (!embedded) {
-            updatedAtEl.textContent = 'No se ha podido cargar el termómetro AI.';
+            updatedAtEl.textContent = 'No se ha podido cargar el termómetro IA.';
           }
         }
       }

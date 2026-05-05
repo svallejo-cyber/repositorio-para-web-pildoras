@@ -172,7 +172,7 @@
         <div>
           <span class="demo-status-strip-eyebrow">Estado visible</span>
           <h3>${variant === 'home' ? 'El estado de cada proyecto ya se ve en todo el Hub.' : 'Los estados de proyecto ya son visibles aquí también.'}</h3>
-          <p>${variant === 'home' ? 'Cada píldora ejecutiva muestra su badge y solo WORKING empuja el termómetro del Hub.' : 'IDEA, IN PROGRESS y WORKING quedan visibles también en esta sección. Solo WORKING suma en el termómetro.'}</p>
+          <p>${variant === 'home' ? 'Cada píldora ejecutiva muestra su badge y solo EN USO empuja el termómetro del Hub.' : 'IDEA, EN CURSO y EN USO quedan visibles también en esta sección. Solo EN USO suma en el termómetro.'}</p>
         </div>
         <div class="demo-status-strip-links">
           <a href="/demo/termometro-ai/">Ver termómetro</a>
@@ -181,8 +181,8 @@
       </div>
       <div class="demo-status-strip-chips">
         <span class="demo-status-chip demo-status-badge-idea">IDEA · ${counts.idea || 0}</span>
-        <span class="demo-status-chip demo-status-badge-progress">IN PROGRESS · ${counts.in_progress || 0}</span>
-        <span class="demo-status-chip demo-status-badge-working">WORKING · ${working} / ${target}</span>
+        <span class="demo-status-chip demo-status-badge-progress">EN CURSO · ${counts.in_progress || 0}</span>
+        <span class="demo-status-chip demo-status-badge-working">EN USO · ${working} / ${target}</span>
       </div>
       ${visible.length ? `<div class="demo-status-strip-list">${visible.map(renderItem).join('')}</div>` : ''}
       <div class="demo-status-strip-note">${updatedAt ? `Actualizado: ${updatedAt}` : 'Aún no hay actualización registrada.'}</div>
