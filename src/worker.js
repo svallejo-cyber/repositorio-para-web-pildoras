@@ -91,12 +91,13 @@ const PUBLISHED_PILLS = [
   { slug: "colaborativa-41", lang: "es", type: "collaborative", title: "Del forecast manual a la planificación inteligente y escalable", author: "Cristian Rodríguez Ferreira", authorEmail: "crodriguez@isaval.es", avatar: "/assets/profile/cristian-rodriguez-360.jpg", publishedAt: "2026-04-26T00:35:00Z", urlPath: "/projects/colaborativa-41/es/" },
   { slug: "colaborativa-42", lang: "es", type: "collaborative", title: "De la apertura por experiencia al sistema histórico de tiendas y mantenimiento", author: "Rubén Vicent", authorEmail: "rvicent@isaval.es", avatar: "/assets/profile/ruben-vicent-360.jpg", publishedAt: "2026-04-29T16:30:00Z", urlPath: "/projects/colaborativa-42/es/" },
   { slug: "colaborativa-43", lang: "es", type: "collaborative", title: "Transformar la revisión de certificados de aptitud: de la revisión masiva a la detección automática de incoherencias", author: "María José Mancebo", authorEmail: "mjmancebo@isaval.es", avatar: "", publishedAt: "2026-05-07T12:00:00Z", urlPath: "/projects/colaborativa-43/es/" },
+  { slug: "colaborativa-44", lang: "es", type: "collaborative", title: "Del Excel y el correo al seguimiento inteligente de pedidos a proveedor", author: "Carmen Vicente Zaragoza", authorEmail: "cvicente@isaval.es", avatar: "", publishedAt: "2026-05-07T12:20:00Z", urlPath: "/projects/colaborativa-44/es/" },
 ];
 const COLLABORATIVE_PILLS = PUBLISHED_PILLS.filter((item) => item.type === "collaborative");
 const DEMO_EXECUTIVE_SLUG_ORDER = [
   "pildora-5",
   "pildora-6",
-  ...Array.from({ length: 43 }, (_, idx) => `colaborativa-${idx + 1}`),
+  ...Array.from({ length: 44 }, (_, idx) => `colaborativa-${idx + 1}`),
 ];
 const DEMO_CORPORATE_SLUG_ORDER = ["pildora-1", "pildora-2", "pildora-3", "pildora-4", "pildora-7"];
 const DEMO_EXCLUDED_SLUGS = new Set(["tenantflow"]);
@@ -292,6 +293,7 @@ const RADAR_CLASSIFICATION_OVERRIDES = {
   "colaborativa-41": { functionId: "commercial_export_portfolio", themeId: "operational_planning" },
   "colaborativa-42": { functionId: "operations_plant_logistics", themeId: "dashboards_data_reading" },
   "colaborativa-43": { functionId: "quality_regulation_sustainability", themeId: "control_alerts_compliance" },
+  "colaborativa-44": { functionId: "operations_plant_logistics", themeId: "workflow_traceability" },
 };
 
 const RADAR_AUTO_RULES = {
@@ -3322,6 +3324,7 @@ export class HubData extends DurableObject {
       "colaborativa-41": "Sistema interno para consolidar forecast, stock y producción de clientes estratégicos y convertir una planificación manual en una capacidad escalable con menos inmovilizado.",
       "colaborativa-42": "Herramienta histórica para comparar locales, estimar reformas, anticipar aperturas y leer el mantenimiento de tiendas con más criterio y menos dispersión.",
       "colaborativa-43": "Sistema para validar certificados de aptitud, detectar incoherencias entre protocolos y puesto y concentrar la revisión preventiva solo donde realmente hay incidencia.",
+      "colaborativa-44": "Sistema para seguir pedidos a proveedor, leer confirmaciones, alertar retrasos y dar visibilidad anticipada al aprovisionamiento antes de que impacte en producción.",
     };
     return descriptions[slug] || "";
   }
