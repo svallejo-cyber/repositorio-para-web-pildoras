@@ -222,6 +222,86 @@
       color:#32485b;
       min-height:0;
     }
+    .accordion {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background:#fbfdff;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.7);
+      overflow: hidden;
+      align-self: start;
+    }
+    .accordion + .accordion {
+      margin-top: 0;
+    }
+    .accordion summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 18px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 14px;
+      align-items: center;
+    }
+    .accordion summary::-webkit-details-marker {
+      display: none;
+    }
+    .accordion-title {
+      display: grid;
+      gap: 8px;
+    }
+    .accordion-title .kicker {
+      font-size:12px;
+      font-weight:700;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:#31516a;
+    }
+    .accordion-title h3 {
+      margin:0;
+      font-size:24px;
+      line-height:1.12;
+      color:#10314d;
+    }
+    .accordion-title p {
+      margin:0;
+      color:#32485b;
+    }
+    .accordion-meta {
+      display: grid;
+      gap: 10px;
+      justify-items: end;
+      text-align: right;
+    }
+    .accordion-count {
+      color:#5c6b79;
+      font-size:14px;
+    }
+    .accordion-toggle {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      border:1px solid #cad8e5;
+      background:#fff;
+      color:#10314d;
+      font-size: 22px;
+      line-height: 1;
+      font-weight: 400;
+    }
+    .accordion[open] .accordion-toggle::before {
+      content: "−";
+    }
+    .accordion:not([open]) .accordion-toggle::before {
+      content: "+";
+    }
+    .accordion-body {
+      padding: 0 18px 18px;
+      display: grid;
+      gap: 12px;
+      border-top: 1px solid #e2ebf2;
+    }
     .meta {
       color:#5c6b79;
       font-size:14px;
@@ -359,7 +439,7 @@
         </div>
         <div class="focus">
           <h2>Qué muestra hoy</h2>
-          <p>El fondo actual del Hub ya queda ordenado con criterio curado, y las nuevas aportaciones se asignarán automáticamente por su contenido principal.</p>
+          <p>Los bloques se abren uno a uno para que la navegación sea más limpia y más ágil, sin perder profundidad cuando quieras entrar en detalle.</p>
         </div>
       </section>
       <section class="summary-grid" id="radar-summary"></section>
@@ -393,12 +473,20 @@
 
     function renderFunctionCard(group) {
       return `
-        <article class="card">
-          <div class="kicker">Funcion principal</div>
-          <h3>${group.label}</h3>
-          <p>${group.description}</p>
-          <div class="meta">${group.count} pildora${group.count === 1 ? '' : 's'}</div>
-          <div class="radar-list">
+        <details class="accordion"${group.order === 0 ? ' open' : ''}>
+          <summary>
+            <div class="accordion-title">
+              <div class="kicker">Función principal</div>
+              <h3>${group.label}</h3>
+              <p>${group.description}</p>
+            </div>
+            <div class="accordion-meta">
+              <div class="accordion-count">${group.count} píldora${group.count === 1 ? '' : 's'}</div>
+              <span class="accordion-toggle" aria-hidden="true"></span>
+            </div>
+          </summary>
+          <div class="accordion-body">
+            <div class="radar-list">
             ${group.pills.map((item) => `
               <div class="radar-item">
                 <strong>${item.demoOrdinalLabel || ''} · ${item.title}</strong>
@@ -410,19 +498,28 @@
                 <div class="actions"><a class="btn secondary" href="${item.demoUrl}">Abrir</a></div>
               </div>
             `).join('')}
+            </div>
           </div>
-        </article>
+        </details>
       `;
     }
 
     function renderThemeCard(group) {
       return `
-        <article class="card">
-          <div class="kicker">Tematica transversal</div>
-          <h3>${group.label}</h3>
-          <p>${group.description}</p>
-          <div class="meta">${group.count} pildora${group.count === 1 ? '' : 's'}</div>
-          <div class="radar-list">
+        <details class="accordion">
+          <summary>
+            <div class="accordion-title">
+              <div class="kicker">Temática transversal</div>
+              <h3>${group.label}</h3>
+              <p>${group.description}</p>
+            </div>
+            <div class="accordion-meta">
+              <div class="accordion-count">${group.count} píldora${group.count === 1 ? '' : 's'}</div>
+              <span class="accordion-toggle" aria-hidden="true"></span>
+            </div>
+          </summary>
+          <div class="accordion-body">
+            <div class="radar-list">
             ${group.pills.slice(0, 8).map((item) => `
               <div class="radar-item">
                 <strong>${item.demoOrdinalLabel || ''} · ${item.title}</strong>
@@ -433,8 +530,9 @@
                 <div class="actions"><a class="btn secondary" href="${item.demoUrl}">Abrir</a></div>
               </div>
             `).join('')}
+            </div>
           </div>
-        </article>
+        </details>
       `;
     }
 
@@ -457,8 +555,22 @@
             <div class="meta">Preparadas para nuevas aportaciones</div>
           </article>
         `;
-        radarGrid.innerHTML = (data.functions || []).filter((group) => group.count > 0).map(renderFunctionCard).join('');
+        radarGrid.innerHTML = (data.functions || []).filter((group) => group.count > 0).map((group, index) => renderFunctionCard({ ...group, order: index })).join('');
         radarThemes.innerHTML = (data.themes || []).filter((group) => group.count > 0).map(renderThemeCard).join('');
+        wireAccordions(radarGrid);
+        wireAccordions(radarThemes);
+      }
+
+      function wireAccordions(root) {
+        const accordions = Array.from(root.querySelectorAll('.accordion'));
+        accordions.forEach((accordion) => {
+          accordion.addEventListener('toggle', () => {
+            if (!accordion.open) return;
+            accordions.forEach((other) => {
+              if (other !== accordion) other.open = false;
+            });
+          });
+        });
       }
 
       try {
