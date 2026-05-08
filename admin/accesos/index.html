@@ -278,6 +278,24 @@
       }
 
       async function load() {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('reset_access') === '1') {
+          const requestedStartAt = params.get('start_at') || '2026-05-08T13:00:00+02:00';
+          statusEl.textContent = 'Reseteando la actividad del dashboard...';
+          const resetResponse = await fetch('/api/admin-maintenance/reset-access-dashboard', {
+            ...fetchOptions,
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ startAt: requestedStartAt }),
+          });
+          if (!resetResponse.ok) throw new Error('reset_failed');
+          const cleanUrl = new URL(window.location.href);
+          cleanUrl.searchParams.delete('reset_access');
+          cleanUrl.searchParams.delete('start_at');
+          window.location.replace(cleanUrl.toString());
+          return;
+        }
+
         const response = await fetch('/api/access-dashboard', fetchOptions);
         if (!response.ok) throw new Error('load_failed');
         const data = await response.json();
@@ -404,10 +422,12 @@
         window.location.href = '/admin/login/';
       });
 
-      load().catch(() => {
-        statusEl.textContent = 'No se ha podido cargar el dashboard de accesos.';
-      });
-    })();
+  load().catch((error) => {
+    statusEl.textContent = error && error.message === 'reset_failed'
+      ? 'No se ha podido resetear el dashboard de accesos.'
+      : 'No se ha podido cargar el dashboard de accesos.';
+  });
+})();
   </script>
 </body>
 </html>
