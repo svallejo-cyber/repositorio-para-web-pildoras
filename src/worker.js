@@ -1453,6 +1453,15 @@ export default {
         const next = encodeURIComponent(url.pathname + url.search);
         return redirect(`/login/?next=${next}`);
       }
+      if (request.method === "GET" && isTrackablePath(url.pathname)) {
+        await store.recordPageView({
+          userId: demoSession.userId || "",
+          email: demoSession.email,
+          name: demoSession.name,
+          path: url.pathname,
+          language: inferLanguage(url.pathname),
+        });
+      }
       return serveDemoAsset(request, env, store, demoSession);
     }
 
