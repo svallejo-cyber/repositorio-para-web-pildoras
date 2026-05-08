@@ -9,6 +9,7 @@ const EXCLUDED_TRACKING_EMAILS = new Set(["svallejo@isaval.es", "svallejoi@iclou
 const NOTIFICATION_TIMEZONE = "Europe/Madrid";
 const DEFAULT_HUB_BASE_URL = "https://repositorio-para-web-pildoras.svallejo-351.workers.dev";
 const DEFAULT_PROFILE_AVATAR = "/assets/profile/santiago2-360.jpg";
+const NEUTRAL_PROFILE_AVATAR = "/assets/profile/avatar-neutral.svg";
 const IDEA_SUBMISSION_STATUS_META = {
   received: { key: "received", label: "Recibida" },
   in_review: { key: "in_review", label: "En revisión" },
@@ -1207,7 +1208,7 @@ window.__DEMO_VIEWER__=${serializeForInlineScript(demoViewer)};
 </div>
 <div class="demo-project-status-badge">
   <div class="demo-project-author">
-    <img src="${escapeHtml(pill.avatar || DEFAULT_PROFILE_AVATAR)}" alt="${escapeHtml(pill.author)}" />
+    <img src="${escapeHtml(cleanAvatar(pill.avatar || "") || NEUTRAL_PROFILE_AVATAR)}" alt="${escapeHtml(pill.author)}" />
     <div class="demo-project-author-copy">
       <strong>${escapeHtml(pill.author)}</strong>
       <span>${pill.type === "collaborative" ? "Píldora colaborativa" : "Píldora corporativa"}</span>
@@ -1295,7 +1296,7 @@ window.__DEMO_VIEWER__=${serializeForInlineScript(demoViewer)};
 </div>`;
     corporateAuthorBlock = isCorporateDemoPill ? `
 <div class="demo-project-inline-author">
-  <img src="${escapeHtml(pill.avatar || DEFAULT_PROFILE_AVATAR)}" alt="${escapeHtml(pill.author)}" />
+  <img src="${escapeHtml(cleanAvatar(pill.avatar || "") || NEUTRAL_PROFILE_AVATAR)}" alt="${escapeHtml(pill.author)}" />
   <div class="demo-project-inline-author-copy">
     <span>Píldora corporativa · Autor del Hub</span>
     <strong>${escapeHtml(pill.author)}</strong>

@@ -160,6 +160,33 @@
       border: 1px solid #ead9c7;
       background: linear-gradient(180deg, #fffaf4 0%, #f9efe4 100%);
     }
+    .search-panel {
+      border:1px solid var(--line);
+      border-radius:18px;
+      background:#fbfdff;
+      padding:18px 20px;
+      margin-bottom:20px;
+      display:grid;
+      gap:10px;
+    }
+    .search-panel label {
+      font-weight:700;
+      color:#10314d;
+      font-size:15px;
+    }
+    .search-panel input {
+      width:100%;
+      border:1px solid #cad8e5;
+      border-radius:12px;
+      padding:12px 14px;
+      font-size:15px;
+      color:var(--ink);
+      background:#fff;
+    }
+    .search-note {
+      color:#5c6b79;
+      font-size:14px;
+    }
     .grid {
       display:grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -442,6 +469,11 @@
           <p>Los bloques se abren uno a uno para que la navegación sea más limpia y más ágil, sin perder profundidad cuando quieras entrar en detalle.</p>
         </div>
       </section>
+      <section class="search-panel">
+        <label for="author-search">Buscar por autor</label>
+        <input id="author-search" type="search" placeholder="Escribe un nombre para filtrar" autocomplete="off" />
+        <div class="search-note" id="search-note">Mostrando todo el radar.</div>
+      </section>
       <section class="summary-grid" id="radar-summary"></section>
       <section class="section-intro">
         <div class="statement">
@@ -466,6 +498,13 @@
     const radarGrid = document.getElementById('radar-grid');
     const radarThemes = document.getElementById('radar-themes');
     const radarSummary = document.getElementById('radar-summary');
+    const searchInput = document.getElementById('author-search');
+    const searchNote = document.getElementById('search-note');
+    let radarData = null;
+
+    function normalize(value) {
+      return String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+    }
 
     function sourceLabel(radar) {
       return radar && radar.source === 'auto' ? 'Autoasignada' : 'Curada';
@@ -536,48 +575,87 @@
       `;
     }
 
-    async function load() {
-      function renderFrom(data) {
-        radarSummary.innerHTML = `
-          <article class="summary-card">
-            <span>Funciones</span>
-            <strong>${(data.functions || []).length}</strong>
-            <div class="meta">Lectura principal por area de empresa</div>
-          </article>
-          <article class="summary-card">
-            <span>Tematicas</span>
-            <strong>${(data.themes || []).length}</strong>
-            <div class="meta">Patrones transversales del fondo actual</div>
-          </article>
-          <article class="summary-card">
-            <span>Autoasignacion</span>
-            <strong>${(data.pills || []).filter((pill) => pill.radar && pill.radar.source === 'auto').length}</strong>
-            <div class="meta">Preparadas para nuevas aportaciones</div>
-          </article>
-        `;
-        radarGrid.innerHTML = (data.functions || []).filter((group) => group.count > 0).map((group, index) => renderFunctionCard({ ...group, order: index })).join('');
-        radarThemes.innerHTML = (data.themes || []).filter((group) => group.count > 0).map(renderThemeCard).join('');
-        wireAccordions(radarGrid);
-        wireAccordions(radarThemes);
-      }
-
-      function wireAccordions(root) {
-        const accordions = Array.from(root.querySelectorAll('.accordion'));
-        accordions.forEach((accordion) => {
-          accordion.addEventListener('toggle', () => {
-            if (!accordion.open) return;
-            accordions.forEach((other) => {
-              if (other !== accordion) other.open = false;
-            });
+    function wireAccordions(root) {
+      const accordions = Array.from(root.querySelectorAll('.accordion'));
+      accordions.forEach((accordion) => {
+        accordion.addEventListener('toggle', () => {
+          if (!accordion.open) return;
+          accordions.forEach((other) => {
+            if (other !== accordion) other.open = false;
           });
         });
-      }
+      });
+    }
 
+    function filterRadarData(data, rawValue) {
+      const query = normalize(rawValue);
+      if (!query) return data;
+      const filteredPills = (data.pills || []).filter((pill) => normalize(pill.author).includes(query));
+      const allowed = new Set(filteredPills.map((pill) => pill.slug || pill.demoUrl));
+      const filterGroups = (groups) => (groups || []).map((group) => {
+        const pills = (group.pills || []).filter((pill) => allowed.has(pill.slug || pill.demoUrl));
+        return { ...group, pills, count: pills.length };
+      }).filter((group) => group.count > 0);
+      return {
+        ...data,
+        pills: filteredPills,
+        functions: filterGroups(data.functions),
+        themes: filterGroups(data.themes)
+      };
+    }
+
+    function renderFrom(data) {
+      radarSummary.innerHTML = `
+        <article class="summary-card">
+          <span>Funciones</span>
+          <strong>${(data.functions || []).length}</strong>
+          <div class="meta">Lectura principal por área de empresa</div>
+        </article>
+        <article class="summary-card">
+          <span>Temáticas</span>
+          <strong>${(data.themes || []).length}</strong>
+          <div class="meta">Patrones transversales del fondo actual</div>
+        </article>
+        <article class="summary-card">
+          <span>Autoasignación</span>
+          <strong>${(data.pills || []).filter((pill) => pill.radar && pill.radar.source === 'auto').length}</strong>
+          <div class="meta">Preparadas para nuevas aportaciones</div>
+        </article>
+      `;
+      if (!(data.pills || []).length) {
+        radarGrid.innerHTML = '<article class="card"><h3>No hay autores que coincidan.</h3><p>Prueba con otro nombre o borra el filtro para volver a ver todo el radar.</p></article>';
+        radarThemes.innerHTML = '';
+        return;
+      }
+      radarGrid.innerHTML = (data.functions || []).map((group, index) => renderFunctionCard({ ...group, order: index })).join('');
+      radarThemes.innerHTML = (data.themes || []).map(renderThemeCard).join('');
+      wireAccordions(radarGrid);
+      wireAccordions(radarThemes);
+    }
+
+    function applyAuthorFilter() {
+      if (!radarData) return;
+      const rawValue = searchInput ? searchInput.value : '';
+      const filtered = filterRadarData(radarData, rawValue);
+      renderFrom(filtered);
+      if (!searchNote) return;
+      if (!normalize(rawValue)) {
+        searchNote.textContent = `Mostrando las ${(radarData.pills || []).length} píldoras del radar.`;
+      } else {
+        const count = (filtered.pills || []).length;
+        searchNote.textContent = count
+          ? `Filtro activo: ${count} resultado${count === 1 ? '' : 's'} para “${rawValue}”.`
+          : `No hay resultados para “${rawValue}”.`;
+      }
+    }
+
+    async function load() {
+      if (searchInput) searchInput.addEventListener('input', applyAuthorFilter);
       try {
         const response = await fetch('/api/demo/radar', { credentials: 'same-origin', cache: 'no-store' });
         if (!response.ok) throw new Error('load_failed');
-        const data = await response.json();
-        renderFrom(data);
+        radarData = await response.json();
+        applyAuthorFilter();
       } catch (error) {
         radarSummary.innerHTML = '';
         radarGrid.innerHTML = '<article class="card"><h3>No se ha podido cargar el radar.</h3><p>El Hub necesita leer la biblioteca ejecutiva para construir la clasificación por función y temática.</p></article>';

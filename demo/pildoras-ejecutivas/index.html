@@ -77,6 +77,33 @@
     .intro-panel p, .stats-panel p { margin:0; color:#32485b; }
     .stats-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-top:14px; }
     .stat { border:1px solid var(--line); border-radius:14px; background:#fff; padding:14px; }
+    .search-panel {
+      border:1px solid var(--line);
+      border-radius:18px;
+      background:#fbfdff;
+      padding:18px 20px;
+      margin-bottom:20px;
+      display:grid;
+      gap:10px;
+    }
+    .search-panel label {
+      font-weight:700;
+      color:#10314d;
+      font-size:15px;
+    }
+    .search-panel input {
+      width:100%;
+      border:1px solid #cad8e5;
+      border-radius:12px;
+      padding:12px 14px;
+      font-size:15px;
+      color:var(--ink);
+      background:#fff;
+    }
+    .search-note {
+      color:#5c6b79;
+      font-size:14px;
+    }
     .stat small { display:block; color:#5c6b79; margin-bottom:6px; }
     .stat strong { font-size:1.45rem; }
     .cards { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
@@ -179,6 +206,12 @@
         </div>
       </section>
 
+      <section class="search-panel">
+        <label for="author-search">Buscar por autor</label>
+        <input id="author-search" type="search" placeholder="Escribe un nombre para filtrar" autocomplete="off" />
+        <div class="search-note" id="search-note">Mostrando todas las píldoras.</div>
+      </section>
+
       <section class="cards" id="pills-grid"></section>
 
       <div class="actions" style="margin-top:18px;">
@@ -194,6 +227,9 @@
       const progressCount = document.getElementById('progress-count');
       const workingCount = document.getElementById('working-count');
       const updatedAt = document.getElementById('updated-at');
+      const searchInput = document.getElementById('author-search');
+      const searchNote = document.getElementById('search-note');
+      let libraryData = { pills: [], updatedAt: null };
 
       function badgeClass(status) {
         if (status === 'working') return 'badge-working';
@@ -201,16 +237,19 @@
         return 'badge-idea';
       }
 
-      function buildDataFromEmbeddedStatus(data) {
-        const pills = (data.pills || []).map((pill) => ({
+      function normalize(value) {
+        return String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+      }
+
+      function avatarSrc(pill) {
+        return (pill.avatar && pill.avatar.trim()) || '/assets/profile/avatar-neutral.svg';
+      }
+
+      function enrichPills(data) {
+        return (data.pills || []).map((pill) => ({
           ...pill,
           publishedLabel: pill.publishedAt ? new Date(pill.publishedAt).toLocaleString('es-ES') : ''
         }));
-        return {
-          pills,
-          counts: data.counts || {},
-          updatedAt: data.updatedAt || null
-        };
       }
 
       async function fetchExecutivePillsData() {
@@ -219,22 +258,28 @@
         return response.json();
       }
 
-      function render(data) {
-        const pills = data.pills || [];
-        const counts = data.counts || {};
-
+      function updateCounts(pills) {
+        const counts = pills.reduce((acc, pill) => {
+          acc[pill.status] = (acc[pill.status] || 0) + 1;
+          return acc;
+        }, { idea: 0, in_progress: 0, working: 0 });
         ideaCount.textContent = String(counts.idea || 0);
         progressCount.textContent = String(counts.in_progress || 0);
         workingCount.textContent = String(counts.working || 0);
-        updatedAt.textContent = data.updatedAt ? `Actualizado: ${new Date(data.updatedAt).toLocaleString('es-ES')}` : 'Sin cambios de estado todavía.';
+      }
 
+      function renderCards(pills) {
+        if (!pills.length) {
+          pillsGrid.innerHTML = '<article class="card"><h3>No hay autores que coincidan.</h3><p>Prueba con otro nombre o borra el filtro para volver a ver toda la biblioteca ejecutiva.</p></article>';
+          return;
+        }
         pillsGrid.innerHTML = pills.map((pill) => `
           <article class="card">
             <div><span class="badge ${badgeClass(pill.status)}">${pill.statusLabel}</span></div>
             <div class="meta" style="font-weight:700; color:#10314d;">${pill.demoOrdinalLabel || ''}</div>
             <h3>${pill.title}</h3>
             <div class="author-row">
-              <img src="${pill.avatar || '/assets/profile/santiago2-360.jpg'}" alt="${pill.author}" />
+              <img src="${avatarSrc(pill)}" alt="${pill.author}" />
               <div class="author-copy">
                 <strong>${pill.author}</strong>
                 <div class="meta">${pill.publishedLabel}</div>
@@ -248,8 +293,38 @@
         `).join('');
       }
 
+      function applyAuthorFilter() {
+        const rawValue = searchInput ? searchInput.value : '';
+        const query = normalize(rawValue);
+        const filtered = !query
+          ? libraryData.pills
+          : libraryData.pills.filter((pill) => normalize(pill.author).includes(query));
+
+        updateCounts(filtered);
+        renderCards(filtered);
+
+        if (!searchNote) return;
+        if (!query) {
+          searchNote.textContent = `Mostrando las ${libraryData.pills.length} píldoras ejecutivas.`;
+        } else {
+          searchNote.textContent = filtered.length
+            ? `Filtro activo: ${filtered.length} resultado${filtered.length === 1 ? '' : 's'} para “${rawValue}”.`
+            : `No hay resultados para “${rawValue}”.`;
+        }
+      }
+
+      function render(data) {
+        libraryData = {
+          pills: enrichPills(data),
+          updatedAt: data.updatedAt || null
+        };
+        updatedAt.textContent = libraryData.updatedAt ? `Actualizado: ${new Date(libraryData.updatedAt).toLocaleString('es-ES')}` : 'Sin cambios de estado todavía.';
+        applyAuthorFilter();
+      }
+
       async function load() {
         const embedded = window.__DEMO_EXECUTIVE_PILLS__;
+        if (searchInput) searchInput.addEventListener('input', applyAuthorFilter);
         if (embedded) {
           render(embedded);
         }

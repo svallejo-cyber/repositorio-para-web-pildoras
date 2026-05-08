@@ -147,6 +147,33 @@
       border: 1px solid #ead9c7;
       background: linear-gradient(180deg, #fffaf4 0%, #f9efe4 100%);
     }
+    .search-panel {
+      border:1px solid var(--line);
+      border-radius:18px;
+      background:#fbfdff;
+      padding:18px 20px;
+      margin-bottom:20px;
+      display:grid;
+      gap:10px;
+    }
+    .search-panel label {
+      font-weight:700;
+      color:#10314d;
+      font-size:15px;
+    }
+    .search-panel input {
+      width:100%;
+      border:1px solid #cad8e5;
+      border-radius:12px;
+      padding:12px 14px;
+      font-size:15px;
+      color:var(--ink);
+      background:#fff;
+    }
+    .search-note {
+      color:#5c6b79;
+      font-size:14px;
+    }
     .grid {
       display:grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -308,6 +335,11 @@
           <p>Las piezas de dirección, contexto y criterio general que sostienen el conjunto del Hub.</p>
         </div>
       </section>
+      <section class="search-panel">
+        <label for="author-search">Buscar por autor</label>
+        <input id="author-search" type="search" placeholder="Escribe un nombre para filtrar" autocomplete="off" />
+        <div class="search-note" id="search-note">Mostrando todas las píldoras.</div>
+      </section>
       <section class="grid" id="corporate-grid"></section>
       <div class="actions">
         <a class="btn" href="/demo/">Volver al inicio</a>
@@ -319,6 +351,17 @@
   (function () {
     const corporateGrid = document.getElementById('corporate-grid');
     const updatedAt = document.getElementById('updated-at');
+    const searchInput = document.getElementById('author-search');
+    const searchNote = document.getElementById('search-note');
+    let libraryData = { pills: [], updatedAt: null };
+
+    function normalize(value) {
+      return String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+    }
+
+    function avatarSrc(pill) {
+      return (pill.avatar && pill.avatar.trim()) || '/assets/profile/avatar-neutral.svg';
+    }
 
     async function fetchCorporatePillsData() {
       const response = await fetch('/api/demo/corporate-pills', { credentials: 'same-origin', cache: 'no-store' });
@@ -326,15 +369,17 @@
       return response.json();
     }
 
-    function render(data) {
-      const pills = data.pills || [];
-      updatedAt.textContent = data.updatedAt ? `Biblioteca preparada: ${new Date(data.updatedAt).toLocaleString('es-ES')}` : '';
+    function renderCards(pills) {
+      if (!pills.length) {
+        corporateGrid.innerHTML = '<article class="card"><h3>No hay autores que coincidan.</h3><p>Prueba con otro nombre o borra el filtro para volver a ver toda la biblioteca corporativa.</p></article>';
+        return;
+      }
       corporateGrid.innerHTML = pills.map((pill) => `
         <article class="card">
           <div class="kicker">${pill.demoOrdinalLabel || ''}</div>
           <h3>${pill.title}</h3>
           <div class="author-row">
-            <img src="${pill.avatar || '/assets/profile/santiago2-360.jpg'}" alt="${pill.author}" />
+            <img src="${avatarSrc(pill)}" alt="${pill.author}" />
             <div class="author-copy">
               <strong>${pill.author}</strong>
               <div class="meta">${pill.publishedLabel}</div>
@@ -348,8 +393,38 @@
       `).join('');
     }
 
+    function applyAuthorFilter() {
+      const rawValue = searchInput ? searchInput.value : '';
+      const query = normalize(rawValue);
+      const filtered = !query
+        ? libraryData.pills
+        : libraryData.pills.filter((pill) => normalize(pill.author).includes(query));
+      renderCards(filtered);
+      if (!searchNote) return;
+      if (!query) {
+        searchNote.textContent = `Mostrando las ${libraryData.pills.length} píldoras corporativas.`;
+      } else {
+        searchNote.textContent = filtered.length
+          ? `Filtro activo: ${filtered.length} resultado${filtered.length === 1 ? '' : 's'} para “${rawValue}”.`
+          : `No hay resultados para “${rawValue}”.`;
+      }
+    }
+
+    function render(data) {
+      libraryData = {
+        pills: (data.pills || []).map((pill) => ({
+          ...pill,
+          publishedLabel: pill.publishedAt ? new Date(pill.publishedAt).toLocaleString('es-ES') : ''
+        })),
+        updatedAt: data.updatedAt || null
+      };
+      updatedAt.textContent = libraryData.updatedAt ? `Biblioteca preparada: ${new Date(libraryData.updatedAt).toLocaleString('es-ES')}` : '';
+      applyAuthorFilter();
+    }
+
     async function load() {
       const embedded = window.__DEMO_CORPORATE_PILLS__;
+      if (searchInput) searchInput.addEventListener('input', applyAuthorFilter);
       if (embedded) {
         render(embedded);
       }
