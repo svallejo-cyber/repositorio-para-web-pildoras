@@ -856,7 +856,9 @@ function isAdminAssetPath(pathname) {
 }
 
 function isAdminMaintenanceApi(pathname) {
-  return pathname === "/api/admin-maintenance/purge-excluded-accesses" || pathname === "/api/admin-maintenance/project-statuses";
+  return pathname === "/api/admin-maintenance/purge-excluded-accesses"
+    || pathname === "/api/admin-maintenance/project-statuses"
+    || pathname === "/api/admin-maintenance/reset-access-dashboard";
 }
 
 function getDemoProjectSlug(pathname) {
