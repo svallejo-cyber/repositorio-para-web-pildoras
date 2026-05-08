@@ -26,8 +26,8 @@
 <body>
   <main class="card">
     <p class="eyebrow">Uso interno autorizado</p>
-    <h1>Acceso al Hub de IA</h1>
-    <p>Introduce tu correo corporativo. Si figura en la lista interna de invitados, el acceso al Hub se abrirá directamente.</p>
+    <h1>Acceso al Hub IA de Isaval</h1>
+    <p>Introduce tu correo corporativo. Si figura en la lista interna de invitados, entrarás directamente en el Hub IA de Isaval.</p>
         <form id="login-form">
       <input id="email" type="email" placeholder="nombre@empresa.com" autocomplete="email" required />
       <button type="submit">Entrar</button>
@@ -40,7 +40,7 @@
       const email = document.getElementById('email');
       const status = document.getElementById('status');
       const params = new URLSearchParams(window.location.search);
-      const next = params.get('next') || '/';
+      const next = params.get('next') || '/demo/';
       form.addEventListener('submit', async (event) => {
         event.preventDefault();
         status.textContent = 'Validando acceso...';

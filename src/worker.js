@@ -1434,9 +1434,13 @@ export default {
     }
 
     if (isPublicPath(url.pathname)) {
-      if (session) return redirect("/");
+      if (session) return redirect("/demo/");
       const response = await env.ASSETS.fetch(request);
       return withNoStore(response);
+    }
+
+    if (session && ["/", "/es", "/es/", "/en", "/en/"] .includes(url.pathname)) {
+      return redirect("/demo/");
     }
 
     if (isDemoPath(url.pathname)) {
@@ -1494,7 +1498,7 @@ async function handleAuthApi(request, url, store) {
     const result = await store.loginWithEmail(email);
     if (!result.ok) return json({ error: result.error }, result.error === "Unauthorized email" ? 403 : 400);
 
-    return json({ ok: true, user: result.user, next: payload.next || "/" }, 200, {
+    return json({ ok: true, user: result.user, next: payload.next || "/demo/" }, 200, {
       "set-cookie": buildSessionCookie(request, result.token),
     });
   }
