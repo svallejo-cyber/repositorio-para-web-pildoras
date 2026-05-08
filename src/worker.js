@@ -1577,6 +1577,14 @@ async function handleAdminMaintenanceApi(request, url, store) {
     const result = await store.purgeExcludedAccesses(Array.from(EXCLUDED_TRACKING_EMAILS));
     return json({ ok: true, result });
   }
+  if (request.method === "POST" && url.pathname === "/api/admin-maintenance/reset-access-dashboard") {
+    const payload = await request.json().catch(() => null);
+    const startAt = payload && payload.startAt ? new Date(payload.startAt) : null;
+    const result = await store.resetAccessDashboard({
+      startAt: startAt && !Number.isNaN(startAt.getTime()) ? startAt.toISOString() : null,
+    });
+    return json({ ok: true, result });
+  }
   return json({ error: "Not found" }, 404);
 }
 
@@ -2801,6 +2809,37 @@ export class HubData extends DurableObject {
     events.unshift(storedEvent);
     await this.ctx.storage.put("access-events", events);
     await this.recordAccessAnalyticsEvent(storedEvent);
+  }
+
+  async resetAccessDashboard({ startAt = null } = {}) {
+    const users = await this.getInvitedUsers();
+    const now = new Date().toISOString();
+    const resetUsers = users.map((user) => ({
+      ...user,
+      accessCount: 0,
+      firstAccessAt: null,
+      lastAccessAt: null,
+      lastPath: "",
+      lastLanguage: "",
+      updatedAt: now,
+    }));
+    await this.saveInvitedUsers(resetUsers);
+    await this.ctx.storage.put("access-events", []);
+    await this.saveAccessAnalyticsState({
+      version: 1,
+      createdAt: startAt || now,
+      updatedAt: now,
+      totals: { eventCount: 0, loginCount: 0, pageViewCount: 0, pdfOpenCount: 0 },
+      byDay: {},
+      resetAt: now,
+      resetStartAt: startAt || now,
+    });
+    return {
+      ok: true,
+      resetAt: now,
+      resetStartAt: startAt || now,
+      totalUsers: resetUsers.length,
+    };
   }
 
   async getProjectStatusState() {

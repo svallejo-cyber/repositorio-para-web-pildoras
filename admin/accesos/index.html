@@ -73,7 +73,8 @@
     .badge-high { background:#e4f6eb; color:#1e7a49; }
     .section { margin-top:18px; }
     .section h2 { color:var(--accent); margin:0 0 12px; }
-    table { width:100%; border-collapse:collapse; background:#fff; border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+    .table-scroll { overflow-x:auto; border:1px solid var(--line); border-radius:12px; background:#fff; }
+    table { width:100%; min-width:780px; border-collapse:collapse; background:#fff; }
     th, td { text-align:left; padding:12px; border-bottom:1px solid #e6edf3; vertical-align:top; }
     th { background:#f6f9fc; color:#345068; font-size:.86rem; text-transform:uppercase; letter-spacing:.04em; }
     tr:last-child td { border-bottom:0; }
@@ -146,6 +147,7 @@
             <p>Listado exacto de usuarios que siguen sin haber entrado al hub. Es el grupo que conviene activar primero.</p>
             <div class="member-list" id="inactive-users-list"></div>
           </div>
+          <div class="table-scroll">
           <table>
             <thead>
               <tr>
@@ -160,9 +162,11 @@
             </thead>
             <tbody id="member-activity-body"></tbody>
           </table>
+          </div>
         </section>
         <section class="section">
           <h2>Usuarios</h2>
+          <div class="table-scroll">
           <table>
             <thead>
               <tr>
@@ -176,9 +180,11 @@
             </thead>
             <tbody id="users-body"></tbody>
           </table>
+          </div>
         </section>
         <section class="section">
           <h2>Eventos recientes</h2>
+          <div class="table-scroll">
           <table>
             <thead>
               <tr>
@@ -191,6 +197,7 @@
             </thead>
             <tbody id="events-body"></tbody>
           </table>
+          </div>
         </section>
         <div class="status" id="status"></div>
       </div>
