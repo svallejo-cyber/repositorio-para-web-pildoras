@@ -40,6 +40,7 @@ const DEFAULT_INVITED_AVATARS = {
   "clopez@isaval.es": "/assets/profile/celia-lopez-360.jpg",
   "pgomis@isaval.es": "/assets/profile/paco-gomis-360.jpg",
   "iflorentin@isaval.es": "/assets/profile/irene-florentin-360.jpg",
+  "jluislopez@isaval.es": "/assets/profile/juan-luis-lopez-maroto-360.jpg",
 };
 const PUBLISHED_PILLS = [
   { slug: "tenantflow", lang: "es", type: "executive", title: "TenantFlow", author: "Santiago Vallejo", authorEmail: "svallejo@isaval.es", avatar: "/assets/profile/santiago2-360.jpg", publishedAt: "2026-03-07T23:18:44Z", urlPath: "/projects/tenantflow/es/" },
@@ -96,12 +97,13 @@ const PUBLISHED_PILLS = [
   { slug: "colaborativa-44", lang: "es", type: "collaborative", title: "Del Excel y el correo al seguimiento inteligente de pedidos a proveedor", author: "Carmen Vicente Zaragoza", authorEmail: "cvicente@isaval.es", avatar: "/assets/profile/carmen-vicente-360.jpg", publishedAt: "2026-05-07T12:20:00Z", urlPath: "/projects/colaborativa-44/es/" },
   { slug: "colaborativa-45", lang: "es", type: "collaborative", title: "De WordPress y el correo a un sistema integrado de candidaturas en HubSpot", author: "Irene Florentín Aragón", authorEmail: "iflorentin@isaval.es", avatar: "/assets/profile/irene-florentin-360.jpg", publishedAt: "2026-05-10T12:00:00Z", urlPath: "/projects/colaborativa-45/es/" },
   { slug: "colaborativa-46", lang: "es", type: "collaborative", title: "Del parte manual al mantenimiento estructurado y predictivo", author: "Juan Manuel Marín Caparros", authorEmail: "tecnico@isaval.es", avatar: "/assets/profile/juanma-marin-360.jpg", publishedAt: "2026-05-10T20:30:00Z", urlPath: "/projects/colaborativa-46/es/" },
+  { slug: "colaborativa-47", lang: "es", type: "collaborative", title: "De la tienda aislada al stock compartido con inteligencia", author: "Juan Luis López-Maroto Hernández", authorEmail: "jluislopez@isaval.es", avatar: "/assets/profile/juan-luis-lopez-maroto-360.jpg", publishedAt: "2026-06-03T12:30:00Z", urlPath: "/projects/colaborativa-47/es/" },
 ];
 const COLLABORATIVE_PILLS = PUBLISHED_PILLS.filter((item) => item.type === "collaborative");
 const DEMO_EXECUTIVE_SLUG_ORDER = [
   "pildora-5",
   "pildora-6",
-  ...Array.from({ length: 46 }, (_, idx) => `colaborativa-${idx + 1}`),
+  ...Array.from({ length: 47 }, (_, idx) => `colaborativa-${idx + 1}`),
 ];
 const DEMO_CORPORATE_SLUG_ORDER = ["pildora-1", "pildora-2", "pildora-3", "pildora-4", "pildora-7"];
 const DEMO_EXCLUDED_SLUGS = new Set(["tenantflow"]);
@@ -300,6 +302,7 @@ const RADAR_CLASSIFICATION_OVERRIDES = {
   "colaborativa-44": { functionId: "operations_plant_logistics", themeId: "workflow_traceability" },
   "colaborativa-45": { functionId: "people_organization_knowledge", themeId: "workflow_traceability" },
   "colaborativa-46": { functionId: "operations_plant_logistics", themeId: "control_alerts_compliance" },
+  "colaborativa-47": { functionId: "operations_plant_logistics", themeId: "operational_planning" },
 };
 
 const RADAR_AUTO_RULES = {
@@ -3387,6 +3390,7 @@ export class HubData extends DurableObject {
       "colaborativa-44": "Sistema para seguir pedidos a proveedor, leer confirmaciones, alertar retrasos y dar visibilidad anticipada al aprovisionamiento antes de que impacte en producción.",
       "colaborativa-45": "Sistema integrado en HubSpot para publicar ofertas, recibir candidaturas, trazarlas en CRM y convertir una migración web en una mejora real para RRHH y marketing.",
       "colaborativa-46": "Evolución del mantenimiento hacia un modelo más estructurado, trazable y preparado para clasificación inteligente, detección de patrones y predicción de averías.",
+      "colaborativa-47": "Modelo para detectar stock muerto entre tiendas, recomendar redistribuciones antes de pedir a fábrica y evolucionar hacia una optimización predictiva del inventario comercial.",
     };
     return descriptions[slug] || "";
   }
